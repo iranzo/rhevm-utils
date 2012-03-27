@@ -266,7 +266,7 @@ check_tags
 list=apiread("/api/hosts?search=tag%3Delas_maint")
 for item in list:
   lista = apiread(item.attrib["href"])
-  if host_state(lista.get("id")) != "maintenance":
+  if host_state(lista.get("id")) == "up":
     if verbose:
       print "Host %s is tagged as elas_maint and it's active, removing tag..." % lista.get("id")
     uri=lista.get("href")+"/tags/"+tagfind("elas_maint")
@@ -281,7 +281,7 @@ for item in list:
   lista = apiread(item.attrib["href"])
   vms=lista.find("summary").find("total").text
   if vms == "0":
-    if host_state(lista.get("id")) != "maintenance":
+    if host_state(lista.get("id")) == "up":
       if not is_spm(lista.get("id")):
         powerable.append(lista.get("id"))
    
