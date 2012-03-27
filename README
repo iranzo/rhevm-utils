@@ -1,0 +1,45 @@
+RHEVM-Elastic-Management
+
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+
+Description: Script for elastic management (EMS) of RHEV-H/RHEL hosts for
+ RHEVM based on Douglas Schilling Landgraf <dougsland@redhat.com> scripts
+ for ovirt (https://github.com/dougsland/ovirt-restapi-scripts.git)
+
+
+Goals:
+
+Tag every host to be managed previously and do not manage any host without
+that tag
+
+From n virtualization hosts, have at least 1 host without VM's up and
+running and the remaining ones on pm-suspend or poweroff
+
+This should mean:
+- If you have one VM running, you'll need one host up for the VM, another
+ host up without VM,and n-2 hosts in maintenance + poweraction
+
+- If you have no running VM's, you'll need one host up without VM's and n-1
+ hosts in maintenance + poweraction
+
+- If you have host 1 full of VM's and next VM starts on second host, at next
+  check, a new host will be powered on and put online and n-3 hosts will be
+  in maintenance + poweraction state
+
+- If you have one VM running and put active host into maintenance, VM's will
+  migrate to active host without VM's, and a next check, another host will
+  be activated
+
+- If a host has been put on maintenance and has no tag, it will not be
+  activated by the script
+
+- Any active host must have no tags on it (that would mean user-enabled, and
+  should have the tag removed)
+
+
+tags behaviour:
+
+- elas_manage: manage this host by using the elastic management script (EMS)
+
+- elas_maint : this host has been put on maintenance by the EMS
+
