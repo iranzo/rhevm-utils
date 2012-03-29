@@ -26,23 +26,19 @@ import time
 from xml.etree import ElementTree
 from random import choice
 
-port = 8443
-server = '5.97.225.61'
-username = 'admin@internal'
-password = 'admin'
-action = "pm-suspend"
-verbose = True
+
 
 p = optparse.OptionParser()
-p.add_option("-u", "--user", dest="username",help="Username to use", metavar="username")
-p.add_option("-w", "--password", dest="password",help="Password to use", metavar="password")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server to contact", metavar="server")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="port")
-p.add_option("-a", "--action", dest="action",help="Power action to execute", metavar="action")
-p.add_option("-v", "--verbose", dest="verbose",help="Show messages while running (True/False)", metavar="verbose")
+p.add_option("-u", "--user", dest="username",help="Username to use", metavar="username",default="admin@internal")
+p.add_option("-w", "--password", dest="password",help="Password to use", metavar="password",default="admin")
+p.add_option("-s", "--server", dest="server",help="RHEV-M server to contact", metavar="server",default="127.0.0.1")
+p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="port",default="8443")
+p.add_option("-a", "--action", dest="action",help="Power action to execute", metavar="action",default="pm-suspend")
+p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='verbosity', default=0,type='int')
+
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (server,port)
+baseurl="https://%s:%s" % (options.server,options.port)
 
 # Goals:
 # Tag every host to be managed previously and do not manage any host without that tag
@@ -69,7 +65,7 @@ baseurl="https://%s:%s" % (server,port)
 def apiread(target):
   URL=baseurl+target
   request = urllib2.Request(URL)
-  base64string = base64.encodestring('%s:%s' % (username, password)).strip()
+  base64string = base64.encodestring('%s:%s' % (options.username, options.password)).strip()
   request.add_header("Authorization", "Basic %s" % base64string)
 
   try:
@@ -83,7 +79,7 @@ def apiread(target):
 def apiwrite(target,xml_request):
   URL=baseurl+target
   request = urllib2.Request(URL)
-  base64string = base64.encodestring('%s:%s' % (username, password)).strip()
+  base64string = base64.encodestring('%s:%s' % (options.username, options.password)).strip()
   request.add_header("Authorization", "Basic %s" % base64string)
   request.add_header("Content-type", "application/xml")
   
@@ -98,7 +94,7 @@ def apiwrite(target,xml_request):
 def apidelete(target):
   URL=baseurl+target
   request = urllib2.Request(URL)
-  base64string = base64.encodestring('%s:%s' % (username, password)).strip()
+  base64string = base64.encodestring('%s:%s' % (options.username, options.password)).strip()
   request.add_header("Authorization", "Basic %s" % base64string)
   request.add_header("Content-type", "application/xml")
   request.get_method = lambda: 'DELETE'
@@ -127,7 +123,7 @@ def tagfind(tag):
 def check_tags():
   list = apiread("/api/tags")
 
-  if verbose:
+  if options.verbosity >= 1:
     print "Looking for tags elas_manage and elas_maint prior to start..."
   elas_maint=tagfind("elas_maint")
   elas_manage=tagfind("elas_manage")
@@ -177,7 +173,7 @@ def is_spm(target):
   
 def deactivate_host(target):
   # Shutting down one host at a time...
-  if verbose:
+  if options.verbosity >= 1:
     print "Shutting down target %s" % target
 
   #Add elas_maint TAG to host
@@ -208,16 +204,16 @@ def deactivate_host(target):
   if host_state(target) == "maintenance":
     #Execute power action
     ## /etc/pki/rhevm/keys/rhevm_id_rsa
-    comando="ssh -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (host,action)
-    if verbose:
-      print "Sending %s the power action %s" % (host,action)
+    comando="ssh -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (host,options.action)
+    if options.verbosity >= 1:
+      print "Sending %s the power action %s" % (host,options.action)
     os.system(comando)
 
   return
   
 def activate_host(target):
   # Activate  one host at a time...
-  if verbose:
+  if options.verbosity >= 1:
     print "Activating target %s" % target
    
   #Remove elas_maint TAG to host
@@ -234,7 +230,7 @@ def activate_host(target):
     mac=nic.find("mac").get("address")
     # By default, send wol using every single nic at RHEVM host
     comando="for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" %mac
-    if verbose:
+    if options.verbosity >= 1:
       print "Sending %s the power on action via %s" % (target,mac)
     os.system(comando)    
 
@@ -267,38 +263,97 @@ list=apiread("/api/hosts?search=tag%3Delas_maint")
 for item in list:
   lista = apiread(item.attrib["href"])
   if host_state(lista.get("id")) == "up":
-    if verbose:
+    if options.verbosity >= 1:
       print "Host %s is tagged as elas_maint and it's active, removing tag..." % lista.get("id")
     uri=lista.get("href")+"/tags/"+tagfind("elas_maint")
     apidelete(uri)
-    # Emptying powerable host list:
 
-powerable=[]
+
+#Emptying maintanable and activable hosts list
+maintable=[]
+enablable=[]
+
+hosts_total=0
+hosts_up=0
+hosts_maintenance=0
+hosts_other=0
+hosts_without_vms=0
+hosts_with_vms=0
 
 #Check hosts with elas_manage tag associated and no SPM
 list=apiread("/api/hosts?search=tag%3Delas_manage")
 for item in list:
   lista = apiread(item.attrib["href"])
   vms=lista.find("summary").find("total").text
-  if vms == "0":
+  status="discarded"
+  inc=1
+  
+    #Preparing list of valid hosts  
+  if vms == "0": 
     if host_state(lista.get("id")) == "up":
       if not is_spm(lista.get("id")):
-        powerable.append(lista.get("id"))
+        maintable.append(lista.get("id"))
+        status="accepted"
+    if host_state(lista.get("id")) == "maintenance":
+      url="/api/hosts/%s" % lista.get("id")
+      if has_tag(url,tagfind("elas_maint")):
+        enablable.append(lista.get("id"))
+        status="accepted"
+      else:
+        status="No elas_maint tag discarded"
+        inc=0
+  if options.verbosity >= 2:
+    print "Host %s with %s vms detected with status %s and spm status %s (%s for operation)" % (lista.get("id"),vms,host_state(lista.get("id")),is_spm(lista.get("id")),status)
+
+  #Counters
+  hosts_total=hosts_total+inc
+  
+  if host_state(lista.get("id")) == "up":
+    hosts_up=hosts_up+inc
+  
+  if host_state(lista.get("id")) == "maintenance":
+    hosts_maintenance=hosts_maintenance+inc
+  else:
+    hosts_other=hosts_other+inc
+  
+  if vms == "0": 
+    hosts_without_vms=hosts_without_vms+inc
+  else:
+    hosts_with_vms=hosts_with_vms+inc
+
    
-if verbose:
+if options.verbosity >= 1:
   print "\nHost list to manage:"
-  print powerable
+  print "\tCandidates to maintenance: %s" % maintable
+  print "\tCandidates to activation:  %s" % enablable
+  print "\nHosts (Total/Up/Maintenance/other ## with VM's/without VM's): %s/%s/%s/%s ## %s/%s" % (hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms)
 
 #### Remove at least one host from the list
 #### CODE TO CHECK HOST COUNT, Host still active, etc 
-try:
-  target=choice(powerable)
-  print "Destiny has choosen as target %s" % target
-  #### Deactivate host
-  deactivate_host(target)
-  time.sleep(10)
+
+#(hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms)
+#enablable / maintable
+
+#At least one host but no one is up -> enable one host
+if hosts_total > 0 and hosts_up == 0:
+  target=choice(enablable)
+  if options.verbosity >= 2:
+    print "\nActivating host %s because no one is up\n" % target
   activate_host(target)
-except:
-  if verbose:
-    print "No host to manage, exiting"
   sys.exit(0)
+
+
+
+
+
+#try:
+#  target=choice(maintable)
+#  print "Destiny has choosen as target %s" % target
+#  #### Deactivate host
+#  deactivate_host(target)
+#  time.sleep(10)
+#  activate_host(target)
+#except:
+#  if options.verbosity >= 1:
+#    print "No host to manage, exiting"
+#  sys.exit(0)
