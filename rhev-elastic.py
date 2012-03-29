@@ -15,6 +15,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+# Goals:
+# - Do not manage any host without tag elas_manage
+# - Operate on one host per execution, exitting after each change
+# - Have at least one host up without vm's to hold new VM's
+# - Shutdown/suspend hosts without vm's untile there's only one left
+# - If a host has been put on maintenance and has no tag, it will not be activated by the script
+# - Any active host must have no tags on it (that would mean user-enabled, and should have the tag removed)
+
+
+# tags behaviour
+#	 elas_manage: manage this host by using the elastic management script (EMS)
+#	 elas_maint : this host has been put on maintenance by the EMS
+
 import urllib
 import urllib2
 import base64
@@ -28,31 +41,31 @@ from xml.etree import ElementTree
 from random import choice
 
 
+description="""
+RHEV-Elastic is a script for managing via API the hypervisors under RHEV command, both RHEV-H and RHEL hosts.
 
-p = optparse.OptionParser()
-p.add_option("-u", "--user", dest="username",help="Username to use", metavar="username",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use", metavar="password",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server to contact", metavar="server",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="port",default="8443")
+It's goal is to keep the higher amount of hosts turned off or suspended in
+order to save energy, automatically activating or deactivating hosts when
+needed in order to satisfy your environment needs.
+
+"""
+
+# Option parsing
+p = optparse.OptionParser("rhev-elastic.py [arguments]",description=description)
+p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
+p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
+p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
+p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
 p.add_option("-a", "--action", dest="action",help="Power action to execute", metavar="action",default="pm-suspend")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='verbosity', default=0,type='int')
+p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
+p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
 
 (options, args) = p.parse_args()
 
 baseurl="https://%s:%s" % (options.server,options.port)
 
-# Goals:
-# - Do not manage any host without tag elas_manage
-# - Operate on one host per execution, exitting after each change
-# - Have at least one host up without vm's to hold new VM's
-# - Shutdown/suspend hosts without vm's untile there's only one left
-# - If a host has been put on maintenance and has no tag, it will not be activated by the script
-# - Any active host must have no tags on it (that would mean user-enabled, and should have the tag removed)
 
-
-# tags behaviour
-#	 elas_manage: manage this host by using the elastic management script (EMS)
-#	 elas_maint : this host has been put on maintenance by the EMS
+#FUNCTIONS
 
 def apiread(target):
   URL=baseurl+target
@@ -367,6 +380,25 @@ def process_cluster(clusid):
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
 check_tags
+
+
+# TAGALL?
+#Add elas_maint TAG to every single host to automate the management
+if options.tagall == 1:
+
+  if options.verbosity >=1:
+    print "Tagging all hosts with elas_manage"
+    
+  list=apiread("/api/hosts")
+  for item in list:
+    target=item.get("id")
+    uri="/api/hosts/%s/tags" % target
+    xml_request ="""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <tag>
+      <name>elas_manage</name>
+    </tag>
+    """
+    apiwrite(uri,xml_request)
 
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
