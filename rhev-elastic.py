@@ -41,26 +41,23 @@ p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while run
 baseurl="https://%s:%s" % (options.server,options.port)
 
 # Goals:
-# Tag every host to be managed previously and do not manage any host without that tag
-# From n virtualization hosts, have at least 1 host without VM's up and running and the remaining ones on pm-suspend or poweroff
-# This should mean:
-# - If you have one VM running, you'll need one host up for the VM, another host up without VM,and n-2 hosts in maintenance + poweraction
-# - If you have no running VM's, you'll need one host up without VM's and n-1 hosts in maintenance + poweraction
-# - If you have host 1 full of VM's and next VM starts on second host, at
-#   next check, a new host will be powered on and put online and n-3 hosts
-#   will be in maintenance + poweraction state
-# - If you have one VM running and put active host into maintenance, VM's
-#   will migrate to active host without VM's, and a next check, another host
-#   will be activated
+# - Do not manage any host without tag elas_manage
+# - Operate on one host per execution, exitting after each change
+# - Have at least one host up without vm's to hold new VM's
+# - Shutdown/suspend hosts without vm's untile there's only one left
 # - If a host has been put on maintenance and has no tag, it will not be activated by the script
 # - Any active host must have no tags on it (that would mean user-enabled, and should have the tag removed)
-#
+
 
 # tags behaviour
-# elas_manage: manage this host by using the elastic management script (EMS)
-# elas_maint : this host has been put on maintenance by the EMS
+#	 elas_manage: manage this host by using the elastic management script (EMS)
+#	 elas_maint : this host has been put on maintenance by the EMS
 
-
+# CAVEATS:
+#
+# At the moment it makes no differences about clusters it will manage all
+# hosts in RHEVM as if they were part of the same cluster this behaviour will be revised
+# in the future and improved to work on cluster basis
 
 def apiread(target):
   URL=baseurl+target
@@ -244,15 +241,6 @@ def activate_host(target):
 
   return  
 
-
-
-
-
-################################# TEST AREA #########################
-
-
-  
-  
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
 check_tags
@@ -310,50 +298,69 @@ for item in list:
   
   if host_state(lista.get("id")) == "up":
     hosts_up=hosts_up+inc
-  
-  if host_state(lista.get("id")) == "maintenance":
-    hosts_maintenance=hosts_maintenance+inc
+    if vms == "0":
+      hosts_without_vms=hosts_without_vms+inc
+    else:
+      hosts_with_vms=hosts_with_vms+inc
   else:
-    hosts_other=hosts_other+inc
-  
-  if vms == "0": 
-    hosts_without_vms=hosts_without_vms+inc
-  else:
-    hosts_with_vms=hosts_with_vms+inc
-
+    if host_state(lista.get("id")) == "maintenance":
+      hosts_maintenance=hosts_maintenance+inc
+    else:
+      hosts_other=hosts_other+inc
    
 if options.verbosity >= 1:
   print "\nHost list to manage:"
   print "\tCandidates to maintenance: %s" % maintable
   print "\tCandidates to activation:  %s" % enablable
-  print "\nHosts (Total/Up/Maintenance/other ## with VM's/without VM's): %s/%s/%s/%s ## %s/%s" % (hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms)
+  print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total,hosts_up,hosts_maintenance,hosts_other)
+  print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms,hosts_without_vms)
 
-#### Remove at least one host from the list
 #### CODE TO CHECK HOST COUNT, Host still active, etc 
 
-#(hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms)
-#enablable / maintable
+#Useful vars:   hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
+#Useful arrays: enablable / maintable
+
+
+################################# ENABLE SECTION #########################################
 
 #At least one host but no one is up -> enable one host
 if hosts_total > 0 and hosts_up == 0:
-  target=choice(enablable)
-  if options.verbosity >= 2:
-    print "\nActivating host %s because no one is up\n" % target
-  activate_host(target)
-  sys.exit(0)
+  try:
+    target=choice(enablable)
+    if options.verbosity >= 2:
+      print "\nActivating host %s because no one is up\n" % target
+    activate_host(target)
+    sys.exit(0)
+  except:
+    if options.verbosity >= 1:
+      print "\nNo host to enable\n"
+    sys.exit(1)
 
+#Host active without vm's
+if hosts_up > 0:
+  #At least one host up without vm's:
+  if hosts_without_vms == 0:
+    try:
+      target=choice(enablable)
+      if options.verbosity >= 2:
+        print "\nActivating host %s because there are no hosts without vm's\n" % target
+      activate_host(target)
+      sys.exit(0)    
+    except:
+      print "\nNo host to enable\n"
+      sys.exit(1)
+      
+      
+############################### DISABLE SECTION ########################################
 
-
-
-
-#try:
-#  target=choice(maintable)
-#  print "Destiny has choosen as target %s" % target
-#  #### Deactivate host
-#  deactivate_host(target)
-#  time.sleep(10)
-#  activate_host(target)
-#except:
-#  if options.verbosity >= 1:
-#    print "No host to manage, exiting"
-#  sys.exit(0)
+if hosts_without_vms > 1:
+  #More than one host without VM's so we can shutdown one
+  try:
+    target=choice(maintable)
+    if options.verbosity >= 2:
+      print "\nPutting host %s into maintenance because there are more than 1 host without vm's\n" % target
+    deactivate_host(target)
+    sys.exit(0)    
+  except:
+    print "\nNo host to put into maintenance\n"
+    sys.exit(1)
