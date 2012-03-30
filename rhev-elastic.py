@@ -312,63 +312,63 @@ def process_cluster(clusid):
         else:
           hosts_other=hosts_other+inc
    
+  if options.verbosity >= 1:
+      print "\nHost list to manage:"
+      print "\tCandidates to maintenance: %s" % maintable
+      print "\tCandidates to activation:  %s" % enablable
+      print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total,hosts_up,hosts_maintenance,hosts_other)
+      print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms,hosts_without_vms)
+
+  #### CODE TO CHECK HOST COUNT, Host still active, etc 
+
+  #Useful vars:   hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
+  #Useful arrays: enablable / maintable
+
+
+  ################################# ENABLE SECTION #########################################
+
+  #At least one host but no one is up -> enable one host
+  if hosts_total > 0 and hosts_up == 0:
+    try:
+      target=choice(enablable)
+      if options.verbosity >= 2:
+        print "\nActivating host %s because no one is up\n" % target
+      activate_host(target)
+      return 0
+    except:
       if options.verbosity >= 1:
-        print "\nHost list to manage:"
-        print "\tCandidates to maintenance: %s" % maintable
-        print "\tCandidates to activation:  %s" % enablable
-        print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total,hosts_up,hosts_maintenance,hosts_other)
-        print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms,hosts_without_vms)
+        print "\nNo host to enable\n"
+      return 1
 
-      #### CODE TO CHECK HOST COUNT, Host still active, etc 
-
-      #Useful vars:   hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
-      #Useful arrays: enablable / maintable
-
-
-      ################################# ENABLE SECTION #########################################
-
-      #At least one host but no one is up -> enable one host
-      if hosts_total > 0 and hosts_up == 0:
-        try:
-          target=choice(enablable)
-          if options.verbosity >= 2:
-            print "\nActivating host %s because no one is up\n" % target
-          activate_host(target)
-          return 0
-        except:
-          if options.verbosity >= 1:
-            print "\nNo host to enable\n"
-          return 1
-
-      #Host active without vm's
-      if hosts_up > 0:
-        #At least one host up without vm's:
-        if hosts_without_vms == 0:
-          try:
-            target=choice(enablable)
-            if options.verbosity >= 2:
-              print "\nActivating host %s because there are no hosts without vm's\n" % target
+  #Host active without vm's
+  if hosts_up > 0:
+  #At least one host up without vm's:
+    if hosts_without_vms == 0:
+      try:
+        target=choice(enablable)
+        if options.verbosity >= 2:
+          print "\nActivating host %s because there are no hosts without vm's\n" % target
               
-            activate_host(target)
-            return 0
-          except:
-            print "\nNo host to enable\n"
-            return 1
+        activate_host(target)
+        return 0
+      except:
+        print "\nNo host to enable\n"
+        return 1
     
       
-      ############################### DISABLE SECTION ########################################
-        
-      if hosts_without_vms > 1:
-        #More than one host without VM's so we can shutdown one
-        try:
-          target=choice(maintable)
-          if options.verbosity >= 2:
-            print "\nPutting host %s into maintenance because there are more than 1 host without vm's\n" % target
-          deactivate_host(target)
-          return 0
-        except:
-          print "\nNo host to put into maintenance\n"
-          return 1
+  ############################### DISABLE SECTION ########################################
+      
+  if hosts_without_vms > 1:
+    #More than one host without VM's so we can shutdown one
+    try:
+      target=choice(maintable)
+      if options.verbosity >= 2:
+        print "\nPutting host %s into maintenance because there are more than 1 host without vm's\n" % target
+      deactivate_host(target)
+      return 0
+    except:
+      print "\nNo host to put into maintenance\n"
+      return 1
   return
 
 ################################ MAIN PROGRAM ############################
