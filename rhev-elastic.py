@@ -283,9 +283,8 @@ def process_cluster(clusid):
       #Preparing list of valid hosts  
       if vms == "0": 
         if host_state(lista.get("id")) == "up":
-          if not is_spm(lista.get("id")):
-            maintable.append(lista.get("id"))
-            status="accepted"
+          maintable.append(lista.get("id"))
+          status="accepted"
         if host_state(lista.get("id")) == "maintenance":
           url="/api/hosts/%s" % lista.get("id")
           if has_tag(url,tagfind("elas_maint")):
