@@ -229,16 +229,20 @@ def activate_host(target):
   if has_tag(url,tagfind("elas_maint")) == True:
     apidelete(uri)  
 
-  #Get Host MAC
-  uri="/api/hosts/%s/nics" % target
-  list=apiread(uri)
-  for nic in list:
-    mac=nic.find("mac").get("address")
-    # By default, send wol using every single nic at RHEVM host
-    comando="for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" %mac
-    if options.verbosity >= 1:
-      print "Sending %s the power on action via %s" % (target,mac)
-    os.system(comando)    
+  if options.action == "pm-suspend"
+    # As we use pm-suspend, we can wake-on-lan target host, if it's any
+    # other command, RHEV and power management should do it's magic
+    
+    #Get Host MAC
+    uri="/api/hosts/%s/nics" % target
+    list=apiread(uri)
+    for nic in list:
+      mac=nic.find("mac").get("address")
+      # By default, send wol using every single nic at RHEVM host
+      comando="for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" %mac
+      if options.verbosity >= 1:
+        print "Sending %s the power on action via %s" % (target,mac)
+      os.system(comando)    
 
   if host_state(target) == "maintenance":
     #Activate host
