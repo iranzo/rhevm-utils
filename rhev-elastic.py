@@ -373,7 +373,14 @@ def process_cluster(clusid):
     except:
       print "\nNo host to put into maintenance\n"
       return 1
+  
+  #############################  NOTHING TO DO SECTION ###################################
+  
+  if options.verbosity >= 2:
+    print "\nNothing to do as enable/disable scripts conditions are not met"
+  
   return
+
 
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
