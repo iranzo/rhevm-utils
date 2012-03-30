@@ -266,7 +266,7 @@ def process_cluster(clusid):
   hosts_without_vms=0
   hosts_with_vms=0
     
-  list=apiread("/api/hosts?search=tag%3Delas_manage")
+  list=apiread("/api/hosts?search=elas_manage")
   for item in list:
     lista = apiread(item.attrib["href"])
     vms=lista.find("summary").find("total").text
@@ -373,7 +373,7 @@ def process_cluster(clusid):
 
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
-check_tags
+check_tags()
 
 
 # TAGALL?
@@ -396,7 +396,7 @@ if options.tagall == 1:
 
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
-list=apiread("/api/hosts?search=tag%3Delas_maint")
+list=apiread("/api/hosts?search=elas_maint")
 for item in list:
   lista = apiread(item.attrib["href"])
   if host_state(lista.get("id")) == "up":
