@@ -21,4 +21,3 @@ tags behaviour:
 - elas_manage: manage this host by using the elastic management script (EMS)
 
 - elas_maint : this host has been put on maintenance by the EMS
-

@@ -21,7 +21,7 @@
 # - Do not manage any host without tag elas_manage
 # - Operate on one host per execution, exitting after each change
 # - Have at least one host up without vm's to hold new VM's
-# - Shutdown/suspend hosts without vm's untile there's only one left
+# - Shutdown/suspend hosts without vm's until there's only one left
 # - If a host has been put on maintenance and has no tag, it will not be activated by the script
 # - Any active host must have no tags on it (that would mean user-enabled, and should have the tag removed)
 
