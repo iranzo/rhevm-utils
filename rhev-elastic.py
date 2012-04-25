@@ -152,10 +152,12 @@ def process_cluster(clusid):
   #Emptying maintanable and activable hosts list
   maintable=[]
   enablable=[]
+  maintable_prio=[]
 
   hosts_total=0
   hosts_up=0
   hosts_maintenance=0
+  hosts_maintenance_prio=0
   hosts_other=0
   hosts_without_vms=0
   hosts_with_vms=0
@@ -175,6 +177,8 @@ def process_cluster(clusid):
         if host.status.state == "up":
           maintable.append(host.id)
           status="accepted"
+          if api.hosts.get(id=host.id).storage_manager.valueOf_ != "true":
+            maintable_prio.append(host.id)
         if host.status.state  == "maintenance":
           if host.tags.get(name="elas_maint"):
             enablable.append(host.id)
@@ -204,6 +208,7 @@ def process_cluster(clusid):
     if hosts_total > 0:
       print "\nHost list to manage:"
       print "\tCandidates to maintenance: %s" % maintable
+      print "\tPriority to maintenance: %s" % maintable_prio
       print "\tCandidates to activation:  %s" % enablable
       print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total,hosts_up,hosts_maintenance,hosts_other)
       print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms,hosts_without_vms)
@@ -252,13 +257,16 @@ def process_cluster(clusid):
       
   if hosts_without_vms > 1:
     #More than one host without VM's so we can shutdown one
-    try:
-      target=choice(maintable)
+    if len(maintable) != 0:
+      if len(maintable_prio) != 0:
+        target=choice(maintable_prio)
+      else:
+        target=choice(maintable)
       if options.verbosity >= 2:
         print "\nPutting host %s into maintenance because there are more than 1 host without vm's\n" % target
       deactivate_host(target)
       return 0
-    except:
+    else:
       print "\nNo host to put into maintenance\n"
       return 1
   
