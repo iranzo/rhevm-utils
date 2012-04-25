@@ -189,7 +189,7 @@ def process_cluster(clusid):
  
       if host.status.state == "up":
         hosts_up=hosts_up+inc
-        if vms == "0":
+        if vms == 0:
           hosts_without_vms=hosts_without_vms+inc
         else:
           hosts_with_vms=hosts_with_vms+inc
