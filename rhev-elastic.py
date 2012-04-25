@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+n#!/usr/bin/env python
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
@@ -129,18 +129,19 @@ def activate_host(target):
     except:
       print "Error deleting tag elas_maint from host %s" % api.host.get(id=target).name
 
+  if api.hosts.get(id=target).status.state == "maintenance":
+    api.hosts.get(id=target).activate()
+
   #Get Host MAC
-  uri="/api/hosts/%s/nics" % target
   for nic in api.hosts.get(id=target).nics.list():
     mac=nic.mac.get_address()
     # By default, send wol using every single nic at RHEVM host
-    comando="for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" %mac
-    if options.verbosity >= 1:
-      print "Sending %s the power on action via %s" % (target,mac)
-    os.system(comando)    
+    if mac != "":
+      comando="for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" %mac
+      if options.verbosity >= 1:
+        print "Sending %s the power on action via %s" % (target,mac)
+      os.system(comando)
 
-  if api.hosts.get(id=target).status.state == "maintenance":
-    api.hosts.get(id=target).activate()
   return  
 
 def process_cluster(clusid):
