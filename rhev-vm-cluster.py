@@ -141,11 +141,11 @@ for cluster in api.clusters.list():
   for etiqueta in tags_with_more_than_one:
     if len(tags_vm[etiqueta]) > len(hosts_in_cluster):
       if options.verbosity > 3:
-        print "\nMore VM's with tag than available hosts for tag %s, skipping" % etiqueta
+        print "\nMore VM's with tag than available hosts for tag %s, will do as much as I can..." % etiqueta
     else:
       if options.verbosity > 3:
         print "\nContinuing for tag %s"  % etiqueta
-      tags_to_manage.append(etiqueta)
+    tags_to_manage.append(etiqueta)
       
   if options.verbosity > 3:
     print "Hosts in cluster:"
