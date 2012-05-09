@@ -1,23 +1,43 @@
-RHEVM-Elastic-Management
-
-Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
-
-Description: Script for elastic management (EMS) of RHEV-H/RHEL hosts for
- RHEVM based on Douglas Schilling Landgraf <dougsland@redhat.com> scripts
- for ovirt (https://github.com/dougsland/ovirt-restapi-scripts.git)
+RHEVM-Elastic-Management Scripts
 
 REQUIRES: ovirt-engine-sdk
 
-Goals:
-- Do not manage any host without tag elas_manage
-- Operate on one host per execution, exitting after each change
-- Have at least one host up without vm's to hold new VM's
-- Shutdown/suspend hosts without vm's untile there's only one left
-- If a host has been put on maintenance and has no tag, it will not be activated by the script
-- Any active host must have no tags on it (that would mean user-enabled, and should have the tag removed)
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 
-tags behaviour:
+rhev-elastic: 
+	Description: Script for elastic management (EMS) of RHEV-H/RHEL hosts for
+		 RHEVM based on Douglas Schilling Landgraf <dougsland@redhat.com> scripts
+		 for ovirt (https://github.com/dougsland/ovirt-restapi-scripts.git)
 
-- elas_manage: manage this host by using the elastic management script (EMS)
+	Goals:
+		- Do not manage any host without tag elas_manage
+		- Operate on one host per execution, exitting after each change
+		- Have at least one host up without vm's to hold new VM's
+		- Shutdown/suspend hosts without vm's untile there's only one left
+		- If a host has been put on maintenance and has no tag, it will not be activated by the script
+		- Any active host must have no tags on it (that would mean user-enabled, and should have the tag removed)
 
-- elas_maint : this host has been put on maintenance by the EMS
+	tags behaviour:
+		- elas_manage: manage this host by using the elastic management script (EMS)
+		- elas_maint : this host has been put on maintenance by the EMS
+
+
+
+rhev-vm-cluster:
+	Description:
+
+Script for elastic management (EMS) of RHEV-H/RHEL vm's for RHEVM which
+tries to place VM's with the tag cluster_ (to identify them as RHCS members)
+into separate phyisical hosts to avoid single point of failure
+
+	Goals:
+		- Do not manage any vm without tag elas_manage
+		- Process RHCS as a grouping of VM's with cluster_**** tag
+		- Live migrate VM's with cluster_**** tag if more than one
+		is at the same physical host
+
+	tags behaviour:
+		- elas_manage: manage this vm by this script
+		- cluster_***: identify this vm as a member of RHCS ***
+
+
