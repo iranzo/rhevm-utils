@@ -180,7 +180,7 @@ for cluster in api.clusters.list():
               target=host
 
           # Only migrate if VM is up (no down, no migration in progress, etc)
-          if api.vms.get(name=vm).status.state="up":
+          if api.vms.get(name=vm).status.state == "up":
             #Migrate VM to target HOST to satisfy rules
             api.vms.get(name=vm).migrate(params.Action(id=target))
 
