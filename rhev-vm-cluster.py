@@ -81,10 +81,8 @@ check_tags()
 # TAGALL?
 #Add elas_maint TAG to every single vm to automate the management
 if options.tagall == 1:
-
   if options.verbosity >=1:
     print "Tagging all VM's with elas_manage"
-    
   for vm in api.vms.list():
     try:
       vm.tags.add(params.Tag(name="elas_manage"))
@@ -104,6 +102,7 @@ for cluster in api.clusters.list():
     if host.cluster.id==cluster.id:
       if host.status.state == "up":
         hosts_in_cluster.append(host.id)
+        
   if options.verbosity > 2:
     print "\nProcesando cluster %s..." % cluster.name
     print "##############################################"
@@ -115,22 +114,26 @@ for cluster in api.clusters.list():
   #Populate the list of tags and VM's
   for vm in api.vms.list():
     if vm.cluster.id==cluster.id:
-      if vm.status.state != "down":
+      if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
           if options.verbosity > 3:
             print "VM %s is discarded because it has no tag elas_manage" % vm.name
         else:
+          # Add the VM Id to the list of VMS to manage in this cluster
           vms_in_cluster.append(vm.id)
           for tag in vm.tags.list():
-            if options.verbosity > 3:
-              print "VM %s in cluster %s has tag %s" % (vm.name,cluster.name,tag.name)
-            tags_in_cluster.append(tag.id)
-            tags_vm[tag.name].append(vm.name)
+            if tag.name[0:8] == "cluster_":
+              if options.verbosity > 3:
+                print "VM %s in cluster %s has tag %s" % (vm.name,cluster.name,tag.name)
+              # Put the TAG in the list of used for this cluster and put the VM to the ones with this tag
+              tags_in_cluster.append(tag.id)
+              tags_vm[tag.name].append(vm.name)
 
-  #Construct a list of tags with more than one vm in state != down to process
+  #Construct a list of tags with more than one vm in state == up to process
   for tag in api.tags.list():
     if len(tags_vm[tag.name]) > 1:
-      tags_with_more_than_one.append(tag.name)
+      if tag.name[0:8] == "cluster_":
+        tags_with_more_than_one.append(tag.name)
                 
   if options.verbosity > 3:
     print "\nTAGS/VM organization: %s" % tags_vm
@@ -145,7 +148,12 @@ for cluster in api.clusters.list():
     else:
       if options.verbosity > 3:
         print "\nContinuing for tag %s"  % etiqueta
-    tags_to_manage.append(etiqueta)
+    if etiqueta[0:8] == "cluster_":
+      tags_to_manage.append(etiqueta)
+    
+  #Removing duplicates
+  tags = sorted(set(tags_in_cluster))
+  tags_in_cluster = tags    
       
   if options.verbosity > 3:
     print "Hosts in cluster:"
@@ -155,32 +163,56 @@ for cluster in api.clusters.list():
     print vms_in_cluster
   
     print "Tags in cluster"
-    #Removing duplicates
-    tags = sorted(set(tags_in_cluster))
-    tags_in_cluster = tags
     print tags_in_cluster
       
       
   for etiqueta in tags_to_manage:
     tags_vm_used=set([])
+    if options.verbosity > 3:
+      print "Managing tag %s" % etiqueta
     for vm in tags_vm[etiqueta]:
       if options.verbosity > 4:
         print "Processing vm %s for tag %s at host %s" % (vm,etiqueta,api.hosts.get(id=api.vms.get(name=vm).host.id).name)
+
+      #Set target as actual running host
+      target=api.vms.get(name=vm).host.id
+
       if api.vms.get(name=vm).host.id not in tags_vm_used:
-        tags_vm_used.add(api.vms.get(name=vm).host.id)
+        #Host not yet used, accept it directly
+        tags_vm_used.add(target)
       else:
-        if options.verbosity > 3:
-          print "Processing vm %s for tag %s at host %s needs migration" % (vm,etiqueta,api.hosts.get(id=api.vms.get(name=vm).host.id).name)
-          for host in hosts_in_cluster:
-            target=[]
-            if host in tags_vm_used:
+        # Host was in use, searching for new target
+        for host in hosts_in_cluster:
+          if host in tags_vm_used:
+            if options.verbosity > 4:
               print "Host %s used, skipping" % host
-            else:
+          else:
+            if options.verbosity > 4:
               print "Host %s not used, migrating there" % host
-              target=host
+            # Setting new host
+            target=host
+        
+      nombre=api.hosts.get(id=target).name
+      
 
-          # Only migrate if VM is up (no down, no migration in progress, etc)
-          if api.vms.get(name=vm).status.state == "up":
-            #Migrate VM to target HOST to satisfy rules
-            api.vms.get(name=vm).migrate(params.Action(id=target))
+      # Only migrate if VM if there's host change
+      maquina=api.vms.get(name=vm)
+      
+      if maquina.host.id != target:
+        if options.verbosity > 3:
+          print "Processing vm %s for tag %s at host %s needs migration to host %s" % (vm,etiqueta,api.hosts.get(id=api.vms.get(name=vm).host.id).name,nombre)
+        # Allow migration
+        maquina.placement_policy.host=params.Host()
+        maquina.placement_policy.affinity="migratable"
+        maquina.update()
+            
+        #Migrate VM to target HOST to satisfy rules
+        api.vms.get(name=vm).migrate(params.Action(id=target))
+      else:
+        if options.verbosity > 4:
+          print "Skipping migration target=host"
 
+      # Discard further migration of any machine
+      maquina.placement_policy.affinity="pinned"
+      maquina.placement_policy.host=api.hosts.get(id=target)
+      maquina.update()
