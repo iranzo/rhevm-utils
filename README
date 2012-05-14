@@ -38,6 +38,7 @@ into separate phyisical hosts to avoid single point of failure
 
 	tags behaviour:
 		- elas_manage: manage this vm by this script
+		- elas_start : autostart this vm if it's down
 		- cluster_***: identify this vm as a member of RHCS ***
 
 
