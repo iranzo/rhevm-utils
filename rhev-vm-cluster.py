@@ -22,6 +22,7 @@
 
 # tags behaviour
 #	 elas_manage: manage this VM by using the elastic management script (EMS)
+#        elas_start : make this VM autostart if down
 #        cluster_***: make this VM part of a RHCS 'cluster' to avoid same-host placement
 #
 
@@ -65,12 +66,17 @@ api = API(url=baseurl, username=options.username, password=options.password)
 #FUNCTIONS
 def check_tags():
   if options.verbosity >= 1:
-    print "Looking for tags elas_manage prior to start..."
+    print "Looking for tags prior to start..."
 
   if not api.tags.get(name="elas_manage"):
     if options.verbosity >=2:
       print "Creating tag elas_manage..."    
     api.tags.add(params.Tag(name="elas_manage"))
+    
+  if not api.tags.get(name="elas_start"):
+    if options.verbosity >=2:
+      print "Creating tag elas_start..."    
+    api.tags.add(params.Tag(name="elas_start"))
 
   return  
   
@@ -88,6 +94,26 @@ if options.tagall == 1:
       vm.tags.add(params.Tag(name="elas_manage"))
     except:
       print "Error adding elas_manage tag to vm %s" % vm.name
+      
+      
+# CLEANUP
+# Remove pinning from vm's in down state to allow to start in any host
+for vm in api.vms.list():
+  if vm.status.state == "down":
+      if vm.tags.get("elas_manage"):
+        for tag in vm.tags.list():
+          if tag.name[0:8] == "cluster_":
+            if options.verbosity >=5:
+              print "Cleaning VM %s pinning to allow to start on any host" % vm.name
+            # If powered down, allow machine to be migratable so it can start on any host
+            maquina=vm
+            maquina.placement_policy.host=params.Host()
+            maquina.placement_policy.affinity="migratable"
+            maquina.update()
+      if vm.tags.get("elas_start"):
+        # Start machine, as if it had host pinning it couldn't be autostarted using HA
+        vm.start()
+
 
 for cluster in api.clusters.list():
   # Emtpy vars for further processing
