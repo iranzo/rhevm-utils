@@ -41,7 +41,9 @@ p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while run
 p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
 p.add_option('-d', "--datacenter", dest="datacenter",help="datacenter to create the vlan at", metavar='datacenter')
 p.add_option('-l', "--vlan", dest="vlan",help="VLAN ID", metavar='vlan')
+p.add_option('-n', "--vlanname", dest="vlanname",help="VLANname", metavar='vlanname')
 p.add_option('-c', "--cluster", dest="cluster",help="Cluster to attach to", metavar='cluster')
+p.add_option('-b', "--bond", dest="bond",help="Bond to create under", metavar='bond',default="bond0")
 
 (options, args) = p.parse_args()
 
@@ -51,17 +53,21 @@ api = API(url=baseurl, username=options.username, password=options.password)
 
 dc=options.datacenter
 vlan=options.vlan
-vlanname="VLAN_%s" % vlan
+
+if not options.vlanname:
+  vlanname="VLAN_%s" % vlan
+else:
+  vlanname=options.vlanname
 
 datacenter=api.datacenters.get(name=dc)
-description="Network for VLAN_ID %s" % vlan
+description="Network for %s %s" % (vlanname,vlan)
 nueva=params.Network(name=vlanname, data_center=datacenter,vlan=params.VLAN(id=vlan),description=description)
 nueva.vlan_id=int(vlan)
 
 try:
   red=api.networks.add(nueva)
 except:
-  print "ERROR creating VLAN %s" % vlan
+  print "ERROR creating VLAN %s with ID %s" % (vlanname,vlan)
   red=api.networks.get(name=vlanname)
 
 if options.cluster:
@@ -79,7 +85,7 @@ if options.cluster:
       if options.verbosity > 4:    
         print "Host is in cluster"
       accion=params.Action(network=params.Network(name=red.name))
-      tarjeta=host.nics.get(name="bond0")
+      tarjeta=host.nics.get(name=options.bond)
       try:
         tarjeta.attach(accion)
         host.commitnetconfig()
