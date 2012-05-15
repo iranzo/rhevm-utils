@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+#
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+#
+# Description: Script for creating VLAN in datacenter and attach to cluster and it's hosts
+#
+# Requires ovirt-engine-sdk to work
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+
+import sys
+import getopt
+import optparse
+import os
+import time
+
+from ovirtsdk.api import API
+from ovirtsdk.xml import params
+from random import choice
+
+description="""
+RHEV-vlan is a script for creating via API new VLAN's in RHEV and attach it to DC/Cluster/hosts.
+
+"""
+
+# Option parsing
+p = optparse.OptionParser("rhev-elastic.py [arguments]",description=description)
+p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
+p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
+p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
+p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
+p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
+p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
+p.add_option('-d', "--datacenter", dest="datacenter",help="datacenter to create the vlan at", metavar='datacenter')
+p.add_option('-l', "--vlan", dest="vlan",help="VLAN ID", metavar='vlan')
+p.add_option('-c', "--cluster", dest="cluster",help="Cluster to attach to", metavar='cluster')
+
+(options, args) = p.parse_args()
+
+baseurl="https://%s:%s" % (options.server,options.port)
+
+api = API(url=baseurl, username=options.username, password=options.password)
+
+dc=options.datacenter
+vlan=options.vlan
+vlanname="VLAN_%s" % vlan
+
+datacenter=api.datacenters.get(name=dc)
+description="Network for VLAN_ID %s" % vlan
+nueva=params.Network(name=vlanname, data_center=datacenter,vlan=params.VLAN(id=vlan),description=description)
+nueva.vlan_id=int(vlan)
+
+try:
+  red=api.networks.add(nueva)
+except:
+  print "ERROR creating VLAN %s" % vlan
+  red=api.networks.get(name=vlanname)
+
+if options.cluster:
+  if options.verbosity > 4:
+    print "Attaching network to cluster"
+  cluster=api.clusters.get(name=options.cluster)
+  try:
+    cluster.networks.add(red)
+  except:
+    if options.verbosity > 4:  
+      print "Network already attached to cluster"
+    
+  for host in api.hosts.list():
+    if host.cluster.id==cluster.id:
+      if options.verbosity > 4:    
+        print "Host is in cluster"
+      accion=params.Action(network=params.Network(name=red.name))
+      tarjeta=host.nics.get(name="bond0")
+      try:
+        tarjeta.attach(accion)
+        host.commitnetconfig()
+      except:
+        print "Host already had network %s attached" % red.name
