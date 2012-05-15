@@ -1,0 +1,10 @@
+RHEVM-Elastic-Management Scripts
+
+REQUIRES: ovirt-engine-sdk
+
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+
+rhev-vlan: 
+
+	Description: Script for creating new VLAN's with vlan ID and
+provided name on DC and Cluster and automatically attach to all its hosts

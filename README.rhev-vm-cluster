@@ -1,0 +1,25 @@
+RHEVM-Elastic-Management Scripts
+
+REQUIRES: ovirt-engine-sdk
+
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+
+rhev-vm-cluster:
+	Description:
+
+Script for elastic management (EMS) of RHEV-H/RHEL vm's for RHEVM which
+tries to place VM's with the tag cluster_ (to identify them as RHCS members)
+into separate phyisical hosts to avoid single point of failure
+
+	Goals:
+		- Do not manage any vm without tag elas_manage
+		- Process RHCS as a grouping of VM's with cluster_**** tag
+		- Live migrate VM's with cluster_**** tag if more than one
+		is at the same physical host
+
+	tags behaviour:
+		- elas_manage: manage this vm by this script
+		- elas_start : autostart this vm if it's down
+		- cluster_***: identify this vm as a member of RHCS ***
+
+
