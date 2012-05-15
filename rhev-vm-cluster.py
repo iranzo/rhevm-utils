@@ -111,6 +111,8 @@ for vm in api.vms.list():
             maquina.placement_policy.affinity="migratable"
             maquina.update()
       if vm.tags.get("elas_start"):
+        if options.verbosity >=5:
+          print "VM %s should be running, starting..." % vm.name
         # Start machine, as if it had host pinning it couldn't be autostarted using HA
         vm.start()
 
