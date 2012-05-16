@@ -123,66 +123,68 @@ for cluster in api.clusters.list():
           for tag in vm.tags.list():
             tags_os[vm.os.type_].append(vm.name)
 
-            
+          
+  # Sort the tags by the number of elements in it
+  sorted_tags_os=sorted(tags_os.iteritems(), key=lambda x:x[1], reverse=True)
 
-
-# Sort the tags by the number of elements in it
-sorted_tags_os=sorted(tags_os.iteritems(), key=lambda x:x[1], reverse=True)
-
-# Print tags/vm's distribution  
-print tags_os
-print hosts_in_cluster
+  # Print tags/vm's distribution  
+  print "OS/VM's"
+  print tags_os
+  print "Hosts in cluster"
+  print hosts_in_cluster
   
-# VM's to process:
-vms_to_process=[]
+  # VM's to process:
+  vms_to_process=[]
 
-for vm in api.vms.list():
-  vms_to_process.append(vm.name)
+  for vm in api.vms.list():
+    if vm.cluster.id == cluster.id:
+      vms_to_process.append(vm.name)
 
 
-print "VM's to process"
-print vms_to_process
+  print "VM's to process"
+  print vms_to_process
 
-# Move away from initial host all the vm's not part of bigger set
-for vm in api.vms.list():
-  # VM is UP
-  if vm.status.state == "up":
-    # VM is running at actual host
-    if vm.host.id==hosts_in_cluster[0]:
-      # VM os type is not the primary one
-      if vm.os.type_ != sorted_tags_os[0][0]:
-        # VM is not of primary type... move it away!!
-          print "Probando a migrar %s" % vm.name
-          try:
-            vm.migrate()
-          except:
-            failed=0
-      else:
-        vms_to_process.remove(vm.name)
-        
-print "VM's remaining"
-print vms_to_process
+  # Move away from initial host all the vm's not part of bigger set
+  for vm in api.vms.list():
+    # VM is UP
+    if vm.status.state == "up":
+      # VM is running at actual host
+      if len(hosts_in_cluster) != 0:
+        if vm.host.id==hosts_in_cluster[0]:
+          # VM os type is not the primary one
+          if vm.os.type_ != sorted_tags_os[0][0]:
+            # VM is not of primary type... move it away!!
+              print "Probando a migrar %s" % vm.name
+              try:
+                vm.migrate()
+              except:
+                failed=0
+          else:
+            vms_to_process.remove(vm.name)
+       
+  print "VM's remaining"
+  print vms_to_process
 
-i = 0
-while i < len(tags_os):
-  #Sort the tags
-  etiqueta=sorted_tags_os[i][0]
-  i=i+1
-  print "Processing tag %s" % etiqueta
+  i = 0
+  while i < len(tags_os):
+    #Sort the tags
+    etiqueta=sorted_tags_os[i][0]
+    i=i+1
+    print "Processing tag %s" % etiqueta
 
-  # start with bigger set of tag
-  for host in hosts_in_cluster:
-    free_ram=api.hosts.get(id=host).statistics.get("memory.free").values.value[0].datum
-    for vm in vms_to_process:
-      if api.vms.get(name=vm).os.type_ == etiqueta:
-        maquina=api.vms.get(name=vm)
-        if maquina.status.state=="up":
-          if maquina.host.id != host:
-            if free_ram > maquina.statistics.get("memory.used").values.value[0].datum:
-              # We've free space, move in there...
-              print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name,maquina.name)
-              maquina.migrate(params.Action(host=api.hosts.get(id=host)))
-              free_ram = free_ram - maquina.statistics.get("memory.used").values.value[0].datum
-            else:
-              print "Not enough ram, hopping to next host"
-              break
+    # start with bigger set of tag
+    for host in hosts_in_cluster:
+      free_ram=api.hosts.get(id=host).statistics.get("memory.free").values.value[0].datum
+      for vm in vms_to_process:
+        if api.vms.get(name=vm).os.type_ == etiqueta:
+          maquina=api.vms.get(name=vm)
+          if maquina.status.state=="up":
+            if maquina.host.id != host:
+              if free_ram > maquina.statistics.get("memory.used").values.value[0].datum:
+                # We've free space, move in there...
+                print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name,maquina.name)
+                maquina.migrate(params.Action(host=api.hosts.get(id=host)))
+                free_ram = free_ram - maquina.statistics.get("memory.used").values.value[0].datum
+              else:
+                print "Not enough ram, hopping to next host"
+                break
