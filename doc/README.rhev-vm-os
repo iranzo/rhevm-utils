@@ -1,0 +1,19 @@
+RHEVM-Elastic-Management Scripts
+
+REQUIRES: ovirt-engine-sdk
+
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+
+rhev-vm-os:
+	Description:
+
+Script for elastic management (EMS) of RHEV-H/RHEL vm's for RHEVM which
+tries to place VM's with the same O.S. together at same hosts to maximize changes for KSM to save resources
+
+	Goals:
+		- Do not manage any vm without tag elas_manage
+		- Live migrate VM's with higher O.S. usage count to first host and migrate away the others
+		- keep repeating cycle until no more ram at host or no more vm's
+
+	tags behaviour:
+		- elas_manage: manage this vm by this script

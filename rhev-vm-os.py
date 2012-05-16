@@ -17,13 +17,11 @@
 # GNU General Public License for more details.
 
 # Goals:
-# - Do not run vm's from a named cluster run on the same host (cluster_)
 # - Do not manage any VM without tag elas_manage
+# - Group machines with same O.S. at same hosts
 
 # tags behaviour
 #	 elas_manage: manage this VM by using the elastic management script (EMS)
-#        cluster_***: make this VM part of a RHCS 'cluster' to avoid same-host placement
-#
 
 
 import sys
