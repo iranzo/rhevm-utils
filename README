@@ -6,10 +6,14 @@ Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 
 Please, check individual README files for specific behaviour and description
 
-rhev-elastic:         Manage hosts and power them off if unused
-rhev-vm-cluster:      Use tags to migrate VM's away from each other (sort of anti-affinity)
-rhev-vlan:            Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
-rhev-cleanpinning.py: Clean VM pinning to host
-rhev-policy.py:       Change clusters policy to the one provided
-rhev-vm-os.py:        Group VM's by O.S. on hosts
+rhev-elastic:            Manage hosts and power them off if unused
+rhev-vm-cluster:         Use tags to migrate VM's away from each other (sort of anti-affinity)
+rhev-vlan:               Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
+rhev-cleanpinning.py:    Clean VM pinning to host
+rhev-policy.py:          Change clusters policy to the one provided
+rhev-vm-os.py:           Group VM's by O.S. on hosts
+rhev-nagios-host-cpu.py: Output host CPU % in nagios format
+rhev-nagios-host-mem.py: Output host Mem usage in nagios format
+rhev-nagios-host.py    : Output host status in nagios format
+
 
