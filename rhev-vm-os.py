@@ -128,10 +128,11 @@ for cluster in api.clusters.list():
   sorted_tags_os=sorted(tags_os.iteritems(), key=lambda x:x[1], reverse=True)
 
   # Print tags/vm's distribution  
-  print "OS/VM's"
-  print tags_os
-  print "Hosts in cluster"
-  print hosts_in_cluster
+  if options.verbosity > 3:  
+    print "OS/VM's"
+    print tags_os
+    print "Hosts in cluster"
+    print hosts_in_cluster
   
   # VM's to process:
   vms_to_process=[]
@@ -140,9 +141,9 @@ for cluster in api.clusters.list():
     if vm.cluster.id == cluster.id:
       vms_to_process.append(vm.name)
 
-
-  print "VM's to process"
-  print vms_to_process
+  if options.verbosity > 3:
+    print "VM's to process"
+    print vms_to_process
 
   # Move away from initial host all the vm's not part of bigger set
   for vm in api.vms.list():
@@ -154,23 +155,26 @@ for cluster in api.clusters.list():
           # VM os type is not the primary one
           if vm.os.type_ != sorted_tags_os[0][0]:
             # VM is not of primary type... move it away!!
-              print "Probando a migrar %s" % vm.name
+              if options.verbosity > 3:
+                print "Probando a migrar %s" % vm.name
               try:
                 vm.migrate()
               except:
                 failed=0
           else:
             vms_to_process.remove(vm.name)
-       
-  print "VM's remaining"
-  print vms_to_process
+
+  if options.verbosity > 3:       
+    print "VM's remaining"
+    print vms_to_process
 
   i = 0
   while i < len(tags_os):
     #Sort the tags
     etiqueta=sorted_tags_os[i][0]
     i=i+1
-    print "Processing tag %s" % etiqueta
+    if options.verbosity > 1:
+      print "Processing tag %s" % etiqueta
 
     # start with bigger set of tag
     for host in hosts_in_cluster:
@@ -182,9 +186,11 @@ for cluster in api.clusters.list():
             if maquina.host.id != host:
               if free_ram > maquina.statistics.get("memory.used").values.value[0].datum:
                 # We've free space, move in there...
-                print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name,maquina.name)
+                if options.verbosity > 2:
+                  print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name,maquina.name)
                 maquina.migrate(params.Action(host=api.hosts.get(id=host)))
                 free_ram = free_ram - maquina.statistics.get("memory.used").values.value[0].datum
               else:
-                print "Not enough ram, hopping to next host"
+                if options.verbosity > 2:              
+                  print "Not enough ram, hopping to next host"
                 break
