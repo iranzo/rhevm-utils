@@ -32,7 +32,7 @@ RHEV-vlan is a script for creating via API new VLAN's in RHEV and attach it to D
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-elastic.py [arguments]",description=description)
+p = optparse.OptionParser("rhev-vlan.py [arguments]",description=description)
 p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
 p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
 p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")

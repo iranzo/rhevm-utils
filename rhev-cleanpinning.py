@@ -35,7 +35,7 @@ nodes at the same physical host.
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-elastic.py [arguments]",description=description)
+p = optparse.OptionParser("rhev-cleanpinning.py [arguments]",description=description)
 p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
 p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
 p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
