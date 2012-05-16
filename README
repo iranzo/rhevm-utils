@@ -14,6 +14,5 @@ rhev-policy.py:          Change clusters policy to the one provided
 rhev-vm-os.py:           Group VM's by O.S. on hosts
 rhev-nagios-host-cpu.py: Output host CPU % in nagios format
 rhev-nagios-host-mem.py: Output host Mem usage in nagios format
-rhev-nagios-host.py    : Output host status in nagios format
-
-
+rhev-nagios-host.py:     Output host status in nagios format
+rhev-clone.py:           Create a clone VM based on a Template on a specified Cluster
