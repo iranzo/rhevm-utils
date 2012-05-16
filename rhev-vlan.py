@@ -38,7 +38,6 @@ p.add_option("-w", "--password", dest="password",help="Password to use with user
 p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
 p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
 p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
-p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
 p.add_option('-d', "--datacenter", dest="datacenter",help="datacenter to create the vlan at", metavar='datacenter')
 p.add_option('-l', "--vlan", dest="vlan",help="VLAN ID", metavar='vlan')
 p.add_option('-n', "--vlanname", dest="vlanname",help="VLANname", metavar='vlanname')
