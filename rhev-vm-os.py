@@ -51,6 +51,7 @@ p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostnam
 p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
 p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
 p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
+p.add_option('-c', "--cluster", dest="cluster",help="Select cluster name to process", metavar='cluster', default=None)
 
 (options, args) = p.parse_args()
 
@@ -295,12 +296,12 @@ def process_cluster(cluster):
                   # Check new ram status    
                   
                   # MV moved away, recheck ram to make it fit
+                  host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                  
                   if options.verbosity > 5:
-                    host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
                     print "Host free RAM %s" % host_free
                     print "VM required RAM %s" % maquina.statistics.get("memory.used").values.value[0].datum
 
-                  host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum                  
                   if host_free > maquina.statistics.get("memory.used").values.value[0].datum:
                     migra(maquina,params.Action(host=api.hosts.get(id=host)))                  
                   else:
@@ -312,5 +313,10 @@ def process_cluster(cluster):
 
 ################################ MAIN PROGRAM ############################
 
-for cluster in api.clusters.list():
-  process_cluster(cluster)
+if not options.cluster:
+  # Processing each cluster of our RHEVM
+  for cluster in api.clusters.list():
+    process_cluster(cluster)
+else:
+  process_cluster(api.clusters.get(name=options.cluster))
+
