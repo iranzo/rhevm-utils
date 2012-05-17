@@ -39,6 +39,8 @@ p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostnam
 p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
 p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
 p.add_option("--policy", dest="policy",help="Set destination polciy", metavar='policy', default="power_saving")
+p.add_option('-c', "--cluster", dest="cluster",help="Select cluster name to process", metavar='cluster', default=None)
+
 
 (options, args) = p.parse_args()
 
@@ -64,6 +66,9 @@ def process_cluster(clusid):
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
 
-# Processing each cluster of our RHEVM
-for cluster in api.clusters.list():
+if not options.cluster:
+  # Processing each cluster of our RHEVM
+  for cluster in api.clusters.list():
   process_cluster(cluster.id)
+else:
+  process_cluster(api.clusters.get(name=options.cluster).id)

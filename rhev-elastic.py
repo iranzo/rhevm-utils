@@ -59,6 +59,7 @@ p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="84
 p.add_option("-a", "--action", dest="action",help="Power action to execute", metavar="action",default="pm-suspend")
 p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
 p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
+p.add_option('-c', "--cluster", dest="cluster",help="Select cluster name to process", metavar='cluster', default=None)
 
 (options, args) = p.parse_args()
 
@@ -304,6 +305,10 @@ for host in api.hosts.list():
         print "Host %s is tagged as elas_maint and it's active, removing tag..." % host.id
       api.hosts.get(id=host.id).tags.get(name="elas_maint").delete()    
 
-# Processing each cluster of our RHEVM
-for cluster in api.clusters.list():
+
+if not options.cluster:
+  # Processing each cluster of our RHEVM
+  for cluster in api.clusters.list():
   process_cluster(cluster.id)
+else:
+  process_cluster(api.clusters.get(name=options.cluster).id)

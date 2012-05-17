@@ -53,6 +53,7 @@ p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostnam
 p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
 p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
 p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
+p.add_option('-c', "--cluster", dest="cluster",help="Select cluster name to process", metavar='cluster', default=None)
 
 (options, args) = p.parse_args()
 
@@ -108,46 +109,8 @@ def migra(vm,action=None):
       loop=False
 
   return
-
   
-################################ MAIN PROGRAM ############################
-#Check if we have defined needed tags and create them if missing
-check_tags()
-
-# TAGALL?
-#Add elas_maint TAG to every single vm to automate the management
-if options.tagall == 1:
-  if options.verbosity >=1:
-    print "Tagging all VM's with elas_manage"
-  for vm in api.vms.list():
-    try:
-      vm.tags.add(params.Tag(name="elas_manage"))
-    except:
-      print "Error adding elas_manage tag to vm %s" % vm.name
-      
-      
-# CLEANUP
-# Remove pinning from vm's in down state to allow to start in any host
-for vm in api.vms.list():
-  if vm.status.state == "down":
-      if vm.tags.get("elas_manage"):
-        for tag in vm.tags.list():
-          if tag.name[0:8] == "cluster_":
-            if options.verbosity >=5:
-              print "Cleaning VM %s pinning to allow to start on any host" % vm.name
-            # If powered down, allow machine to be migratable so it can start on any host
-            maquina=vm
-            maquina.placement_policy.host=params.Host()
-            maquina.placement_policy.affinity="migratable"
-            maquina.update()
-      if vm.tags.get("elas_start"):
-        if options.verbosity >=5:
-          print "VM %s should be running, starting..." % vm.name
-        # Start machine, as if it had host pinning it couldn't be autostarted using HA
-        vm.start()
-
-
-for cluster in api.clusters.list():
+def process_cluster(cluster):
   # Emtpy vars for further processing
   hosts_in_cluster= []
   vms_in_cluster=[]
@@ -274,3 +237,49 @@ for cluster in api.clusters.list():
       maquina.placement_policy.affinity="pinned"
       maquina.placement_policy.host=api.hosts.get(id=target)
       maquina.update()
+
+
+  
+################################ MAIN PROGRAM ############################
+#Check if we have defined needed tags and create them if missing
+check_tags()
+
+# TAGALL?
+#Add elas_maint TAG to every single vm to automate the management
+if options.tagall == 1:
+  if options.verbosity >=1:
+    print "Tagging all VM's with elas_manage"
+  for vm in api.vms.list():
+    try:
+      vm.tags.add(params.Tag(name="elas_manage"))
+    except:
+      print "Error adding elas_manage tag to vm %s" % vm.name
+      
+      
+# CLEANUP
+# Remove pinning from vm's in down state to allow to start in any host
+for vm in api.vms.list():
+  if vm.status.state == "down":
+      if vm.tags.get("elas_manage"):
+        for tag in vm.tags.list():
+          if tag.name[0:8] == "cluster_":
+            if options.verbosity >=5:
+              print "Cleaning VM %s pinning to allow to start on any host" % vm.name
+            # If powered down, allow machine to be migratable so it can start on any host
+            maquina=vm
+            maquina.placement_policy.host=params.Host()
+            maquina.placement_policy.affinity="migratable"
+            maquina.update()
+      if vm.tags.get("elas_start"):
+        if options.verbosity >=5:
+          print "VM %s should be running, starting..." % vm.name
+        # Start machine, as if it had host pinning it couldn't be autostarted using HA
+        vm.start()
+
+
+if not options.cluster:
+  # Processing each cluster of our RHEVM
+  for cluster in api.clusters.list():
+  process_cluster(cluster.id)
+else:
+  process_cluster(api.clusters.get(name=options.cluster).id)
