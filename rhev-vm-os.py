@@ -100,22 +100,15 @@ def migra(vm, action=None):
       if options.verbosity > 8:
         print "Exiting on max loop retries"
   return
-  
-################################ MAIN PROGRAM ############################
-#Check if we have defined needed tags and create them if missing
-check_tags()
 
-# TAGALL?
-#Add elas_maint TAG to every single vm to automate the management
-if options.tagall == 1:
-  if options.verbosity >= 1:
-    print "Tagging all VM's with elas_manage"
-  for vm in api.vms.list():
-    try:
-      vm.tags.add(params.Tag(name="elas_manage"))
-    except:
-      print "Error adding elas_manage tag to vm %s" % vm.name
-      
+def vmused(vm):
+  # Get memory usage from agent
+  used = vm.get("memory.used").values.value[0].datum
+  if  used == 0:
+    #If no value received, return installed memory
+    used = vm.statistics.get("memory.installed").values.value[0].datum
+
+  return used 
       
 def process_cluster(cluster):
   # Emtpy vars for further processing
@@ -215,7 +208,7 @@ def process_cluster(cluster):
                   print "VM can be processed (not already in processed hosts)"
 
                 host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
-                if host_free > maquina.statistics.get("memory.installed").values.value[0].datum:
+                if host_free > vmused(maquina):
                   # We've free space, move in there...
                   if options.verbosity > 2:
                     print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name, maquina.name)
@@ -250,8 +243,8 @@ def process_cluster(cluster):
                   host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum                  
                   mem_to_free = host_free
                   for virtual in vms_to_excomulgate:
-                    mem_to_free = mem_to_free + api.vms.get(name=virtual).statistics.get("memory.installed").values.value[0].datum
-                    if mem_to_free >= maquina.statistics.get("memory.installed").values.value[0].datum:
+                    mem_to_free = mem_to_free + vmused(api.vms.get(name=virtual))
+                    if mem_to_free >= vmused(maquina):
                       fits_in_ram = True
                       
                   if options.verbosity > 6:    
@@ -270,7 +263,7 @@ def process_cluster(cluster):
                       # We've one machine to excomulgate so let's do it
                       if not victima:
                         victima = virtual
-                      if api.vms.get(name=virtual).statistics.get("memory.used").values.value[0].datum > api.vms.get(name=victima).statistics.get("memory.used").values.value[0].datum:
+                      if vmused(api.vms.get(name=virtual)) > vmused(api.vms.get(name=victima)):
                         victima = virtual
                   
                     # Machine with higher ram usage has been selected, move it away to make room for the next one to enter
@@ -281,7 +274,7 @@ def process_cluster(cluster):
                       migra(api.vms.get(name=victima))
 
                     host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
-                    if host_free > maquina.statistics.get("memory.used").values.value[0].datum:
+                    if host_free > vmused(maquina):
                       # Enough RAM, exit loop to start moving in a new machine, if not, keep running to make more room
                       keeplooping = False
 
@@ -300,9 +293,9 @@ def process_cluster(cluster):
                   
                   if options.verbosity > 5:
                     print "Host free RAM %s" % host_free
-                    print "VM required RAM %s" % maquina.statistics.get("memory.used").values.value[0].datum
+                    print "VM required RAM %s" % vmused(maquina)
 
-                  if host_free > maquina.statistics.get("memory.used").values.value[0].datum:
+                  if host_free > vmused(maquina):
                     migra(maquina, params.Action(host=api.hosts.get(id=host)))                  
                   else:
                     if options.verbosity > 2:              
@@ -312,6 +305,19 @@ def process_cluster(cluster):
   return
 
 ################################ MAIN PROGRAM ############################
+#Check if we have defined needed tags and create them if missing
+check_tags()
+
+# TAGALL?
+#Add elas_maint TAG to every single vm to automate the management
+if options.tagall == 1:
+  if options.verbosity >= 1:
+    print "Tagging all VM's with elas_manage"
+  for vm in api.vms.list():
+    try:
+      vm.tags.add(params.Tag(name="elas_manage"))
+    except:
+      print "Error adding elas_manage tag to vm %s" % vm.name
 
 if not options.cluster:
   # Processing each cluster of our RHEVM
