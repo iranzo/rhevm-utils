@@ -41,6 +41,7 @@ p.add_option("-w", "--password", dest="password", help="Password to use with use
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 
 (options, args) = p.parse_args()
 
@@ -48,11 +49,24 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
-for vm in api.vms.list():
-  if vm.tags.get("elas_manage"):
-    for tag in vm.tags.list():
-      if tag.name[0:8] == "cluster_":
-        vm.placement_policy.affinity = "migratable"
-        vm.placement_policy.host = params.Host()
-        vm.update()
-  print "VM %s pinning removed" % vm.name
+def process_cluster(clusid):
+  for vm in api.vms.list():
+    if vm.cluster.id == clusid:
+      if vm.tags.get("elas_manage"):
+        for tag in vm.tags.list():
+          if tag.name[0:8] == "cluster_":
+            vm.placement_policy.affinity = "migratable"
+            vm.placement_policy.host = params.Host()
+            vm.update()
+            print "VM %s pinning removed" % vm.name
+  return
+
+
+################################ MAIN PROGRAM ############################
+if not options.cluster:
+  # Processing each cluster of our RHEVM
+  for cluster in api.clusters.list():
+    process_cluster(cluster.id)
+else:
+  process_cluster(api.clusters.get(name=options.cluster).id)
+
