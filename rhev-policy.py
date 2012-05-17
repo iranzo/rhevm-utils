@@ -69,6 +69,6 @@ def process_cluster(clusid):
 if not options.cluster:
   # Processing each cluster of our RHEVM
   for cluster in api.clusters.list():
-  process_cluster(cluster.id)
+    process_cluster(cluster.id)
 else:
   process_cluster(api.clusters.get(name=options.cluster).id)
