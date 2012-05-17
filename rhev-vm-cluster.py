@@ -87,13 +87,13 @@ def migra(vm,action=None):
       vm.migrate()
     except:
       if options.verbosity > 4:
-        print "Problem migrating %s" % vm.name
+        print "Problem migrating auto %s" % vm.name
   else:
     try:
       vm.migrate(action)
     except:
       if options.verbosity > 4:
-        print "Problem migrating %s" % vm.name
+        print "Problem migrating fixed %s" % vm.name
 
   loop=True
   counter=0
