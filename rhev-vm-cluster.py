@@ -80,6 +80,36 @@ def check_tags():
 
   return  
   
+def migra(vm,action=None):
+  if not host:
+    try:
+      vm.migrate()
+    except:
+      if options.verbosity > 4:
+        print "Problem migrating %s" % vm.name
+  else:
+    try:
+      vm.migrate(action)
+    except:
+      if options.verbosity > 4:
+        print "Problem migrating %s" % vm.name
+
+  loop=True
+  counter=0
+  while loop:
+    if vm.status.state == "up":
+      loop=False
+    if options.verbosity > 8:
+      print "VM migration loop %s" % counter
+    time.sleep(10)
+    counter=counter+1
+    
+    if counter > 12:
+      loop=False
+
+  return
+
+  
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
 check_tags()
@@ -235,7 +265,7 @@ for cluster in api.clusters.list():
         maquina.update()
             
         #Migrate VM to target HOST to satisfy rules
-        api.vms.get(name=vm).migrate(params.Action(id=target))
+        migra(api.vms.get(name=vm),params.Action(id=target))
       else:
         if options.verbosity > 4:
           print "Skipping migration target=host"

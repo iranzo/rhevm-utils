@@ -70,6 +70,35 @@ def check_tags():
 
   return  
   
+def migra(vm,action=None):
+  if not host:
+    try:
+      vm.migrate()
+    except:
+      if options.verbosity > 4:
+        print "Problem migrating %s" % vm.name
+  else:
+    try:
+      vm.migrate(action)
+    except:
+      if options.verbosity > 4:
+        print "Problem migrating %s" % vm.name
+
+  loop=True
+  counter=0
+  while loop:
+    if vm.status.state == "up":
+      loop=False
+    if options.verbosity > 8:
+      print "VM migration loop %s" % counter
+    time.sleep(10)
+    counter=counter+1
+    
+    if counter > 12:
+      loop=False
+
+  return
+  
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
 check_tags()
@@ -154,9 +183,9 @@ for cluster in api.clusters.list():
           if vm.os.type_ != sorted_tags_os[0][0]:
             # VM is not of primary type... move it away!!
               if options.verbosity > 3:
-                print "Probando a migrar %s" % vm.name
+                print "Trying to migrate %s" % vm.name
               try:
-                vm.migrate()
+                migra(vm)
               except:
                 failed=0
           else:
@@ -177,6 +206,8 @@ for cluster in api.clusters.list():
     # start with bigger set of tag
     for host in hosts_in_cluster:
       free_ram=api.hosts.get(id=host).statistics.get("memory.free").values.value[0].datum
+      if options.verbosity > 5:
+        print "Processing host %s" % api.hosts.get(id=host).name
       for vm in vms_to_process:
         if api.vms.get(name=vm).os.type_ == etiqueta:
           maquina=api.vms.get(name=vm)
@@ -186,7 +217,7 @@ for cluster in api.clusters.list():
                 # We've free space, move in there...
                 if options.verbosity > 2:
                   print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name,maquina.name)
-                maquina.migrate(params.Action(host=api.hosts.get(id=host)))
+                migra(maquina,params.Action(host=api.hosts.get(id=host)))
                 free_ram = free_ram - maquina.statistics.get("memory.used").values.value[0].datum
               else:
                 if options.verbosity > 2:              
