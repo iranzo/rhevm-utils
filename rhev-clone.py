@@ -39,25 +39,25 @@ from ovirtsdk.xml import params
 from random import choice
 
 
-description="""
+description = """
 RHEV-clone is a script for creating clones based from a template
 
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-clone.py [arguments]",description=description)
-p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
-p.add_option("-n", "--name", dest="name",help="VM name", metavar="name",default="name")
-p.add_option("-c", "--cluster", dest="cluster",help="VM cluster", metavar="cluster",default="cluster")
-p.add_option("-t", "--template", dest="template",help="VM template", metavar="template",default="template")
+p = optparse.OptionParser("rhev-clone.py [arguments]", description=description)
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option("-n", "--name", dest="name", help="VM name", metavar="name", default="name")
+p.add_option("-c", "--cluster", dest="cluster", help="VM cluster", metavar="cluster", default="cluster")
+p.add_option("-t", "--template", dest="template", help="VM template", metavar="template", default="template")
 
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (options.server,options.port)
+baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
@@ -68,11 +68,11 @@ api = API(url=baseurl, username=options.username, password=options.password)
 
 
 NEW_VM_NAME = options.name
-CLUSTER_NAME= options.cluster
-TEMPLATE_NAME= options.template
+CLUSTER_NAME = options.cluster
+TEMPLATE_NAME = options.template
   
 try:
- api.vms.add(params.VM(name=NEW_VM_NAME, memory=268435456,cluster=api.clusters.get(CLUSTER_NAME), template=api.templates.get(TEMPLATE_NAME)) )
+ api.vms.add(params.VM(name=NEW_VM_NAME, memory=268435456, cluster=api.clusters.get(CLUSTER_NAME), template=api.templates.get(TEMPLATE_NAME)))
  print 'VM was created from Template successfully'
  
  print 'Waiting for VM to reach Down status'

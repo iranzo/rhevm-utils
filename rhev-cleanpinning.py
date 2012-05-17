@@ -26,7 +26,7 @@ from ovirtsdk.api import API
 from ovirtsdk.xml import params
 from random import choice
 
-description="""
+description = """
 RHEV-VMs is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
 
 It's goal is to keep some VM's <-> host  rules to avoid having two cluster (RHCS)
@@ -35,16 +35,16 @@ nodes at the same physical host.
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-cleanpinning.py [arguments]",description=description)
-p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
+p = optparse.OptionParser("rhev-cleanpinning.py [arguments]", description=description)
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
 
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (options.server,options.port)
+baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
@@ -52,7 +52,7 @@ for vm in api.vms.list():
   if vm.tags.get("elas_manage"):
     for tag in vm.tags.list():
       if tag.name[0:8] == "cluster_":
-        vm.placement_policy.affinity="migratable"
-        vm.placement_policy.host=params.Host()
+        vm.placement_policy.affinity = "migratable"
+        vm.placement_policy.host = params.Host()
         vm.update()
   print "VM %s pinning removed" % vm.name

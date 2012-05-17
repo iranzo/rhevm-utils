@@ -26,53 +26,53 @@ from ovirtsdk.api import API
 from ovirtsdk.xml import params
 from random import choice
 
-description="""
+description = """
 RHEV-vlan is a script for creating via API new VLAN's in RHEV and attach it to DC/Cluster/hosts.
 
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-vlan.py [arguments]",description=description)
-p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
-p.add_option('-d', "--datacenter", dest="datacenter",help="datacenter to create the vlan at", metavar='datacenter')
-p.add_option('-l', "--vlan", dest="vlan",help="VLAN ID", metavar='vlan')
-p.add_option('-n', "--vlanname", dest="vlanname",help="VLANname", metavar='vlanname')
-p.add_option('-c', "--cluster", dest="cluster",help="Cluster to attach to", metavar='cluster')
-p.add_option('-b', "--bond", dest="bond",help="Bond to create under", metavar='bond',default="bond0")
+p = optparse.OptionParser("rhev-vlan.py [arguments]", description=description)
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-d', "--datacenter", dest="datacenter", help="datacenter to create the vlan at", metavar='datacenter')
+p.add_option('-l', "--vlan", dest="vlan", help="VLAN ID", metavar='vlan')
+p.add_option('-n', "--vlanname", dest="vlanname", help="VLANname", metavar='vlanname')
+p.add_option('-c', "--cluster", dest="cluster", help="Cluster to attach to", metavar='cluster')
+p.add_option('-b', "--bond", dest="bond", help="Bond to create under", metavar='bond', default="bond0")
 
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (options.server,options.port)
+baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
-dc=options.datacenter
-vlan=options.vlan
+dc = options.datacenter
+vlan = options.vlan
 
 if not options.vlanname:
-  vlanname="VLAN_%s" % vlan
+  vlanname = "VLAN_%s" % vlan
 else:
-  vlanname=options.vlanname
+  vlanname = options.vlanname
 
-datacenter=api.datacenters.get(name=dc)
-description="Network for %s %s" % (vlanname,vlan)
-nueva=params.Network(name=vlanname, data_center=datacenter,vlan=params.VLAN(id=vlan),description=description)
-nueva.vlan_id=int(vlan)
+datacenter = api.datacenters.get(name=dc)
+description = "Network for %s %s" % (vlanname, vlan)
+nueva = params.Network(name=vlanname, data_center=datacenter, vlan=params.VLAN(id=vlan), description=description)
+nueva.vlan_id = int(vlan)
 
 try:
-  red=api.networks.add(nueva)
+  red = api.networks.add(nueva)
 except:
-  print "ERROR creating VLAN %s with ID %s" % (vlanname,vlan)
-  red=api.networks.get(name=vlanname)
+  print "ERROR creating VLAN %s with ID %s" % (vlanname, vlan)
+  red = api.networks.get(name=vlanname)
 
 if options.cluster:
   if options.verbosity > 4:
     print "Attaching network to cluster"
-  cluster=api.clusters.get(name=options.cluster)
+  cluster = api.clusters.get(name=options.cluster)
   try:
     cluster.networks.add(red)
   except:
@@ -80,11 +80,11 @@ if options.cluster:
       print "Network already attached to cluster"
     
   for host in api.hosts.list():
-    if host.cluster.id==cluster.id:
+    if host.cluster.id == cluster.id:
       if options.verbosity > 4:    
         print "Host is in cluster"
-      accion=params.Action(network=params.Network(name=red.name))
-      tarjeta=host.nics.get(name=options.bond)
+      accion = params.Action(network=params.Network(name=red.name))
+      tarjeta = host.nics.get(name=options.bond)
       try:
         tarjeta.attach(accion)
         host.commitnetconfig()

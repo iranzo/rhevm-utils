@@ -41,7 +41,7 @@ from ovirtsdk.xml import params
 from random import choice
 
 
-description="""
+description = """
 RHEV-Poweron is a script for managing via API the hypervisors under RHEV command, both RHEV-H and RHEL hosts.
 
 It's goal is to activate the provided number of hosts per execution.
@@ -49,19 +49,19 @@ It's goal is to activate the provided number of hosts per execution.
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-poweron.py [arguments]",description=description)
-p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
-p.add_option("-a", "--action", dest="action",help="Power action to execute", metavar="action",default="pm-suspend")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
-p.add_option('-b', "--batch", dest="batch",help="Batch number of hosts to return from maintenance", metavar='[0-n]', default=5,type='int')
+p = optparse.OptionParser("rhev-poweron.py [arguments]", description=description)
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option("-a", "--action", dest="action", help="Power action to execute", metavar="action", default="pm-suspend")
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-b', "--batch", dest="batch", help="Batch number of hosts to return from maintenance", metavar='[0-n]', default=5, type='int')
 
 
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (options.server,options.port)
+baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
@@ -86,12 +86,12 @@ def activate_host(target):
 
   #Get Host MAC
   for nic in api.hosts.get(id=target).nics.list():
-    mac=nic.mac.get_address()
+    mac = nic.mac.get_address()
     # By default, send wol using every single nic at RHEVM host
     if mac != "":
-      comando="for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" %mac
+      comando = "for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" % mac
       if options.verbosity >= 1:
-        print "Sending %s the power on action via %s" % (target,mac)
+        print "Sending %s the power on action via %s" % (target, mac)
       os.system(comando)
 
   return  
@@ -101,7 +101,7 @@ def activate_host(target):
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
 
-enablable=[]
+enablable = []
 for host in api.hosts.list():
   if host.status.state == "maintenance":
     if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
@@ -110,15 +110,15 @@ for host in api.hosts.list():
           print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
         enablable.append(host.id)   
 
-number=0
+number = 0
 
 while number < options.batch:
-  number=number+1
-  victima=None
+  number = number + 1
+  victima = None
   try:
-    victima=choice(enablable)
+    victima = choice(enablable)
     enablable.remove(victima)
-    if options.verbosity >3:
+    if options.verbosity > 3:
       print "Enabling host %s" % victima
     activate_host(victima)
   except:

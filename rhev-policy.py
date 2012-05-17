@@ -26,25 +26,25 @@ from ovirtsdk.xml import params
 from random import choice
 
 
-description="""
+description = """
 RHEV-policy is a script for managing via API cluster policy
 
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-policy.py [arguments]",description=description)
-p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
-p.add_option("--policy", dest="policy",help="Set destination polciy", metavar='policy', default="power_saving")
-p.add_option('-c', "--cluster", dest="cluster",help="Select cluster name to process", metavar='cluster', default=None)
+p = optparse.OptionParser("rhev-policy.py [arguments]", description=description)
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option("--policy", dest="policy", help="Set destination polciy", metavar='policy', default="power_saving")
+p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 
 
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (options.server,options.port)
+baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
@@ -52,11 +52,11 @@ api = API(url=baseurl, username=options.username, password=options.password)
 
 def process_cluster(clusid):
   if options.verbosity > 1:
-    print "\nProcessing cluster with id %s and name %s" % (clusid,api.clusters.get(id=clusid).name)
+    print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
     print "#############################################################################"
     
-    cluster=api.clusters.get(id=clusid)
-    cluster.scheduling_policy.policy=options.policy
+    cluster = api.clusters.get(id=clusid)
+    cluster.scheduling_policy.policy = options.policy
     cluster.update()
     
     #evenly_distributed

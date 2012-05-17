@@ -37,7 +37,7 @@ from ovirtsdk.api import API
 from ovirtsdk.xml import params
 from random import choice
 
-description="""
+description = """
 RHEV-VMs is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
 
 It's goal is to keep some VM's <-> host  rules to avoid having two cluster (RHCS)
@@ -46,18 +46,18 @@ nodes at the same physical host.
 """
 
 # Option parsing
-p = optparse.OptionParser("rhev-vm-cluster.py [arguments]",description=description)
-p.add_option("-u", "--user", dest="username",help="Username to connect to RHEVM API", metavar="admin@internal",default="admin@internal")
-p.add_option("-w", "--password", dest="password",help="Password to use with username", metavar="admin",default="admin")
-p.add_option("-s", "--server", dest="server",help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",default="127.0.0.1")
-p.add_option("-p", "--port", dest="port",help="API port to contact", metavar="8443",default="8443")
-p.add_option('-v', "--verbosity", dest="verbosity",help="Show messages while running", metavar='[0-n]', default=0,type='int')
-p.add_option('-t', "--tagall", dest="tagall",help="Tag all hosts with elas_manage", metavar='0/1', default=0,type='int')
-p.add_option('-c', "--cluster", dest="cluster",help="Select cluster name to process", metavar='cluster', default=None)
+p = optparse.OptionParser("rhev-vm-cluster.py [arguments]", description=description)
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-t', "--tagall", dest="tagall", help="Tag all hosts with elas_manage", metavar='0/1', default=0, type='int')
+p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 
 (options, args) = p.parse_args()
 
-baseurl="https://%s:%s" % (options.server,options.port)
+baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password)
 
@@ -70,18 +70,18 @@ def check_tags():
     print "Looking for tags prior to start..."
 
   if not api.tags.get(name="elas_manage"):
-    if options.verbosity >=2:
+    if options.verbosity >= 2:
       print "Creating tag elas_manage..."    
     api.tags.add(params.Tag(name="elas_manage"))
     
   if not api.tags.get(name="elas_start"):
-    if options.verbosity >=2:
+    if options.verbosity >= 2:
       print "Creating tag elas_start..."    
     api.tags.add(params.Tag(name="elas_start"))
 
   return  
   
-def migra(vm,action=None):
+def migra(vm, action=None):
   if not host:
     try:
       vm.migrate()
@@ -95,32 +95,32 @@ def migra(vm,action=None):
       if options.verbosity > 4:
         print "Problem migrating fixed %s" % vm.name
 
-  loop=True
-  counter=0
+  loop = True
+  counter = 0
   while loop:
     if vm.status.state == "up":
-      loop=False
+      loop = False
     if options.verbosity > 8:
       print "VM migration loop %s" % counter
     time.sleep(10)
-    counter=counter+1
+    counter = counter + 1
     
     if counter > 12:
-      loop=False
+      loop = False
 
   return
   
 def process_cluster(cluster):
   # Emtpy vars for further processing
-  hosts_in_cluster= []
-  vms_in_cluster=[]
-  tags_in_cluster=[]
-  tags_vm={}
-  tags_with_more_than_one=[]
+  hosts_in_cluster = []
+  vms_in_cluster = []
+  tags_in_cluster = []
+  tags_vm = {}
+  tags_with_more_than_one = []
   
   # Get host list from this cluster
   for host in api.hosts.list():
-    if host.cluster.id==cluster.id:
+    if host.cluster.id == cluster.id:
       if host.status.state == "up":
         hosts_in_cluster.append(host.id)
         
@@ -130,11 +130,11 @@ def process_cluster(cluster):
   
   #Create the empty set of vars that we'll populate later
   for tag in api.tags.list():
-    tags_vm[tag.name]=[]
+    tags_vm[tag.name] = []
   
   #Populate the list of tags and VM's
   for vm in api.vms.list():
-    if vm.cluster.id==cluster.id:
+    if vm.cluster.id == cluster.id:
       if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
           if options.verbosity > 3:
@@ -145,7 +145,7 @@ def process_cluster(cluster):
           for tag in vm.tags.list():
             if tag.name[0:8] == "cluster_":
               if options.verbosity > 3:
-                print "VM %s in cluster %s has tag %s" % (vm.name,cluster.name,tag.name)
+                print "VM %s in cluster %s has tag %s" % (vm.name, cluster.name, tag.name)
               # Put the TAG in the list of used for this cluster and put the VM to the ones with this tag
               tags_in_cluster.append(tag.id)
               tags_vm[tag.name].append(vm.name)
@@ -160,7 +160,7 @@ def process_cluster(cluster):
     print "\nTAGS/VM organization: %s" % tags_vm
     print "TAGS with more than one vm: %s" % tags_with_more_than_one
     
-  tags_to_manage=[]
+  tags_to_manage = []
   
   for etiqueta in tags_with_more_than_one:
     if len(tags_vm[etiqueta]) > len(hosts_in_cluster):
@@ -168,7 +168,7 @@ def process_cluster(cluster):
         print "\nMore VM's with tag than available hosts for tag %s, will do as much as I can..." % etiqueta
     else:
       if options.verbosity > 3:
-        print "\nContinuing for tag %s"  % etiqueta
+        print "\nContinuing for tag %s" % etiqueta
     if etiqueta[0:8] == "cluster_":
       tags_to_manage.append(etiqueta)
     
@@ -188,15 +188,15 @@ def process_cluster(cluster):
       
       
   for etiqueta in tags_to_manage:
-    tags_vm_used=set([])
+    tags_vm_used = set([])
     if options.verbosity > 3:
       print "Managing tag %s" % etiqueta
     for vm in tags_vm[etiqueta]:
       if options.verbosity > 4:
-        print "Processing vm %s for tag %s at host %s" % (vm,etiqueta,api.hosts.get(id=api.vms.get(name=vm).host.id).name)
+        print "Processing vm %s for tag %s at host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name)
 
       #Set target as actual running host
-      target=api.vms.get(name=vm).host.id
+      target = api.vms.get(name=vm).host.id
 
       if api.vms.get(name=vm).host.id not in tags_vm_used:
         #Host not yet used, accept it directly
@@ -211,31 +211,31 @@ def process_cluster(cluster):
             if options.verbosity > 4:
               print "Host %s not used, migrating there" % host
             # Setting new host
-            target=host
+            target = host
         
-      nombre=api.hosts.get(id=target).name
+      nombre = api.hosts.get(id=target).name
       
 
       # Only migrate if VM if there's host change
-      maquina=api.vms.get(name=vm)
+      maquina = api.vms.get(name=vm)
       
       if maquina.host.id != target:
         if options.verbosity > 3:
-          print "Processing vm %s for tag %s at host %s needs migration to host %s" % (vm,etiqueta,api.hosts.get(id=api.vms.get(name=vm).host.id).name,nombre)
+          print "Processing vm %s for tag %s at host %s needs migration to host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name, nombre)
         # Allow migration
-        maquina.placement_policy.host=params.Host()
-        maquina.placement_policy.affinity="migratable"
+        maquina.placement_policy.host = params.Host()
+        maquina.placement_policy.affinity = "migratable"
         maquina.update()
             
         #Migrate VM to target HOST to satisfy rules
-        migra(api.vms.get(name=vm),params.Action(id=target))
+        migra(api.vms.get(name=vm), params.Action(id=target))
       else:
         if options.verbosity > 4:
           print "Skipping migration target=host"
 
       # Discard further migration of any machine
-      maquina.placement_policy.affinity="pinned"
-      maquina.placement_policy.host=api.hosts.get(id=target)
+      maquina.placement_policy.affinity = "pinned"
+      maquina.placement_policy.host = api.hosts.get(id=target)
       maquina.update()
 
 
@@ -247,7 +247,7 @@ check_tags()
 # TAGALL?
 #Add elas_maint TAG to every single vm to automate the management
 if options.tagall == 1:
-  if options.verbosity >=1:
+  if options.verbosity >= 1:
     print "Tagging all VM's with elas_manage"
   for vm in api.vms.list():
     try:
@@ -263,15 +263,15 @@ for vm in api.vms.list():
       if vm.tags.get("elas_manage"):
         for tag in vm.tags.list():
           if tag.name[0:8] == "cluster_":
-            if options.verbosity >=5:
+            if options.verbosity >= 5:
               print "Cleaning VM %s pinning to allow to start on any host" % vm.name
             # If powered down, allow machine to be migratable so it can start on any host
-            maquina=vm
-            maquina.placement_policy.host=params.Host()
-            maquina.placement_policy.affinity="migratable"
+            maquina = vm
+            maquina.placement_policy.host = params.Host()
+            maquina.placement_policy.affinity = "migratable"
             maquina.update()
       if vm.tags.get("elas_start"):
-        if options.verbosity >=5:
+        if options.verbosity >= 5:
           print "VM %s should be running, starting..." % vm.name
         # Start machine, as if it had host pinning it couldn't be autostarted using HA
         vm.start()
