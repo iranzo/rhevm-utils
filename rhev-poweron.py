@@ -57,6 +57,7 @@ p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8
 p.add_option("-a", "--action", dest="action", help="Power action to execute", metavar="action", default="pm-suspend")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
 p.add_option('-b', "--batch", dest="batch", help="Batch number of hosts to return from maintenance", metavar='[0-n]', default=5, type='int')
+p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 
 
 (options, args) = p.parse_args()
@@ -96,31 +97,38 @@ def activate_host(target):
 
   return  
 
+  def process_cluster(clusid):
+    enablable = []
+    for host in api.hosts.list():
+      if host.status.state == "maintenance":
+        if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
+          if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
+            if options.verbosity >= 1:
+              print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
+            enablable.append(host.id)   
+
+    number = 0
+
+    while number < options.batch:
+      number = number + 1
+      victima = None
+      try:
+        victima = choice(enablable)
+        enablable.remove(victima)
+        if options.verbosity > 3:
+          print "Enabling host %s" % victima
+        activate_host(victima)
+      except:
+        if options.verbosity > 4:
+          print "No more hosts to enable"
 
 ################################ MAIN PROGRAM ############################
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
 
-enablable = []
-for host in api.hosts.list():
-  if host.status.state == "maintenance":
-    if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
-      if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
-        if options.verbosity >= 1:
-          print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
-        enablable.append(host.id)   
-
-number = 0
-
-while number < options.batch:
-  number = number + 1
-  victima = None
-  try:
-    victima = choice(enablable)
-    enablable.remove(victima)
-    if options.verbosity > 3:
-      print "Enabling host %s" % victima
-    activate_host(victima)
-  except:
-    if options.verbosity > 4:
-      print "No more hosts to enable"
+if not options.cluster:
+  # Processing each cluster of our RHEVM
+  for cluster in api.clusters.list():
+    process_cluster(cluster)
+else:
+  process_cluster(api.clusters.get(name=options.cluster))
