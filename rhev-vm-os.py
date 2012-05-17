@@ -212,7 +212,9 @@ def process_cluster(cluster):
               else:
                 if options.verbosity > 5:
                   print "VM can be processed (not already in processed hosts)"
-                if api.hosts.get(id=host).statistics.get("memory.free").values.value[0].datum > maquina.statistics.get("memory.installed").values.value[0].datum:
+
+                host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum                  
+                if host_free > maquina.statistics.get("memory.installed").values.value[0].datum:
                   # We've free space, move in there...
                   if options.verbosity > 2:
                     print "Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name,maquina.name)
@@ -244,7 +246,8 @@ def process_cluster(cluster):
                     print "VM's to excomulgate: %s\n" % vms_to_excomulgate
                   
                   fits_in_ram=False
-                  mem_to_free=0
+                  host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum                  
+                  mem_to_free=host_free
                   for virtual in vms_to_excomulgate:
                     mem_to_free=mem_to_free+api.vms.get(name=virtual).statistics.get("memory.installed").values.value[0].datum
                     if mem_to_free >= maquina.statistics.get("memory.installed").values.value[0].datum:
@@ -252,6 +255,7 @@ def process_cluster(cluster):
                       
                   if options.verbosity > 6:    
                     print "Mem that will be freed by excomulgating hosts %s" %  mem_to_free
+                    print "Mem required for VM %s" % maquina.statistics.get("memory.installed").values.value[0].datum
                   
                   if fits_in_ram:
                     keeplooping=True
@@ -265,7 +269,7 @@ def process_cluster(cluster):
                       # We've one machine to excomulgate so let's do it
                       if not victima:
                         victima=virtual
-                      if api.vms.get(name=virtual).statistics.get("memory.installed").values.value[0].datum > api.vms.get(name=victima).statistics.get("memory.installed").values.value[0].datum:
+                      if api.vms.get(name=virtual).statistics.get("memory.used").values.value[0].datum > api.vms.get(name=victima).statistics.get("memory.used").values.value[0].datum:
                         victima=virtual
                   
                     # Machine with higher ram usage has been selected, move it away to make room for the next one to enter
@@ -274,8 +278,9 @@ def process_cluster(cluster):
                         print "Target machine to migration is %s" % victima
                       vms_to_excomulgate.remove(victima)
                       migra(api.vms.get(name=victima))
-                    
-                    if api.hosts.get(id=host).statistics.get("memory.free").values.value[0].datum > maquina.statistics.get("memory.installed").values.value[0].datum:
+
+                    host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                    if host_free > maquina.statistics.get("memory.used").values.value[0].datum:
                       # Enough RAM, exit loop to start moving in a new machine, if not, keep running to make more room
                       keeplooping=False
 
@@ -290,7 +295,13 @@ def process_cluster(cluster):
                   # Check new ram status    
                   
                   # MV moved away, recheck ram to make it fit
-                  if api.hosts.get(id=host).statistics.get("memory.free").values.value[0].datum > maquina.statistics.get("memory.installed").values.value[0].datum:
+                  if options.verbosity > 5:
+                    host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                    print "Host free RAM %s" % host_free
+                    print "VM required RAM %s" % maquina.statistics.get("memory.used").values.value[0].datum
+
+                  host_free=api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum-api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum                  
+                  if host_free > maquina.statistics.get("memory.used").values.value[0].datum:
                     migra(maquina,params.Action(host=api.hosts.get(id=host)))                  
                   else:
                     if options.verbosity > 2:              
