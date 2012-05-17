@@ -52,9 +52,7 @@ for vm in api.vms.list():
   if vm.tags.get("elas_manage"):
     for tag in vm.tags.list():
       if tag.name[0:8] == "cluster_":
-        nombre=vm.name
-        maquina=vm
-        maquina.placement_policy.affinity="migratable"
-        maquina.placement_policy.host=params.Host()
-        maquina.update()
-  print "VM %s pinning removed" % nombre
+        vm.placement_policy.affinity="migratable"
+        vm.placement_policy.host=params.Host()
+        vm.update()
+  print "VM %s pinning removed" % vm.name
