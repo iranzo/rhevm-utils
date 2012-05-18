@@ -103,7 +103,7 @@ def migra(vm, action=None):
 
 def vmused(vm):
   # Get memory usage from agent
-  used = vm.get("memory.used").values.value[0].datum
+  used = vm.statistics.get("memory.used").values.value[0].datum
   if  used == 0:
     #If no value received, return installed memory
     used = vm.statistics.get("memory.installed").values.value[0].datum
