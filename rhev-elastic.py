@@ -111,7 +111,7 @@ def deactivate_host(target):
   if host.status.state == "maintenance":
     #Execute power action
     ## /etc/pki/rhevm/keys/rhevm_id_rsa
-    comando = "/usr/bin/ssh -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (ip, options.action)
+    comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (ip, options.action)
     if options.verbosity >= 1:
       print "Sending %s the power action %s" % (host, options.action)
     os.system(comando)
