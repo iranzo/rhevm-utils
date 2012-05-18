@@ -29,6 +29,10 @@ from random import choice
 description = """
 RHEV-policy is a script for managing via API cluster policy
 
+Actual policy is:
+- power_saving
+- evenly_distributed
+
 """
 
 # Option parsing
@@ -38,7 +42,7 @@ p.add_option("-w", "--password", dest="password", help="Password to use with use
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
-p.add_option("--policy", dest="policy", help="Set destination polciy", metavar='policy', default="power_saving")
+p.add_option("--policy", dest="policy", help="Set destination policy", metavar='policy', default="power_saving")
 p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 
 
@@ -55,12 +59,16 @@ def process_cluster(clusid):
     print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
     print "#############################################################################"
     
-    cluster = api.clusters.get(id=clusid)
-    cluster.scheduling_policy.policy = options.policy
+  cluster = api.clusters.get(id=clusid)
+  cluster.scheduling_policy.policy = options.policy
+  try:
     cluster.update()
+  except:
+    if options.verbosity > 2:
+      print "Problem updating policy"
     
-    #evenly_distributed
-    #power_saving
+  #evenly_distributed
+  #power_saving
 
 
 ################################ MAIN PROGRAM ############################
