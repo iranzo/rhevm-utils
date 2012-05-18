@@ -280,6 +280,6 @@ for vm in api.vms.list():
 if not options.cluster:
   # Processing each cluster of our RHEVM
   for cluster in api.clusters.list():
-    process_cluster(cluster.id)
+    process_cluster(cluster)
 else:
-  process_cluster(api.clusters.get(name=options.cluster).id)
+  process_cluster(api.clusters.get(name=options.cluster))
