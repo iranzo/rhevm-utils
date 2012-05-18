@@ -106,14 +106,29 @@ def deactivate_host(target):
   ip = host.address  
 
   #Should wait until host state is 'maintenance'
-  time.sleep(30)
+
+  i = 0
+  while i < 30:
+    if api.hosts.get(id=target).status.state == "maintenance":
+      if options.verbosity > 6:
+        print "Host is now on maintenance..."
+      i=30
+    else:
+      if options.verbosity > 6:
+        print "Host still not on maintenance... sleeping"
+      time.sleep(2)
+    i=i+1
   
-  if host.status.state == "maintenance":
+  if api.hosts.get(id=target).status.state == "maintenance":
     #Execute power action
     ## /etc/pki/rhevm/keys/rhevm_id_rsa
-    comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (ip, options.action)
     if options.verbosity >= 1:
       print "Sending %s the power action %s" % (host, options.action)
+
+    comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (ip, options.action)
+
+    os.system(comando)
+    os.system(comando)
     os.system(comando)
 
   return
