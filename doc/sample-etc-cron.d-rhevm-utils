@@ -1,0 +1,35 @@
+PATH=/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:$PATH
+
+# Sample cron planning to manage the IT infrastructure in a greener way
+
+# backup RHEV DB every 8 hours
+* */8 * * * root sh /root/rhevm-utils/extra/backup.sh
+
+
+
+### PEAK HOURS
+
+# Power on all hosts in maintenance before peak hours in batchs of 5 hosts to avoid power outages
+*/5 7-9 * * * root  python /root/extra/rhevm-utils/rhev-poweron.py -w redhat
+
+# switch cluster policy to evenly distributed during peak hours
+*/30 8-20 * * * root python /root/extra/rhevm-utils/rhev-policy.py -w redhat --policy=evenly_distributed
+
+# Ungroup machines with the same cluster_**** TAG applied to them
+*/15 * * * * root python /root/extra/rhevm-utils/rhev-vm-cluster.py -w redhat -t1
+
+# Group machines with the same O.S. Every 30 minutes
+*/30 * * * * root python /root/extra/rhevm-utils/rhev-vm-os.py -w redhat -t1
+
+
+
+### OFF PEAK HOURS
+
+# switch cluster policy to power saving during off-peak hours
+*/30 20-8 * * * root python /root/extra/rhevm-utils/rhev-policy.py -w redhat --policy=power_saving
+
+# Remove VM's pinning to allow consolidation
+*/30 20-8 * * * root python /root/extra/rhevm-utils/rhev-cleanpinning.py -w redhat
+
+# Power off unused RHEV-H hosts and power on them if needed during off-peak
+*/15 20-8 * * * root python /root/extra/rhevm-utils/rhev-elastic.py -w redhat  -a "init 0" -t1 
