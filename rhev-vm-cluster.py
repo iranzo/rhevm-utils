@@ -125,7 +125,7 @@ def process_cluster(cluster):
         hosts_in_cluster.append(host.id)
         
   if options.verbosity > 2:
-    print "\nProcesando cluster %s..." % cluster.name
+    print "\nProcessing cluster %s..." % cluster.name
     print "##############################################"
   
   #Create the empty set of vars that we'll populate later
@@ -236,7 +236,11 @@ def process_cluster(cluster):
       # Discard further migration of any machine
       maquina.placement_policy.affinity = "pinned"
       maquina.placement_policy.host = api.hosts.get(id=target)
-      maquina.update()
+      try:
+        maquina.update()
+      except:
+        if options.verbosity > 4:
+          print "Problem updating VM parameters for pinning"
 
 
   
