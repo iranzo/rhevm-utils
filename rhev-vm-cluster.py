@@ -82,7 +82,7 @@ def check_tags():
   return  
   
 def migra(vm, action=None):
-  if not host:
+  if not action:
     try:
       vm.migrate()
     except:
