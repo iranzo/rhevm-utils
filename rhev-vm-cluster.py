@@ -212,6 +212,7 @@ def process_cluster(cluster):
               print "Host %s not used, migrating there" % host
             # Setting new host
             target = host
+
         
       nombre = api.hosts.get(id=target).name
       
@@ -228,7 +229,8 @@ def process_cluster(cluster):
         maquina.update()
             
         #Migrate VM to target HOST to satisfy rules
-        migra(api.vms.get(name=vm), params.Action(id=target))
+        migra(api.vms.get(name=vm), params.Action(host=api.hosts.get(id=target)))
+        tags_vm_used.add(target)        
       else:
         if options.verbosity > 4:
           print "Skipping migration target=host"
