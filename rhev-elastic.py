@@ -112,12 +112,12 @@ def deactivate_host(target):
     if api.hosts.get(id=target).status.state == "maintenance":
       if options.verbosity > 6:
         print "Host is now on maintenance..."
-      i=30
+      i = 30
     else:
       if options.verbosity > 6:
         print "Host still not on maintenance... sleeping"
       time.sleep(2)
-    i=i+1
+    i = i + 1
   
   if api.hosts.get(id=target).status.state == "maintenance":
     #Execute power action

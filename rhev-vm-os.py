@@ -178,14 +178,14 @@ def process_cluster(cluster):
 
   # Order the tags based on VM ordering (using the other function  "list(set(sorted_tag))" made it fail as ordering changed)
   ordered_tags = []
-  i=0
+  i = 0
   while i < len(sorted_tag):
-    tag=sorted_tag[i]
+    tag = sorted_tag[i]
     if tag not in ordered_tags:
       ordered_tags.append(tag)
-    i=i+1
+    i = i + 1
   
-  sorted_tag=ordered_tags
+  sorted_tag = ordered_tags
 
 
   i = 0
