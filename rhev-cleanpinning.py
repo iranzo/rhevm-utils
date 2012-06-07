@@ -55,10 +55,12 @@ def process_cluster(clusid):
       if vm.tags.get("elas_manage"):
         for tag in vm.tags.list():
           if tag.name[0:8] == "cluster_":
+            if vm.placement_policy.affinity != "migratable":
+              if options.verbosity > 1:
+                 print "VM %s pinning removed" % vm.name
             vm.placement_policy.affinity = "migratable"
             vm.placement_policy.host = params.Host()
             vm.update()
-            print "VM %s pinning removed" % vm.name
   return
 
 
