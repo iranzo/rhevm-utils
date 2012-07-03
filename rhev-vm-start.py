@@ -2,8 +2,8 @@
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
-# Description: Script for VM's grouping/ungrouping using ovirt-engine-sdk
-# api based on RHCS cluster_ tags on RHEV-M and elas_manage
+# Description: Script for starting VM'susing ovirt-engine-sdk
+# api based on single VM dependency
 #
 # Requires ovirt-engine-sdk to work
 #
@@ -17,8 +17,9 @@
 # GNU General Public License for more details.
 
 # Goals:
-# - Do not run vm's from a named cluster run on the same host (cluster_)
 # - Do not manage any VM without tag elas_manage
+# - reverse missing -> start VM specified
+# - reverse 1       -> start all VM's if VM specified is up and running
 
 # tags behaviour
 #	 elas_manage: manage this VM by host the elastic management script (EMS)
