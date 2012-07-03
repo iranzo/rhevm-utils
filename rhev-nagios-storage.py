@@ -27,7 +27,7 @@ from ovirtsdk.xml import params
 from random import choice
 
 description = """
-RHEV-nagios-host output  is a script for querying RHEVM via API to get host status
+RHEV-nagios-storage output  is a script for querying RHEVM via API to get host status
 
 It's goal is to output a table of host/vm status for simple monitoring via external utilities
 

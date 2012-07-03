@@ -27,7 +27,7 @@ from ovirtsdk.xml import params
 from random import choice
 
 description = """
-RHEV-VMs is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
+RHEV-cleanpinning is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
 
 It's goal is to keep some VM's <-> host  rules to avoid having two cluster (RHCS)
 nodes at the same physical host.
