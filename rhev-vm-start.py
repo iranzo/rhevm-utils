@@ -22,8 +22,7 @@
 # - reverse 1       -> start all VM's if VM specified is up and running
 
 # tags behaviour
-#	 elas_manage: manage this VM by host the elastic management script (EMS)
-#        elas_start : make this VM autostart if down
+#	 elas_manage: this machine is being managed by this script
 
 
 import sys
@@ -71,11 +70,6 @@ def check_tags():
     if options.verbosity >= 2:
       print "Creating tag elas_manage..."
     api.tags.add(params.Tag(name="elas_manage"))
-
-  if not api.tags.get(name="elas_start"):
-    if options.verbosity >= 2:
-      print "Creating tag elas_start..."
-    api.tags.add(params.Tag(name="elas_start"))
 
   return
 
@@ -130,6 +124,12 @@ def process_cluster(cluster):
     if vm.cluster.id == cluster.id:
       vms_in_cluster.append(vm.id)
 
+  for vm in api.vms.list():
+    if vm.cluster.id == cluster.id:
+      if vm.tags.get("elas_manage"):
+          # Add the VM Id to the list of VMS to manage in this cluster
+          vms_in_cluster.append(vm.id)      
+
   if options.verbosity > 3:
     print "Hosts in cluster:"
     print hosts_in_cluster
@@ -142,7 +142,12 @@ def process_cluster(cluster):
     maquina = api.vms.get(id=vm)
     largo = len(options.machine)
     if maquina.name.startswith(options.machine):
-      destino = maquina
+      if maquina.tags.get("elas_manage"):
+        destino = maquina
+      else:
+        if options.verbosity > 4:
+          print "Specified target machine has no elas_manage tag attached"
+        sys.exit(1)
 
   # Iterate for all the machines in our cluster and check behaviour based on reverse value
   for vm in vms_in_cluster:
@@ -166,18 +171,35 @@ def process_cluster(cluster):
         # Our target VM is not down, it's safe to start our machines up!
         for vm in vms_in_cluster:
           maquina = api.vms.get(id=vm)
-          if maquina.status.state != "up":
-            if maquina.id != destino.id:
-              try:
-                maquina.start()
-              except:
-                if options.verbosity > 3:
-                  print "Error starting %s" % maquina.name
+          if maquina.tags.get("elas_manage"):
+            if maquina.status.state != "up":
+              if maquina.id != destino.id:
+                try:
+                  maquina.start()
+                except:
+                  if options.verbosity > 3:
+                    print "Error starting %s" % maquina.name
+          else:
+            if options.verbosity > 4:
+              print "VM %s has no elas_manage tag associated" % maquina.name
       else:
         if options.verbosity > 3:
           print "Target machine is not up, not starting vm"
 
 ################################ MAIN PROGRAM ############################
+#Check if we have defined needed tags and create them if missing
+check_tags()
+
+# TAGALL?
+#Add elas_maint TAG to every single vm to automate the management
+if options.tagall == 1:
+  if options.verbosity >= 1:
+    print "Tagging all VM's with elas_manage"
+  for vm in api.vms.list():
+    try:
+      vm.tags.add(params.Tag(name="elas_manage"))
+    except:
+      print "Error adding elas_manage tag to vm %s" % vm.name
 
 if options.machine == "":
   print "Error machine name must be defined"
