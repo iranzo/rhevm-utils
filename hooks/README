@@ -1,0 +1,8 @@
+Some hooks from ovirt's gerrit repository used with RHEV and the scripts
+that deploy them to the correct location.
+
+
+Usage:
+
+[root@RHEV-M ~] deploy.sh HYPERVISOR-IP
+
