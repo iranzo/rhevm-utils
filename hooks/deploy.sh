@@ -29,7 +29,7 @@ do
 		cd $DIR/$folder
 		
 		echo "Deploying..."
-		sh despliega.sh "$1"
+		sh deploy.sh "$1"
 	fi
 	cd $DIR
 done
