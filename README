@@ -6,16 +6,19 @@ Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 
 Please, check individual README files for specific behaviour and description
 
-rhev-elastic:            Manage hosts and power them off if unused
-rhev-vm-cluster:         Use tags to migrate VM's away from each other (sort of anti-affinity)
-rhev-vlan:               Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
-rhev-cleanpinning.py:    Clean VM pinning to host
-rhev-policy.py:          Change clusters policy to the one provided
-rhev-vm-os.py:           Group VM's by O.S. on hosts
-rhev-nagios-host-cpu.py: Output host CPU % in nagios format
-rhev-nagios-host-mem.py: Output host Mem usage in nagios format
-rhev-nagios-host.py:     Output host status in nagios format
-rhev-nagios-table.py:    Output host status,CPU,mem and SD status and usage to a CSV file
-rhev-clone.py:           Create a clone VM based on a Template on a specified Cluster
-rhev-poweron.py:         Power on (remove maintenance) from all rhev_elastic hosts in maintenance in order to prepare for peak hours
-rhev-vm-start:		 Start VM specified or remaining VM's if specified is up
+rhev-elastic:            	Manage hosts and power them off if unused
+rhev-vm-cluster:         	Use tags to migrate VM's away from each other (sort of anti-affinity)
+rhev-vlan:               	Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
+rhev-cleanpinning.py:    	Clean VM pinning to host
+rhev-policy.py:          	Change clusters policy to the one provided
+rhev-vm-os.py:           	Group VM's by O.S. on hosts
+rhev-nagios-host-cpu.py: 	Output host CPU % in nagios format
+rhev-nagios-host-mem.py: 	Output host Mem usage in nagios format
+rhev-nagios-host.py:     	Output host status in nagios format
+rhev-nagios-table.py:    	Output host status,CPU,mem and SD status and usage to a CSV file
+rhev-nagios-table-cpu.py:    	Gather host status,CPU,mem and SD status and usage to a CSV file
+rhev-nagios-table-mem.py:    	Gather host status,CPU,mem and SD status and usage to a CSV file
+rhev-nagios-table-host.py:    	Gather host status,CPU,mem and SD status and usage to a CSV file
+rhev-clone.py:           	Create a clone VM based on a Template on a specified Cluster
+rhev-poweron.py:         	Power on (remove maintenance) from all rhev_elastic hosts in maintenance in order to prepare for peak hours
+rhev-vm-start:		 	Start VM specified or remaining VM's if specified is up

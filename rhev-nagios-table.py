@@ -59,7 +59,7 @@ except:
   sys.exit(1)
 
 
-f.write("TYPE;HOST;STATE;CPU;MEM\n")
+f.write("TYPE;HOST;STATE;CPU;MEM;\n")
 
 
 
@@ -69,7 +69,7 @@ for host in api.hosts.list():
   usage = (100 - host.statistics.get(name="cpu.current.idle").values.value[0].datum)
   percentage = int(100 * memory / memtotal)
 
-  # Patch exit status based on elas_maint    
+  # Patch exit status based on elas_maint
   if host.status.state != "up":
     status = "unknown"
     if host.tags.get("elas_maint"):
@@ -79,7 +79,7 @@ for host in api.hosts.list():
   else:
     status = host.status.state
 
-  fullstatus = "host;%s;%s;%s;%s\n" % (host.name,status, percentage,usage)
+  fullstatus = "host;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage)
   f.write(fullstatus)
 
 
@@ -93,16 +93,16 @@ for sd in api.storagedomains.list():
     memtotal = sd.available
   except:
     memtotal = 0
-    
+
   try:
     percentage = int(100 * memory / memtotal)
   except:
     percentage = 0
-  
-  fullstatus= "SD;%s;%s\n" % (sd.name,percentage)
+
+  fullstatus = "SD;%s;%s;\n" % (sd.name, percentage)
   f.write(fullstatus)
-  
+
 
 f.close()
 sys.exit(0)
-  
+
