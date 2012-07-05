@@ -59,7 +59,7 @@ except:
   sys.exit(1)
 
 
-f.write("TYPE;HOST;STATE;CPU;MEM;\n")
+f.write("TYPE;HOST;STATE;CPU;MEM;VMS\n")
 
 
 
@@ -68,6 +68,7 @@ for host in api.hosts.list():
   memtotal = host.statistics.get(name="memory.total").values.value[0].datum
   usage = (100 - host.statistics.get(name="cpu.current.idle").values.value[0].datum)
   percentage = int(100 * memory / memtotal)
+  vms=host.summary.total
 
   # Patch exit status based on elas_maint
   if host.status.state != "up":
@@ -79,7 +80,7 @@ for host in api.hosts.list():
   else:
     status = host.status.state
 
-  fullstatus = "host;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage)
+  fullstatus = "host;%s;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage,vms)
   f.write(fullstatus)
 
 
