@@ -59,7 +59,7 @@ except:
   sys.exit(1)
 
 
-f.write("TYPE;HOST;STATE;CPU;MEM;VMS\n")
+f.write("TYPE;HOST;STATE;CPU;MEM;VMS;MEMUSED;\n")
 
 
 
@@ -80,7 +80,7 @@ for host in api.hosts.list():
   else:
     status = host.status.state
 
-  fullstatus = "host;%s;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage,vms)
+  fullstatus = "host;%s;%s;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage,vms,memory)
   f.write(fullstatus)
 
 
