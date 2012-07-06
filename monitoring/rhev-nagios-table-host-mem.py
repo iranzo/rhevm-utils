@@ -72,7 +72,7 @@ except:
 for line in f:
   if line.split(";")[0] == "host":
     if line.split(";")[1] == options.host:
-      usage = line.split(";")[4]
+      usage = int(line.split(";")[4])
       retorno = 3
       if usage >= 90:
         retorno = 1

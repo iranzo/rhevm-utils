@@ -72,8 +72,8 @@ except:
 
 for line in f:
   if line.split(";")[0] == "SD":
-    if line.split(";")[1] == options.host:
-      usage = line.split(";")[2]
+    if line.split(";")[1] == options.storage:
+      usage = int(line.split(";")[2])
       retorno = 3
       if usage >= 90:
         retorno = 1
