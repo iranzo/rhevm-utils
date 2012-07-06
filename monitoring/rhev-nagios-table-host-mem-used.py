@@ -72,7 +72,7 @@ except:
 for line in f:
   if line.split(";")[0] == "host":
     if line.split(";")[1] == options.host:
-      usage = int(line.split(";")[6])
+      usage = float(line.split(";")[4])
       retorno = 3
       if usage >= 90:
         retorno = 1
@@ -81,6 +81,6 @@ for line in f:
       else:
         retorno = 0
 
-      print usage
+      print float(line.split(";")[6])/(1024*1024)
       sys.exit(retorno)
 
