@@ -15,3 +15,4 @@ rhev-vm-os.py:           	Group VM's by O.S. on hosts
 rhev-clone.py:           	Create a clone VM based on a Template on a specified Cluster
 rhev-poweron.py:         	Power on (remove maintenance) from all rhev_elastic hosts in maintenance in order to prepare for peak hours
 rhev-vm-start:		 	Start VM specified or remaining VM's if specified is up
+rhev-vm-create:		 	Create a new VM with specified parameters
