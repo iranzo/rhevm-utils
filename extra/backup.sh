@@ -14,6 +14,9 @@ FILECONFIG="$RUTALOCAL/config_$(date '+%Y%m%d_%R').tar.bz2"
 RUTA=/var/backup/rhevm 
 
 
+# Restore files with:
+# /usr/bin/pg_restore -d $DDBB -c -U postgres < /path/to/DDBB_dump
+
 # Do not edit... only after each RHEV updated after checking new/modified configuration files for that release
 REPORT_VERSION=$(ls -d /usr/share/rhevm-reports/reports-*|sort |tail -1) 
 FICHEROSALVA="/etc/jbossas/jbossas.conf /etc/jbossas/rhevm-slimmed/ /etc/pki/rhevm/ /etc/rhevm/ /etc/yum/pluginconf.d/versionlock.list /root/.pgpass /root/.rnd /usr/share/rhevm/conf/iptables.example /usr/share/rhevm/dbscripts/create_db.sh.log $REPORT_VERSION/resources/organizations/rhevmreports/Resources/JDBC/data_sources/rhevm.xml $REPORT_VERSION/users/rhevmreports/rhevm-002dadmin.xml /usr/share/rhevm-reports-server/buildomatic /usr/share/rhevm-reports-server/buildomatic/default_master.properties /usr/share/rhevm-reports-server/buildomatic/install.xml /usr/share/rhevm-reports-server/buildomatic/setup.xml /usr/share/rhevm/rhevm.ear/rhevmanager.war/ExternalConfig.txt /usr/share/rhevm/rhevm.ear/rhevmanager.war/ServerParameters.js" 
@@ -30,7 +33,7 @@ mkdir -p $RUTA
 tmpwatch $TIME $RUTALOCAL
 
 echo "Output file is $FILE" 
-/usr/bin/pg_dump -C -E UTF8 --column-inserts --disable-dollar-quoting --disable-triggers -U postgres --format=p -f "$FILE" rhevm 
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p -f "$FILE" rhevm 
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
@@ -41,7 +44,7 @@ else
 fi
 
 echo "Output file is $FILEREPORT" 
-/usr/bin/pg_dump -C -E UTF8 --column-inserts --disable-dollar-quoting --disable-triggers -U postgres --format=p -f "$FILEREPORT" rhevmreports
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p -f "$FILEREPORT" rhevmreports
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
@@ -52,7 +55,7 @@ else
 fi
 
 echo "Output file is $FILEREPORTHIST" 
-/usr/bin/pg_dump -C -E UTF8 --column-inserts --disable-dollar-quoting --disable-triggers -U postgres --format=p -f "$FILEREPORTHIST" rhevm_history
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p -f "$FILEREPORTHIST" rhevm_history
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
