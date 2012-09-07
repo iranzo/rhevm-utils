@@ -3,11 +3,11 @@
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
 # Description: Script for monitoring host and storage status and ouptut in a
-# CSV table for later parsing using VM's ovirt-engine-sdk.  Then, another
+# CSV table for later parsing using VM's rhevm-sdk.  Then, another
 # subset of scripts will query that table instead of querying RHEV-M api to
 # reduce the number of API calls
 #
-# Requires ovirt-engine-sdk to work
+# Requires rhevm-sdk to work
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

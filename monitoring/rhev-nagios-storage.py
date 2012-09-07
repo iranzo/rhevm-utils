@@ -2,10 +2,10 @@
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
-# Description: Script for monitoring host status and VM's ovirt-engine-sdk
+# Description: Script for monitoring host status and VM's rhevm-sdk
 # api and produce NAGIOS valid output
 #
-# Requires ovirt-engine-sdk to work
+# Requires rhevm-sdk to work
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

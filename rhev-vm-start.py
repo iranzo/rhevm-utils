@@ -2,10 +2,10 @@
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
-# Description: Script for starting VM'susing ovirt-engine-sdk
+# Description: Script for starting VM'susing rhevm-sdk
 # api based on single VM dependency
 #
-# Requires ovirt-engine-sdk to work
+# Requires rhevm-sdk to work
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

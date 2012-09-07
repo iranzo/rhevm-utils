@@ -2,10 +2,10 @@
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
-# Description: Script for VM's grouping/ungrouping using ovirt-engine-sdk
+# Description: Script for VM's grouping/ungrouping using rhevm-sdk
 # api based on O.S. and Host load
 #
-# Requires ovirt-engine-sdk to work
+# Requires rhevm-sdk to work
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

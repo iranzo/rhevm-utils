@@ -1,6 +1,6 @@
 RHEVM-Elastic-Management Scripts - nagios integration
 
-REQUIRES: ovirt-engine-sdk
+REQUIRES: rhevm-sdk
 
 Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 

@@ -2,10 +2,10 @@
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
-# Description: Script for cleaning VM's pinning to hosts using ovirt-engine-sdk
+# Description: Script for cleaning VM's pinning to hosts using rhevm-sdk
 # api based on RHCS cluster_ tags on RHEV-M and elas_manage
 #
-# Requires ovirt-engine-sdk to work
+# Requires rhevm-sdk to work
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

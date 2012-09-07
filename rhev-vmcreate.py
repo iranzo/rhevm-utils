@@ -4,7 +4,7 @@
 #
 # Description: Script for creating VM's
 #
-# Requires ovirt-engine-sdk to work or RHEVM api equivalent
+# Requires rhevm-sdk to work or RHEVM api equivalent
 # 
 # This software is based on GPL code so:
 #

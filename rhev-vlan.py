@@ -4,7 +4,7 @@
 #
 # Description: Script for creating VLAN in datacenter and attach to cluster and it's hosts
 #
-# Requires ovirt-engine-sdk to work
+# Requires rhevm-sdk to work
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
