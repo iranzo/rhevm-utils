@@ -6,9 +6,9 @@
 #
 
 RUTALOCAL="/usr/share/rhevm/db-backups" 
-FILE="$RUTALOCAL/dump_RHEVDB_BACKUP_$(date '+%Y%m%d_%R').sql" 
-FILEREPORT="$RUTALOCAL/dump_RHEVREPORTDB_BACKUP_$(date '+%Y%m%d_%R').sql" 
-FILEREPORTHIST="$RUTALOCAL/dump_RHEVREPORTHISTDB_BACKUP_$(date '+%Y%m%d_%R').sql" 
+FILE="$RUTALOCAL/dump_RHEVDB_BACKUP_$(date '+%Y%m%d_%R').sql.gz" 
+FILEREPORT="$RUTALOCAL/dump_RHEVREPORTDB_BACKUP_$(date '+%Y%m%d_%R').sql.gz" 
+FILEREPORTHIST="$RUTALOCAL/dump_RHEVREPORTHISTDB_BACKUP_$(date '+%Y%m%d_%R').sql.gz" 
 
 FILECONFIG="$RUTALOCAL/config_$(date '+%Y%m%d_%R').tar.bz2" 
 RUTA=/var/backup/rhevm 
@@ -33,7 +33,7 @@ mkdir -p $RUTA
 tmpwatch $TIME $RUTALOCAL
 
 echo "Output file is $FILE" 
-/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p -f "$FILE" rhevm 
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILE" rhevm 
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
@@ -44,7 +44,7 @@ else
 fi
 
 echo "Output file is $FILEREPORT" 
-/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p -f "$FILEREPORT" rhevmreports
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILEREPORT" rhevmreports
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
@@ -55,7 +55,7 @@ else
 fi
 
 echo "Output file is $FILEREPORTHIST" 
-/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p -f "$FILEREPORTHIST" rhevm_history
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILEREPORTHIST" rhevm_history
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
