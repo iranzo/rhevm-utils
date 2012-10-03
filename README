@@ -16,3 +16,10 @@ rhev-clone.py:           	Create a clone VM based on a Template on a specified C
 rhev-poweron.py:         	Power on (remove maintenance) from all rhev_elastic hosts in maintenance in order to prepare for peak hours
 rhev-vm-start.py:	 	Start VM specified or remaining VM's if specified is up
 rhev-vm-create.py:	 	Create a new VM with specified parameters
+
+
+
+
+PD: Please, if you're using this scripts, send me an email just to know if
+there's anyone outside there. If you find any error, please report it to me
+and I'll try to get it fixed.
