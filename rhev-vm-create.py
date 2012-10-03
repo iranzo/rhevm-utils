@@ -117,4 +117,7 @@ if options.verbosity > 1:
   print "VM creation successful"
 
 vm=api.vms.get(name=options.name)
+vm.memory_policy.guaranteed=1*1024*1024
+vm.high_availability.enabled=True
+vm.update()
 print "MAC:%s" % vm.nics.get(name="eth0").mac.get_address()
