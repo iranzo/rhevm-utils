@@ -60,18 +60,18 @@ p.add_option("--vmserv", dest="vmserv", help="Service Network to use", metavar="
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 try:
-  value=api.hosts.list()
+  value = api.hosts.list()
 except:
   print "Error accessing RHEV-M api, please check data and connection and retry"
   sys.exit(1)
 
 # Define VM based on parameters
-vmparams=params.VM(os=params.OperatingSystem(type_=options.osver),cpu=params.CPU(topology=params.CpuTopology(cores=int(options.vmcpu))),name=options.name, memory=1024*int(vmmem),cluster=api.clusters.get(name=options.cluster),template=api.templates.get(name="Blank"),type_="server")
-vmdisk=params.Disk(size=1024*1024*1024*int(options.sdsize),wipe_after_delete=True,sparse=True,interface="virtio",type_="System",format="cow",storage_domains=params.StorageDomains(storage_domain=[api.storagedomains.get(name="data_domain")]))
-vmnet=params.NIC()
+vmparams = params.VM(os=params.OperatingSystem(type_=options.osver), cpu=params.CPU(topology=params.CpuTopology(cores=int(options.vmcpu))), name=options.name, memory=1024 * int(vmmem), cluster=api.clusters.get(name=options.cluster), template=api.templates.get(name="Blank"), type_="server")
+vmdisk = params.Disk(size=1024 * 1024 * 1024 * int(options.sdsize), wipe_after_delete=True, sparse=True, interface="virtio", type_="System", format="cow", storage_domains=params.StorageDomains(storage_domain=[api.storagedomains.get(name="data_domain")]))
+vmnet = params.NIC()
 
 network_gest = params.Network(name=options.vmgest)
 network_serv = params.Network(name=options.vmserv)
@@ -90,13 +90,13 @@ if options.verbosity > 1:
 
 if options.verbosity > 1:
   print "Attaching networks and boot order..."
-vm=api.vms.get(name=options.name)
+vm = api.vms.get(name=options.name)
 vm.nics.add(nic_gest)
 vm.nics.add(nic_serv)
 
 # Setting VM to boot always from network, then from HD
-boot1=params.Boot(dev="network")
-boot2=params.Boot(dev="hd")
+boot1 = params.Boot(dev="network")
+boot2 = params.Boot(dev="hd")
 vm.os.boot = [ boot1, boot2 ]
 
 try:
@@ -116,8 +116,8 @@ except:
 if options.verbosity > 1:
   print "VM creation successful"
 
-vm=api.vms.get(name=options.name)
-vm.memory_policy.guaranteed=1*1024*1024
-vm.high_availability.enabled=True
+vm = api.vms.get(name=options.name)
+vm.memory_policy.guaranteed = 1 * 1024 * 1024
+vm.high_availability.enabled = True
 vm.update()
 print "MAC:%s" % vm.nics.get(name="eth0").mac.get_address()

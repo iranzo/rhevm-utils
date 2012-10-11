@@ -58,7 +58,7 @@ p.add_option('-r', "--reverse", dest="reverse", help="Reverse behaviour with mac
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 
 #FUNCTIONS

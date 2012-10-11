@@ -48,7 +48,7 @@ p.add_option("-t", "--table", dest="table", help="Output file in CSV format", me
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 
 ################################ MAIN PROGRAM ############################
@@ -68,7 +68,7 @@ for host in api.hosts.list():
   memtotal = host.statistics.get(name="memory.total").values.value[0].datum
   usage = (100 - host.statistics.get(name="cpu.current.idle").values.value[0].datum)
   percentage = int(100 * memory / memtotal)
-  vms=host.summary.total
+  vms = host.summary.total
 
   # Patch exit status based on elas_maint
   if host.status.state != "up":
@@ -80,7 +80,7 @@ for host in api.hosts.list():
   else:
     status = host.status.state
 
-  fullstatus = "host;%s;%s;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage,vms,memory)
+  fullstatus = "host;%s;%s;%s;%s;%s;%s;\n" % (host.name, status, percentage, usage, vms, memory)
   f.write(fullstatus)
 
 

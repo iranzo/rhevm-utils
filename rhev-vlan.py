@@ -48,7 +48,7 @@ p.add_option('-b', "--bond", dest="bond", help="Bond to create under", metavar='
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 dc = options.datacenter
 vlan = options.vlan
@@ -98,10 +98,10 @@ if options.cluster:
         tarjeta.attach(accion)
       except:
         if options.verbosity > 4:
-          print "Error attaching network %s to NIC %s" % (red.name,tarjeta.name)
+          print "Error attaching network %s to NIC %s" % (red.name, tarjeta.name)
 
       try:
         host.commitnetconfig()
       except:
         if options.verbosity > 4:
-          print "Error commiting network  %s config  to host %s" % (red.name,host.name)
+          print "Error commiting network  %s config  to host %s" % (red.name, host.name)

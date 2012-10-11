@@ -46,7 +46,7 @@ p.add_option("--host", dest="host", help="Show messages while running", metavar=
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 ################################ MAIN PROGRAM ############################
 
@@ -79,5 +79,5 @@ if percentage >= 90:
 else:
   retorno = 0
 
-print memory/(1024*1024)
+print memory / (1024 * 1024)
 sys.exit(retorno)

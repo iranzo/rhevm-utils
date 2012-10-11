@@ -46,7 +46,7 @@ p.add_option("--host", dest="host", help="Show messages while running", metavar=
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 ################################ MAIN PROGRAM ############################
 

@@ -59,7 +59,7 @@ p.add_option("-t", "--template", dest="template", help="VM template", metavar="t
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 
 
