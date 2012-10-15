@@ -63,27 +63,27 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 #FUNCTIONS
 def listvms():
-  vms=[]
-  page=0
-  length=100
+  vms = []
+  page = 0
+  length = 100
   while (length > 0):
-    page=page+1
-    query="page %s" % page
-    tanda=api.vms.list(query=query)
-    length=len(tanda)
+    page = page + 1
+    query = "page %s" % page
+    tanda = api.vms.list(query=query)
+    length = len(tanda)
     for vm in tanda:
       vms.append(vm)
   return(vms)
 
 def listhosts():
-  hosts=[]
-  page=0
-  length=100
+  hosts = []
+  page = 0
+  length = 100
   while (length > 0):
-    page=page+1
-    query="page %s" % page
-    tanda=api.hosts.list(query=query)
-    length=len(tanda)
+    page = page + 1
+    query = "page %s" % page
+    tanda = api.hosts.list(query=query)
+    length = len(tanda)
     for host in tanda:
       hosts.append(host)
   return(hosts)  
