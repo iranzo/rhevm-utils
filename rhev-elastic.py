@@ -71,6 +71,19 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
+def listhosts():
+  hosts=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.hosts.list(query=query)
+    length=len(tanda)
+    for host in tanda:
+      hosts.append(host)
+  return(hosts)  
+
 def check_tags():
   if options.verbosity >= 1:
     print "Looking for tags elas_manage and elas_maint prior to start..."
@@ -305,7 +318,7 @@ if options.tagall == 1:
   if options.verbosity >= 1:
     print "Tagging all hosts with elas_manage"
     
-  for host in api.hosts.list():
+  for host in listhosts():
     try:
       host.tags.add(params.Tag(name="elas_manage"))
     except:
@@ -313,7 +326,7 @@ if options.tagall == 1:
 
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
-for host in api.hosts.list():
+for host in listhosts():
   if host.status.state == "up":
     if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
       if options.verbosity >= 1:

@@ -73,6 +73,18 @@ def listvms():
       vms.append(vm)
   return(vms)
 
+def listhosts():
+  hosts=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.hosts.list(query=query)
+    length=len(tanda)
+    for host in tanda:
+      hosts.append(host)
+  return(hosts)  
 
 def check_tags():
   if options.verbosity >= 1:
@@ -133,7 +145,7 @@ def process_cluster(cluster):
   tags_with_more_than_one = []
 
   # Get host list from this cluster
-  for host in api.hosts.list():
+  for host in listhosts():
     if host.cluster.id == cluster.id:
       if host.status.state == "up":
         hosts_in_cluster.append(host.id)

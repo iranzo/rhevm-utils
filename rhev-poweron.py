@@ -70,6 +70,19 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
+def listhosts():
+  hosts=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.hosts.list(query=query)
+    length=len(tanda)
+    for host in tanda:
+      hosts.append(host)
+  return(hosts)  
+
 def activate_host(target):
   # Activate  one host at a time...
   if options.verbosity > 0:
@@ -99,7 +112,7 @@ def activate_host(target):
 
   def process_cluster(clusid):
     enablable = []
-    for host in api.hosts.list():
+    for host in listhosts():
       if host.status.state == "maintenance":
         if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
           if api.hosts.get(id=host.id).tags.get(name="elas_maint"):

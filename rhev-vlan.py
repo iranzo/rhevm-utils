@@ -50,6 +50,20 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
+def listhosts():
+  hosts=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.hosts.list(query=query)
+    length=len(tanda)
+    for host in tanda:
+      hosts.append(host)
+  return(hosts)  
+
+
 dc = options.datacenter
 vlan = options.vlan
 
@@ -88,7 +102,7 @@ if options.cluster:
     if options.verbosity > 4:  
       print "Network %s already attached to cluster" % red.name
     
-  for host in api.hosts.list():
+  for host in listhosts():
     if host.cluster.id == cluster.id:
       if options.verbosity > 4:    
         print "Host %s is in cluster" % host.name
