@@ -72,14 +72,14 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 #FUNCTIONS
 def listhosts():
-  hosts=[]
-  page=0
-  length=100
+  hosts = []
+  page = 0
+  length = 100
   while (length > 0):
-    page=page+1
-    query="page %s" % page
-    tanda=api.hosts.list(query=query)
-    length=len(tanda)
+    page = page + 1
+    query = "page %s" % page
+    tanda = api.hosts.list(query=query)
+    length = len(tanda)
     for host in tanda:
       hosts.append(host)
   return(hosts)  
@@ -191,119 +191,120 @@ def process_cluster(clusid):
   hosts_without_vms = 0
   hosts_with_vms = 0
     
-  for host in api.hosts.list(query="elas_manage"):
-    vms = api.hosts.get(id=host.id).summary.total
-    status = "discarded"
-    inc = 1
+  for host in listhosts():
+    if host.tags.get(name="elas_manage"):
+      vms = api.hosts.get(id=host.id).summary.total
+      status = "discarded"
+      inc = 1
   
-    if host.cluster.id != clusid:
-      # Not process this host if doesn't pertain to cluster
-      if options.verbosity >= 3:
-        print "Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid)
-    else:
-      #Preparing list of valid hosts  
-      if vms == 0: 
-        if host.status.state == "up":
-          maintable.append(host.id)
-          status = "accepted"
-          if api.hosts.get(id=host.id).storage_manager.valueOf_ != "true":
-            maintable_prio.append(host.id)
-        if host.status.state == "maintenance":
-          if host.tags.get(name="elas_maint"):
-            enablable.append(host.id)
-            status = "accepted"
-          else:
-            status = "No elas_maint tag discarded"
-            inc = 0
-      if options.verbosity >= 2:
-        print "Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status)
-
-      #Counters
-      hosts_total = hosts_total + inc
- 
-      if host.status.state == "up":
-        hosts_up = hosts_up + inc
-        if vms == 0:
-          hosts_without_vms = hosts_without_vms + inc
-        else:
-          hosts_with_vms = hosts_with_vms + inc
+      if host.cluster.id != clusid:
+        # Not process this host if doesn't pertain to cluster
+        if options.verbosity >= 3:
+          print "Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid)
       else:
-        if host.status.state == "maintenance":
-          hosts_maintenance = hosts_maintenance + inc
-        else:
-          hosts_other = hosts_other + inc
+        #Preparing list of valid hosts  
+        if vms == 0: 
+          if host.status.state == "up":
+            maintable.append(host.id)
+            status = "accepted"
+            if api.hosts.get(id=host.id).storage_manager.valueOf_ != "true":
+              maintable_prio.append(host.id)
+          if host.status.state == "maintenance":
+            if host.tags.get(name="elas_maint"):
+              enablable.append(host.id)
+              status = "accepted"
+            else:
+              status = "No elas_maint tag discarded"
+              inc = 0
+        if options.verbosity >= 2:
+          print "Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status)
+          
+        #Counters
+        hosts_total = hosts_total + inc
    
-  if options.verbosity >= 1:
-    if hosts_total > 0:
-      print "\nHost list to manage:"
-      print "\tCandidates to maintenance: %s" % maintable
-      print "\tPriority to maintenance: %s" % maintable_prio
-      print "\tCandidates to activation:  %s" % enablable
-      print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total, hosts_up, hosts_maintenance, hosts_other)
-      print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms, hosts_without_vms)
-    else:
-      print "\nNo hosts in cluster %s, skipping" % clusid
+        if host.status.state == "up":
+          hosts_up = hosts_up + inc
+          if vms == 0:
+            hosts_without_vms = hosts_without_vms + inc
+          else:
+            hosts_with_vms = hosts_with_vms + inc
+        else:
+          if host.status.state == "maintenance":
+            hosts_maintenance = hosts_maintenance + inc
+          else:
+            hosts_other = hosts_other + inc
+     
+    if options.verbosity >= 1:
+      if hosts_total > 0:
+        print "\nHost list to manage:"
+        print "\tCandidates to maintenance: %s" % maintable
+        print "\tPriority to maintenance: %s" % maintable_prio
+        print "\tCandidates to activation:  %s" % enablable
+        print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total, hosts_up, hosts_maintenance, hosts_other)
+        print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms, hosts_without_vms)
+      else:
+        print "\nNo hosts in cluster %s, skipping" % clusid
+        
+    #### CODE TO CHECK HOST COUNT, Host still active, etc 
+    
+    #Useful vars:   hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
+    #Useful arrays: enablable / maintable
 
-  #### CODE TO CHECK HOST COUNT, Host still active, etc 
 
-  #Useful vars:   hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
-  #Useful arrays: enablable / maintable
+    ################################# ENABLE SECTION #########################################
 
-
-  ################################# ENABLE SECTION #########################################
-
-  #At least one host but no one is up -> enable one host
-  if hosts_total > 0 and hosts_up == 0:
-    try:
-      target = choice(enablable)
-      if options.verbosity >= 2:
-        print "\nActivating host %s because no one is up\n" % target
-      activate_host(target)
-      return 0
-    except:
-      if options.verbosity >= 1:
-        print "\nNo host to enable\n"
-      return 1
-
-  #Host active without vm's
-  if hosts_up > 0:
-  #At least one host up without vm's:
-    if hosts_without_vms == 0:
+    #At least one host but no one is up -> enable one host
+    if hosts_total > 0 and hosts_up == 0:
       try:
         target = choice(enablable)
         if options.verbosity >= 2:
-          print "\nActivating host %s because there are no hosts without vm's\n" % target
-              
+          print "\nActivating host %s because no one is up\n" % target
         activate_host(target)
         return 0
       except:
         if options.verbosity >= 1:
           print "\nNo host to enable\n"
         return 1
-    
+
+    #Host active without vm's
+    if hosts_up > 0:
+    #At least one host up without vm's:
+      if hosts_without_vms == 0:
+        try:
+          target = choice(enablable)
+          if options.verbosity >= 2:
+            print "\nActivating host %s because there are no hosts without vm's\n" % target
+                
+          activate_host(target)
+          return 0
+        except:
+          if options.verbosity >= 1:
+            print "\nNo host to enable\n"
+          return 1
       
-  ############################### DISABLE SECTION ########################################
+        
+    ############################### DISABLE SECTION ########################################
       
-  if hosts_without_vms > 1:
-    #More than one host without VM's so we can shutdown one
-    if len(maintable) != 0:
-      if len(maintable_prio) != 0:
-        target = choice(maintable_prio)
+    if hosts_without_vms > 1:
+      #More than one host without VM's so we can shutdown one
+      if len(maintable) != 0:
+        if len(maintable_prio) != 0:
+          target = choice(maintable_prio)
+        else:
+          target = choice(maintable)
+        if options.verbosity >= 2:
+          print "\nPutting host %s into maintenance because there are more than 1 host without vm's\n" % target
+        deactivate_host(target)
+        return 0
       else:
-        target = choice(maintable)
-      if options.verbosity >= 2:
-        print "\nPutting host %s into maintenance because there are more than 1 host without vm's\n" % target
-      deactivate_host(target)
-      return 0
-    else:
-      print "\nNo host to put into maintenance\n"
-      return 1
-  
-  #############################  NOTHING TO DO SECTION ###################################
-  
-  if options.verbosity >= 2:
-    print "\nNothing to do as enable/disable scripts conditions are not met"
-  
+        print "\nNo host to put into maintenance\n"
+        return 1
+    
+    #############################  NOTHING TO DO SECTION ###################################
+    
+    if options.verbosity >= 2:
+      print "\nNothing to do as enable/disable scripts conditions are not met"
+    
   return
 
 
