@@ -49,8 +49,22 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
+def listvms():
+  vms=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.vms.list(query=query)
+    length=len(tanda)
+    for vm in tanda:
+      vms.append(vm)
+  return(vms)
+  
+
 def process_cluster(clusid):
-  for vm in api.vms.list():
+  for vm in listvms():
     if vm.cluster.id == clusid:
       if vm.tags.get("elas_manage"):
         for tag in vm.tags.list():

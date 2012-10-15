@@ -65,6 +65,19 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
+def listvms():
+  vms=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.vms.list(query=query)
+    length=len(tanda)
+    for vm in tanda:
+      vms.append(vm)
+  return(vms)
+
 def check_tags():
   if options.verbosity >= 1:
     print "Looking for tags prior to start..."
@@ -133,7 +146,7 @@ def process_cluster(cluster):
     tags_vm[tag.name] = []
   
   #Populate the list of tags and VM's
-  for vm in api.vms.list():
+  for vm in listvms():
     if vm.cluster.id == cluster.id:
       if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
@@ -255,7 +268,7 @@ check_tags()
 if options.tagall == 1:
   if options.verbosity >= 1:
     print "Tagging all VM's with elas_manage"
-  for vm in api.vms.list():
+  for vm in listvms():
     try:
       vm.tags.add(params.Tag(name="elas_manage"))
     except:
@@ -264,7 +277,7 @@ if options.tagall == 1:
       
 # CLEANUP
 # Remove pinning from vm's in down state to allow to start in any host
-for vm in api.vms.list():
+for vm in listvms():
   if vm.status.state == "down":
       if vm.tags.get("elas_manage"):
         for tag in vm.tags.list():

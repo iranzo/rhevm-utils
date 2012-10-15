@@ -60,6 +60,20 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 #FUNCTIONS
+def listvms():
+  vms=[]
+  page=0
+  length=100
+  while (length > 0):
+    page=page+1
+    query="page %s" % page
+    tanda=api.vms.list(query=query)
+    length=len(tanda)
+    for vm in tanda:
+      vms.append(vm)
+  return(vms)
+
+
 def check_tags():
   if options.verbosity >= 1:
     print "Looking for tags elas_manage prior to start..."
@@ -129,13 +143,13 @@ def process_cluster(cluster):
     print "##############################################"
 
   #Create the empty set of vars that we'll populate later
-  for vm in api.vms.list():
+  for vm in listvms():
     if vm.status.state == "up":
       if vm.cluster.id == cluster.id:
         tags_os[vm.os.type_] = []
 
   #Populate the list of tags and VM's
-  for vm in api.vms.list():
+  for vm in listvms():
     if vm.cluster.id == cluster.id:
       if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
@@ -163,7 +177,7 @@ def process_cluster(cluster):
   # VM's to process:
   vms_to_process = []
 
-  for vm in api.vms.list():
+  for vm in listvms():
     if vm.cluster.id == cluster.id:
       vms_to_process.append(vm.name)
 
@@ -239,7 +253,7 @@ def process_cluster(cluster):
 
                   # Fill list with vms that can be moved away
                   vms_to_excomulgate = []
-                  for virtual in api.vms.list():
+                  for virtual in listvms():
                     if virtual.status.state == "up":
                       if virtual.host.id == host:
                         if virtual.os.type_ not in os_not_to_excomulgate:
@@ -323,7 +337,7 @@ check_tags()
 if options.tagall == 1:
   if options.verbosity >= 1:
     print "Tagging all VM's with elas_manage"
-  for vm in api.vms.list():
+  for vm in listvms():
     try:
       vm.tags.add(params.Tag(name="elas_manage"))
     except:
