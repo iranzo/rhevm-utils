@@ -191,7 +191,7 @@ def process_cluster(cluster):
 
   for vm in vms_in_cluster:
     if api.vms.get(id=vm).cluster.id == cluster.id:
-      vms_to_process.append(vm.name)
+      vms_to_process.append(api.vms.get(id=vm).name)
 
   if options.verbosity > 3:
     print "VM's to process"
