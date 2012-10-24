@@ -60,32 +60,32 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 #FUNCTIONS
-def listvms():
+def listvms(oquery=""):
   vms = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.vms.list(query=query)
     length = len(tanda)
     for vm in tanda:
       vms.append(vm)
   return(vms)
 
-def listhosts():
+def listhosts(oquery=""):
   hosts = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.hosts.list(query=query)
     length = len(tanda)
     for host in tanda:
       hosts.append(host)
-  return(hosts)  
-
+  return(hosts)
+  
 def check_tags():
   if options.verbosity >= 1:
     print "Looking for tags elas_manage prior to start..."
@@ -145,7 +145,8 @@ def process_cluster(cluster):
   tags_with_more_than_one = []
 
   # Get host list from this cluster
-  for host in listhosts():
+  query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name
+  for host in listhosts(query):
     if host.cluster.id == cluster.id:
       if host.status.state == "up":
         hosts_in_cluster.append(host.id)
@@ -155,13 +156,15 @@ def process_cluster(cluster):
     print "##############################################"
 
   #Create the empty set of vars that we'll populate later
-  for vm in listvms():
+  query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name
+  for vm in listvms(query):
     if vm.status.state == "up":
       if vm.cluster.id == cluster.id:
         tags_os[vm.os.type_] = []
 
   #Populate the list of tags and VM's
-  for vm in listvms():
+  query = "cluster = %s and status = up and tag = elas_manage" % api.clusters.get(id=cluster.id).name
+  for vm in listvms(query):
     if vm.cluster.id == cluster.id:
       if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
@@ -265,7 +268,8 @@ def process_cluster(cluster):
 
                   # Fill list with vms that can be moved away
                   vms_to_excomulgate = []
-                  for virtual in listvms():
+                  query = "status = up and host = %s" % host
+                  for virtual in listvms(query):
                     if virtual.status.state == "up":
                       if virtual.host.id == host:
                         if virtual.os.type_ not in os_not_to_excomulgate:

@@ -70,13 +70,13 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
-def listhosts():
+def listhosts(oquery=""):
   hosts = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.hosts.list(query=query)
     length = len(tanda)
     for host in tanda:
@@ -110,30 +110,31 @@ def activate_host(target):
 
   return  
 
-  def process_cluster(clusid):
-    enablable = []
-    for host in listhosts():
-      if host.status.state == "maintenance":
-        if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
-          if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
-            if options.verbosity >= 1:
-              print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
-            enablable.append(host.id)   
+def process_cluster(clusid):
+  enablable = []
+  query = "status = maintenance and tag = elas_manage and tag = elas_main and cluster = %s" % api.clusters.get(id=clusid).name
+  for host in listhosts(query):
+    if host.status.state == "maintenance":
+      if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
+        if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
+          if options.verbosity >= 1:
+            print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
+          enablable.append(host.id)   
 
-    number = 0
+  number = 0
 
-    while number < options.batch:
-      number = number + 1
-      victima = None
-      try:
-        victima = choice(enablable)
-        enablable.remove(victima)
-        if options.verbosity > 3:
-          print "Enabling host %s" % victima
-        activate_host(victima)
-      except:
-        if options.verbosity > 4:
-          print "No more hosts to enable"
+  while number < options.batch:
+    number = number + 1
+    victima = None
+    try:
+      victima = choice(enablable)
+      enablable.remove(victima)
+      if options.verbosity > 3:
+        print "Enabling host %s" % victima
+      activate_host(victima)
+    except:
+      if options.verbosity > 4:
+        print "No more hosts to enable"
 
 ################################ MAIN PROGRAM ############################
 #Sanity checks

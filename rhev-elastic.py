@@ -68,21 +68,20 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 
-
-
 #FUNCTIONS
-def listhosts():
+def listhosts(oquery=""):
   hosts = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.hosts.list(query=query)
     length = len(tanda)
     for host in tanda:
       hosts.append(host)
-  return(hosts)  
+  return(hosts)
+
 
 def check_tags():
   if options.verbosity >= 1:
@@ -90,16 +89,16 @@ def check_tags():
 
   if not api.tags.get(name="elas_manage"):
     if options.verbosity >= 2:
-      print "Creating tag elas_manage..."    
+      print "Creating tag elas_manage..."
     api.tags.add(params.Tag(name="elas_manage"))
 
   if not api.tags.get(name="elas_maint"):
     if options.verbosity >= 2:
-      print "Creating tag elas_maint..."    
+      print "Creating tag elas_maint..."
     api.tags.add(params.Tag(name="elas_maint"))
-  
-  return  
-  
+
+  return
+
 def deactivate_host(target):
   host = api.hosts.get(id=target)
   # Shutting down one host at a time...
@@ -116,7 +115,7 @@ def deactivate_host(target):
     print "Error deactivating host %s" % api.hosts.get(id=target).name
 
   #Get host IP
-  ip = host.address  
+  ip = host.address
 
   #Should wait until host state is 'maintenance'
 
@@ -131,7 +130,7 @@ def deactivate_host(target):
         print "Host still not on maintenance... sleeping"
       time.sleep(2)
     i = i + 1
-  
+
   if api.hosts.get(id=target).status.state == "maintenance":
     #Execute power action
     ## /etc/pki/rhevm/keys/rhevm_id_rsa
@@ -145,12 +144,12 @@ def deactivate_host(target):
     os.system(comando)
 
   return
-  
+
 def activate_host(target):
   # Activate  one host at a time...
   if options.verbosity > 0:
     print "Activating target %s" % target
-   
+
   #Remove elas_maint TAG to host
   if not api.hosts.get(id=target).tags.get(name="elas_maint"):
     try:
@@ -171,7 +170,7 @@ def activate_host(target):
         print "Sending %s the power on action via %s" % (target, mac)
       os.system(comando)
 
-  return  
+  return
 
 def process_cluster(clusid):
   if options.verbosity > 1:
@@ -190,20 +189,21 @@ def process_cluster(clusid):
   hosts_other = 0
   hosts_without_vms = 0
   hosts_with_vms = 0
-    
-  for host in listhosts():
+
+  query = "cluster = %s" % api.clusters.get(id=clusid).name
+  for host in listhosts(query):
     if host.tags.get(name="elas_manage"):
       vms = api.hosts.get(id=host.id).summary.total
       status = "discarded"
       inc = 1
-  
+
       if host.cluster.id != clusid:
         # Not process this host if doesn't pertain to cluster
         if options.verbosity >= 3:
           print "Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid)
       else:
-        #Preparing list of valid hosts  
-        if vms == 0: 
+        #Preparing list of valid hosts
+        if vms == 0:
           if host.status.state == "up":
             maintable.append(host.id)
             status = "accepted"
@@ -218,10 +218,10 @@ def process_cluster(clusid):
               inc = 0
         if options.verbosity >= 2:
           print "Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status)
-          
+
         #Counters
         hosts_total = hosts_total + inc
-   
+
         if host.status.state == "up":
           hosts_up = hosts_up + inc
           if vms == 0:
@@ -233,7 +233,7 @@ def process_cluster(clusid):
             hosts_maintenance = hosts_maintenance + inc
           else:
             hosts_other = hosts_other + inc
-     
+
   if options.verbosity >= 1:
     if hosts_total > 0:
       print "\nHost list to manage:"
@@ -244,9 +244,9 @@ def process_cluster(clusid):
       print "Hosts    UP (with VM's/ without):  %s/%s" % (hosts_with_vms, hosts_without_vms)
     else:
       print "\nNo hosts in cluster %s, skipping" % clusid
-        
-  #### CODE TO CHECK HOST COUNT, Host still active, etc 
-    
+
+  #### CODE TO CHECK HOST COUNT, Host still active, etc
+
   #Useful vars:   hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
   #Useful arrays: enablable / maintable
 
@@ -274,17 +274,17 @@ def process_cluster(clusid):
         target = choice(enablable)
         if options.verbosity >= 2:
           print "\nActivating host %s because there are no hosts without vm's\n" % target
-              
+
         activate_host(target)
         return 0
       except:
         if options.verbosity >= 1:
           print "\nNo host to enable\n"
         return 1
-      
-        
+
+
   ############################### DISABLE SECTION ########################################
-      
+
   if hosts_without_vms > 1:
     #More than one host without VM's so we can shutdown one
     if len(maintable) != 0:
@@ -299,12 +299,12 @@ def process_cluster(clusid):
     else:
       print "\nNo host to put into maintenance\n"
       return 1
-    
+
   #############################  NOTHING TO DO SECTION ###################################
-   
+
   if options.verbosity >= 2:
     print "\nNothing to do as enable/disable scripts conditions are not met"
-    
+
   return
 
 
@@ -318,7 +318,7 @@ if options.tagall == 1:
 
   if options.verbosity >= 1:
     print "Tagging all hosts with elas_manage"
-    
+
   for host in listhosts():
     try:
       host.tags.add(params.Tag(name="elas_manage"))
@@ -327,12 +327,13 @@ if options.tagall == 1:
 
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
-for host in listhosts():
+query="tag = elas_maint and status = up"
+for host in listhosts(query):
   if host.status.state == "up":
     if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
       if options.verbosity >= 1:
         print "Host %s is tagged as elas_maint and it's active, removing tag..." % host.id
-      api.hosts.get(id=host.id).tags.get(name="elas_maint").delete()    
+      api.hosts.get(id=host.id).tags.get(name="elas_maint").delete()
 
 
 if not options.cluster:

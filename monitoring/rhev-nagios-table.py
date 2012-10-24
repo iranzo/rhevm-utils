@@ -61,9 +61,35 @@ except:
 
 f.write("TYPE;HOST;STATE;CPU;MEM;VMS;MEMUSED;\n")
 
+#FUNCTIONS
+def listvms(oquery=""):
+  vms = []
+  page = 0
+  length = 100
+  while (length > 0):
+    page = page + 1
+    query = "%s page %s" % (oquery, page)
+    tanda = api.vms.list(query=query)
+    length = len(tanda)
+    for vm in tanda:
+      vms.append(vm)
+  return(vms)
+
+def listhosts(oquery=""):
+  hosts = []
+  page = 0
+  length = 100
+  while (length > 0):
+    page = page + 1
+    query = "%s page %s" % (oquery, page)
+    tanda = api.hosts.list(query=query)
+    length = len(tanda)
+    for host in tanda:
+      hosts.append(host)
+  return(hosts)
 
 
-for host in api.hosts.list():
+for host in listhosts():
   memory = host.statistics.get(name="memory.used").values.value[0].datum
   memtotal = host.statistics.get(name="memory.total").values.value[0].datum
   usage = (100 - host.statistics.get(name="cpu.current.idle").values.value[0].datum)

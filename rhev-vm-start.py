@@ -62,32 +62,33 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
-def listvms():
+def listvms(oquery=""):
   vms = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.vms.list(query=query)
     length = len(tanda)
     for vm in tanda:
       vms.append(vm)
   return(vms)
 
-def listhosts():
+def listhosts(oquery=""):
   hosts = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.hosts.list(query=query)
     length = len(tanda)
     for host in tanda:
       hosts.append(host)
-  return(hosts)  
-
+  return(hosts)
+  
+  
 def check_tags():
   if options.verbosity >= 1:
     print "Looking for tags prior to start..."
@@ -137,7 +138,8 @@ def process_cluster(cluster):
   tags_with_more_than_one = []
 
   # Get host list from this cluster
-  for host in listhosts():
+  query = "cluster = %s" % api.clusters.get(id=cluster.id).name
+  for host in listhosts(query):
     if host.cluster.id == cluster.id:
       hosts_in_cluster.append(host.id)
 
@@ -146,11 +148,13 @@ def process_cluster(cluster):
     print "##############################################"
 
   #Populate the list of tags and VM's
-  for vm in listvms():
+  query = "cluster = %s" % api.clusters.get(id=cluster.id).name
+  for vm in listvms(query):
     if vm.cluster.id == cluster.id:
       vms_in_cluster.append(vm.id)
 
-  for vm in listvms():
+  query = "cluster = %s and tag = elas_manage" % api.clusters.get(id=cluster.id).name
+  for vm in listvms(query):
     if vm.cluster.id == cluster.id:
       if vm.tags.get("elas_manage"):
           # Add the VM Id to the list of VMS to manage in this cluster

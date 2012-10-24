@@ -65,26 +65,26 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
-def listvms():
+def listvms(oquery=""):
   vms = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.vms.list(query=query)
     length = len(tanda)
     for vm in tanda:
       vms.append(vm)
   return(vms)
   
-def listhosts():
+def listhosts(oquery=""):
   hosts = []
   page = 0
   length = 100
   while (length > 0):
     page = page + 1
-    query = "page %s" % page
+    query = "%s page %s" % (oquery, page)
     tanda = api.hosts.list(query=query)
     length = len(tanda)
     for host in tanda:
@@ -145,7 +145,8 @@ def process_cluster(cluster):
   tags_with_more_than_one = []
   
   # Get host list from this cluster
-  for host in listhosts():
+  query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name
+  for host in listhosts(query):
     if host.cluster.id == cluster.id:
       if host.status.state == "up":
         hosts_in_cluster.append(host.id)
@@ -159,7 +160,8 @@ def process_cluster(cluster):
     tags_vm[tag.name] = []
   
   #Populate the list of tags and VM's
-  for vm in listvms():
+  query = "cluster = %s and status = up and tag = elas_manage" % api.clusters.get(id=cluster.id).name
+  for vm in listvms(query):
     if vm.cluster.id == cluster.id:
       if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
@@ -290,7 +292,8 @@ if options.tagall == 1:
       
 # CLEANUP
 # Remove pinning from vm's in down state to allow to start in any host
-for vm in listvms():
+query = "status = down"
+for vm in listvms(query):
   if vm.status.state == "down":
       if vm.tags.get("elas_manage"):
         for tag in vm.tags.list():
