@@ -125,15 +125,18 @@ def gatherVMdata(vmname):
   totcpu = 0
   totmemory = 0
   totsample = len(rows)
+  
+  if totsample == 0:
+    return 0,0
+  else:
+    for row in rows:
+      id = "%s" % row[0]
+      cpu = "%i" % int(row[1])
+      memory = "%i" % int(row[2])
+      totcpu = int(totcpu) + int(cpu)
+      totmemory = int(totmemory) + int(memory)
 
-  for row in rows:
-    id = "%s" % row[0]
-    cpu = "%i" % int(row[1])
-    memory = "%i" % int(row[2])
-    totcpu = int(totcpu) + int(cpu)
-    totmemory = int(totmemory) + int(memory)
-
-  return totcpu / totsample, totmemory / totsample
+    return totcpu / totsample, totmemory / totsample
 
 def VMdata(vmname):
   vm = api.vms.get(name=vmname)
@@ -145,7 +148,7 @@ def VMdata(vmname):
   vmdata.append(vmramavg)
   vmdata.append(vm.cpu.topology.cores)
   vmdata.append(vmcpuavg)
-  storage = api.storagedomains.get(id=vm.disks.list()[0].storage_domains.storage_domain[0].id).name.split("-")[3]
+  storage = api.storagedomains.get(id=vm.disks.list()[0].storage_domains.storage_domain[0].id)
   vmdata.append(storage)
   tamanyo = 0
   for disk in vm.disks.list():
