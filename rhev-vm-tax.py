@@ -176,7 +176,7 @@ print "<head><title>VM Table</title></head><body>"
 
 if not options.name:
   data = []
-  data.append(["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE"])
+  data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)"])
   for vm in listvms():
     try:
       data.append(VMdata(vm.name))
