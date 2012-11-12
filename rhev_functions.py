@@ -109,3 +109,8 @@ def listhosts(api,oquery=""):
     length = len(tanda)
     for host in tanda:
       yield host
+
+
+if __name__ == "__main__":
+  print """This file is intented to be used as a library of functions and it's not expected to be executed directly"""
+  
