@@ -39,7 +39,7 @@ import time
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
 from random import choice
-
+from rhev_functions import *
 
 description = """
 RHEV-Elastic is a script for managing via API the hypervisors under RHEV command, both RHEV-H and RHEL hosts.
@@ -69,40 +69,8 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
-def listhosts(oquery=""):
-  """Returns a list of Hosts based on query"""
-  hosts = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.hosts.list(query=query)
-    length = len(tanda)
-    for host in tanda:
-      hosts.append(host)
-  return(hosts)
-
-
-def check_tags():
-  """Checks if required tags have been created previously"""
-  if options.verbosity >= 1:
-    print "Looking for tags elas_manage and elas_maint prior to start..."
-
-  if not api.tags.get(name="elas_manage"):
-    if options.verbosity >= 2:
-      print "Creating tag elas_manage..."
-    api.tags.add(params.Tag(name="elas_manage"))
-
-  if not api.tags.get(name="elas_maint"):
-    if options.verbosity >= 2:
-      print "Creating tag elas_maint..."
-    api.tags.add(params.Tag(name="elas_maint"))
-
-  return
-
 def deactivate_host(target):
-  """Deactivates hosts putting it on maintenance"""
+  """Deactivates hosts putting it on maintenance and associating required tags"""
   host = api.hosts.get(id=target)
   # Shutting down one host at a time...
   if options.verbosity > 0:
@@ -332,7 +300,7 @@ if options.tagall == 1:
 
 #Sanity checks
 ## Check hosts with elas_maint tag and status active
-query="tag = elas_maint and status = up"
+query = "tag = elas_maint and status = up"
 for host in listhosts(query):
   if host.status.state == "up":
     if api.hosts.get(id=host.id).tags.get(name="elas_maint"):

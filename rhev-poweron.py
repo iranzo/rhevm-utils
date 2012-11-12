@@ -39,7 +39,7 @@ import time
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
 from random import choice
-
+from rhev_functions import *
 
 description = """
 RHEV-Poweron is a script for managing via API the hypervisors under RHEV command, both RHEV-H and RHEL hosts.
@@ -70,22 +70,8 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
-def listhosts(oquery=""):
-  """Returns a list of Hosts based on query"""
-  hosts = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.hosts.list(query=query)
-    length = len(tanda)
-    for host in tanda:
-      hosts.append(host)
-  return(hosts)  
-
 def activate_host(target):
-  """Activates host"""
+  """Activates host from maintenance mode removing required tags"""
   # Activate  one host at a time...
   if options.verbosity > 0:
     print "Activating target %s" % target

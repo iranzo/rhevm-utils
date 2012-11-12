@@ -33,8 +33,7 @@ import operator
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
-
+from rhev_functions import *
 
 description = """
 RHEV-vm-os is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
@@ -60,87 +59,6 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 #FUNCTIONS
-def listvms(oquery=""):
-  """Returns a list of VM's based on query"""
-  vms = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.vms.list(query=query)
-    length = len(tanda)
-    for vm in tanda:
-      vms.append(vm)
-  return(vms)
-
-def listhosts(oquery=""):
-  """Returns a list of Hosts based on query"""
-  hosts = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.hosts.list(query=query)
-    length = len(tanda)
-    for host in tanda:
-      hosts.append(host)
-  return(hosts)
-  
-def check_tags():
-  """Checks if the required tags have been already created"""
-  if options.verbosity >= 1:
-    print "Looking for tags elas_manage prior to start..."
-
-  if not api.tags.get(name="elas_manage"):
-    if options.verbosity >= 2:
-      print "Creating tag elas_manage..."
-    api.tags.add(params.Tag(name="elas_manage"))
-
-  return
-
-def migra(vm, action=None):
-  """Initiates migration action of the vm"""
-  if not action:
-    try:
-      vm.migrate()
-    except:
-      if options.verbosity > 4:
-        print "Problem migrating auto %s" % vm.name
-  else:
-    try:
-      vm.migrate(action)
-    except:
-      if options.verbosity > 4:
-        print "Problem migrating fixed %s" % vm.name
-
-  loop = True
-  counter = 0
-  while loop:
-    if vm.status.state == "up":
-      loop = False
-    if options.verbosity > 8:
-      print "VM migration loop %s" % counter
-    time.sleep(10)
-    counter = counter + 1
-
-    if counter > 12:
-      loop = False
-      if options.verbosity > 8:
-        print "Exiting on max loop retries"
-  return
-
-def vmused(vm):
-  """Returns amount of memory used by the VM"""
-  # Get memory usage from agent
-  used = vm.statistics.get("memory.used").values.value[0].datum
-  if  used == 0:
-    #If no value received, return installed memory
-    used = vm.statistics.get("memory.installed").values.value[0].datum
-
-  return used
-
 def process_cluster(cluster):
   """Processes cluster"""
   # Emtpy vars for further processing

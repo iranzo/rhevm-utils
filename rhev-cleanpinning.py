@@ -24,7 +24,7 @@ import time
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
+from rhev_functions import *
 
 description = """
 RHEV-cleanpinning is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
@@ -48,21 +48,6 @@ p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to pro
 baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
-
-def listvms(oquery=""):
-  """Returns a list of VM's based on query"""
-  vms = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.vms.list(query=query)
-    length = len(tanda)
-    for vm in tanda:
-      vms.append(vm)
-  return(vms)
-  
 
 def process_cluster(clusid):
   """Processes cluster with specified cluster ID"""

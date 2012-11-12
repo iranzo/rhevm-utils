@@ -24,7 +24,7 @@ import time
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
+from rhev_functions import *
 
 description = """
 RHEV-vlan is a script for creating via API new VLAN's in RHEV and attach it to DC/Cluster/hosts.
@@ -49,21 +49,6 @@ p.add_option('-b', "--bond", dest="bond", help="Bond to create under", metavar='
 baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
-
-def listhosts(oquery=""):
-  """Returns a list of Hosts based on query"""
-  hosts = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.hosts.list(query=query)
-    length = len(tanda)
-    for host in tanda:
-      hosts.append(host)
-  return(hosts)  
-
 
 dc = options.datacenter
 vlan = options.vlan

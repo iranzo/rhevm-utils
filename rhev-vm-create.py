@@ -25,8 +25,7 @@ import time
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
-
+from rhev_functions import *
 
 description = """
 vmcreate is a script for creating vm's based on specified values

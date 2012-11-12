@@ -36,8 +36,7 @@ import time
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
-
+from rhev_functions import *
 
 description = """
 RHEV-clone is a script for creating clones based from a template

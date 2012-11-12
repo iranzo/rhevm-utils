@@ -33,7 +33,7 @@ import time
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
+from rhev_functions import *
 
 description = """
 RHEV-vm-start is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
@@ -62,77 +62,6 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 
 #FUNCTIONS
-def listvms(oquery=""):
-  """Returns a list of VM's based on query"""
-  vms = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.vms.list(query=query)
-    length = len(tanda)
-    for vm in tanda:
-      vms.append(vm)
-  return(vms)
-
-def listhosts(oquery=""):
-  """Returns a list of Hosts based on query"""
-  hosts = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.hosts.list(query=query)
-    length = len(tanda)
-    for host in tanda:
-      hosts.append(host)
-  return(hosts)
-  
-  
-def check_tags():
-  """Checks if required tags have been defined previously and creates them if not"""
-  if options.verbosity >= 1:
-    print "Looking for tags prior to start..."
-
-  if not api.tags.get(name="elas_manage"):
-    if options.verbosity >= 2:
-      print "Creating tag elas_manage..."
-    api.tags.add(params.Tag(name="elas_manage"))
-
-  return
-
-def migra(vm, action=None):
-  """Migrates VM to specified host or automatically if none is provided"""
-  if not action:
-    try:
-      vm.migrate()
-    except:
-      if options.verbosity > 4:
-        print "Problem migrating auto %s" % vm.name
-  else:
-    try:
-      vm.migrate(action)
-    except:
-      if options.verbosity > 4:
-        print "Problem migrating fixed %s" % vm.name
-
-  loop = True
-  counter = 0
-  while loop:
-    if vm.status.state == "up":
-      loop = False
-    if options.verbosity > 8:
-      print "VM migration loop %s" % counter
-    time.sleep(10)
-    counter = counter + 1
-
-    if counter > 12:
-      loop = False
-
-  return
-
 def process_cluster(cluster):
   "Processes cluster"
   # Emtpy vars for further processing

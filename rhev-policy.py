@@ -23,8 +23,7 @@ import time
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
-
+from rhev_functions import *
 
 description = """
 RHEV-policy is a script for managing via API cluster policy

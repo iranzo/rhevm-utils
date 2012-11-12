@@ -25,7 +25,7 @@ import datetime
 
 from ovirtsdk.api import API
 from ovirtsdk.xml import params
-from random import choice
+from rhev_functions import *
 
 description = """
 rhev-vm-tax is a script for gathering statistics about VM usage that can be used to tax usage
@@ -62,20 +62,6 @@ except:
   print "Error accessing RHEV-M api, please check data and connection and retry"
   sys.exit(1)
 
-
-def listvms(oquery=""):
-  """Returns a list of VM's based on query"""
-  vms = []
-  page = 0
-  length = 100
-  while (length > 0):
-    page = page + 1
-    query = "%s page %s" % (oquery, page)
-    tanda = api.vms.list(query=query)
-    length = len(tanda)
-    for vm in tanda:
-      vms.append(vm)
-  return(vms)
 
 # Obtain current date
 now = datetime.datetime.now()
@@ -129,7 +115,7 @@ def gatherVMdata(vmname):
   totsample = len(rows)
   
   if totsample == 0:
-    return 0,0
+    return 0, 0
   else:
     for row in rows:
       id = "%s" % row[0]
