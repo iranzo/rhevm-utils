@@ -72,11 +72,11 @@ def process_cluster(clusid):
 
 
 ################################ MAIN PROGRAM ############################
-#Check if we have defined needed tags and create them if missing
+if __name__ == "__main__":
 
-if not options.cluster:
-  # Processing each cluster of our RHEVM
-  for cluster in api.clusters.list():
-    process_cluster(cluster.id)
-else:
-  process_cluster(api.clusters.get(name=options.cluster).id)
+  if not options.cluster:
+    # Processing each cluster of our RHEVM
+    for cluster in api.clusters.list():
+      process_cluster(cluster.id)
+  else:
+    process_cluster(api.clusters.get(name=options.cluster).id)

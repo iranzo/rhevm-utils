@@ -61,44 +61,11 @@ try:
 except:
   print "Error accessing RHEV-M api, please check data and connection and retry"
   sys.exit(1)
-
-
-# Obtain current date
-now = datetime.datetime.now()
-
-# Calculate year
-if not options.year:
-  year = now.year
-else:
-  year = options.year
-
-
-# Calculate month
-if not options.month:
-  if now.month > 1:
-    month = now.month - 1
-  else:
-    month = 12
-    year = year - 1
-else:
-  month = options.month
-
-## Calculate month's end day
-if options.endday:
-  endday = options.endday
-else:
-  endday = calendar.monthrange(year, month)[1]
-
-
-startday = options.startday
-
-# Construct dates for SQL query
-datestart = "%s-%s-%s 00:00" % (year, month, startday)
-dateend = "%s-%s-%s 23:59" % (year, month, endday)
-
-# Open connection
-cur = con.cursor()
-
+  
+  
+  
+  
+################################ FUNCTIONS    ############################
 def gatherVMdata(vmname):
   """Obtans VM data from Postgres database and RHEV api"""
   # Get VM ID for the query
@@ -159,28 +126,66 @@ def HTMLTable(listoflists):
   for elem in listoflists:
     table = table + HTMLRow(elem)
   table = table + "</table>"
-  return table
+  return table  
+
+################################ MAIN PROGRAM ############################
+if __name__ == "__main__":
+
+  # Obtain current date
+  now = datetime.datetime.now()
+
+  # Calculate year
+  if not options.year:
+    year = now.year
+  else:
+    year = options.year
 
 
-print "<html>"
-print "<head><title>VM Table</title></head><body>"
+  # Calculate month
+  if not options.month:
+    if now.month > 1:
+      month = now.month - 1
+    else:
+      month = 12
+      year = year - 1
+  else:
+    month = options.month
 
-if not options.name:
-  data = []
-  data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)"])
-  for vm in listvms():
-    try:
-      data.append(VMdata(vm.name))
-    except:
-      skip = 1
-else:
-  data = []
-  data.append = (["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE"])
-  data.append(VMdata(options.name))
+  ## Calculate month's end day
+  if options.endday:
+    endday = options.endday
+  else:
+    endday = calendar.monthrange(year, month)[1]
 
-print HTMLTable(data)
 
-if con:
-  con.close()
+  startday = options.startday
 
-print "</body></html>"
+  # Construct dates for SQL query
+  datestart = "%s-%s-%s 00:00" % (year, month, startday)
+  dateend = "%s-%s-%s 23:59" % (year, month, endday)
+
+  # Open connection
+  cur = con.cursor()
+
+  print "<html>"
+  print "<head><title>VM Table</title></head><body>"
+
+  if not options.name:
+    data = []
+    data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)"])
+    for vm in listvms():
+      try:
+        data.append(VMdata(vm.name))
+      except:
+        skip = 1
+  else:
+    data = []
+    data.append = (["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE"])
+    data.append(VMdata(options.name))
+
+  print HTMLTable(data)
+
+  if con:
+    con.close()
+
+  print "</body></html>"

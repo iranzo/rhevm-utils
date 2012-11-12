@@ -64,21 +64,20 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing
-
-
-NEW_VM_NAME = options.name
-CLUSTER_NAME = options.cluster
-TEMPLATE_NAME = options.template
+if __name__ == "__main__":
+ NEW_VM_NAME = options.name
+ CLUSTER_NAME = options.cluster
+ TEMPLATE_NAME = options.template
   
-try:
- api.vms.add(params.VM(name=NEW_VM_NAME, memory=268435456, cluster=api.clusters.get(CLUSTER_NAME), template=api.templates.get(TEMPLATE_NAME)))
- print 'VM was created from Template successfully'
+ try:
+  api.vms.add(params.VM(name=NEW_VM_NAME, memory=268435456, cluster=api.clusters.get(CLUSTER_NAME), template=api.templates.get(TEMPLATE_NAME)))
+  print 'VM was created from Template successfully'
  
- print 'Waiting for VM to reach Down status'
- while api.vms.get(NEW_VM_NAME).status.state != 'down':
-  sleep(1)
+  print 'Waiting for VM to reach Down status'
+  while api.vms.get(NEW_VM_NAME).status.state != 'down':
+   sleep(1)
 
-except Exception as e:
- print 'Failed to create VM from Template:\n%s' % str(e)
+ except Exception as e:
+  print 'Failed to create VM from Template:\n%s' % str(e)
 
 

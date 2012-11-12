@@ -269,24 +269,25 @@ def process_cluster(cluster):
   return
 
 ################################ MAIN PROGRAM ############################
-#Check if we have defined needed tags and create them if missing
-check_tags()
+if __name__ == "__main__":
+  #Check if we have defined needed tags and create them if missing
+  check_tags()
 
-# TAGALL?
-#Add elas_maint TAG to every single vm to automate the management
-if options.tagall == 1:
-  if options.verbosity >= 1:
-    print "Tagging all VM's with elas_manage"
-  for vm in listvms():
-    try:
-      vm.tags.add(params.Tag(name="elas_manage"))
-    except:
-      print "Error adding elas_manage tag to vm %s" % vm.name
+  # TAGALL?
+  #Add elas_maint TAG to every single vm to automate the management
+  if options.tagall == 1:
+    if options.verbosity >= 1:
+      print "Tagging all VM's with elas_manage"
+    for vm in listvms():
+      try:
+        vm.tags.add(params.Tag(name="elas_manage"))
+      except:
+        print "Error adding elas_manage tag to vm %s" % vm.name
 
-if not options.cluster:
-  # Processing each cluster of our RHEVM
-  for cluster in api.clusters.list():
-    process_cluster(cluster)
-else:
-  process_cluster(api.clusters.get(name=options.cluster))
+  if not options.cluster:
+    # Processing each cluster of our RHEVM
+    for cluster in api.clusters.list():
+      process_cluster(cluster)
+  else:
+    process_cluster(api.clusters.get(name=options.cluster))
 

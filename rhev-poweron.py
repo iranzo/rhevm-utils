@@ -127,11 +127,10 @@ def process_cluster(clusid):
 
 ################################ MAIN PROGRAM ############################
 #Sanity checks
-## Check hosts with elas_maint tag and status active
-
-if not options.cluster:
-  # Processing each cluster of our RHEVM
-  for cluster in api.clusters.list():
-    process_cluster(cluster)
-else:
-  process_cluster(api.clusters.get(name=options.cluster))
+if __name__ == "__main__":
+  if not options.cluster:
+    # Processing each cluster of our RHEVM
+    for cluster in api.clusters.list():
+      process_cluster(cluster)
+  else:	
+    process_cluster(api.clusters.get(name=options.cluster))

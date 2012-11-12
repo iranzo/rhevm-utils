@@ -282,36 +282,37 @@ def process_cluster(clusid):
 
 
 ################################ MAIN PROGRAM ############################
-#Check if we have defined needed tags and create them if missing
-check_tags()
+if __name__ == "__main__":
+  #Check if we have defined needed tags and create them if missing
+  check_tags()
 
-# TAGALL?
-#Add elas_maint TAG to every single host to automate the management
-if options.tagall == 1:
+  # TAGALL?
+  #Add elas_maint TAG to every single host to automate the management
+  if options.tagall == 1:
 
-  if options.verbosity >= 1:
-    print "Tagging all hosts with elas_manage"
+    if options.verbosity >= 1:
+      print "Tagging all hosts with elas_manage"
 
-  for host in listhosts():
-    try:
-      host.tags.add(params.Tag(name="elas_manage"))
-    except:
-      print "Error adding elas_manage tag to host %s" % host.name
+    for host in listhosts():
+      try:
+        host.tags.add(params.Tag(name="elas_manage"))
+      except:
+        print "Error adding elas_manage tag to host %s" % host.name
 
-#Sanity checks
-## Check hosts with elas_maint tag and status active
-query = "tag = elas_maint and status = up"
-for host in listhosts(query):
-  if host.status.state == "up":
-    if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
-      if options.verbosity >= 1:
-        print "Host %s is tagged as elas_maint and it's active, removing tag..." % host.id
-      api.hosts.get(id=host.id).tags.get(name="elas_maint").delete()
+  #Sanity checks
+  ## Check hosts with elas_maint tag and status active
+  query = "tag = elas_maint and status = up"
+  for host in listhosts(query):
+    if host.status.state == "up":
+      if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
+        if options.verbosity >= 1:
+          print "Host %s is tagged as elas_maint and it's active, removing tag..." % host.id
+        api.hosts.get(id=host.id).tags.get(name="elas_maint").delete()
 
 
-if not options.cluster:
-  # Processing each cluster of our RHEVM
-  for cluster in api.clusters.list():
-    process_cluster(cluster.id)
-else:
-  process_cluster(api.clusters.get(name=options.cluster).id)
+  if not options.cluster:
+    # Processing each cluster of our RHEVM
+    for cluster in api.clusters.list():
+      process_cluster(cluster.id)
+  else:
+    process_cluster(api.clusters.get(name=options.cluster).id)
