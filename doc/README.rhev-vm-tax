@@ -1,0 +1,15 @@
+RHEVM-Elastic-Management Scripts
+
+REQUIRES: rhevm-sdk
+
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+
+rhev-vm-tax:
+	Description:
+
+This script creates a table with configured information from VM
+(CPU/RAM/HDD) and it's average CPU/RAM usage for month specified so it can
+be used for tax purposes.  Table can be copied/pasted over a spreadsheet to
+perform additional calculations prior to invoicing end user
+
+
