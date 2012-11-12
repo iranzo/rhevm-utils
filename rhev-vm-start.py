@@ -73,7 +73,7 @@ def process_cluster(cluster):
 
   # Get host list from this cluster
   query = "cluster = %s" % api.clusters.get(id=cluster.id).name
-  for host in listhosts(api,query):
+  for host in listhosts(api, query):
     if host.cluster.id == cluster.id:
       hosts_in_cluster.append(host.id)
 
@@ -83,12 +83,12 @@ def process_cluster(cluster):
 
   #Populate the list of tags and VM's
   query = "cluster = %s" % api.clusters.get(id=cluster.id).name
-  for vm in listvms(api,query):
+  for vm in listvms(api, query):
     if vm.cluster.id == cluster.id:
       vms_in_cluster.append(vm.id)
 
   query = "cluster = %s and tag = elas_manage" % api.clusters.get(id=cluster.id).name
-  for vm in listvms(api,query):
+  for vm in listvms(api, query):
     if vm.cluster.id == cluster.id:
       if vm.tags.get("elas_manage"):
           # Add the VM Id to the list of VMS to manage in this cluster
@@ -155,7 +155,7 @@ def process_cluster(cluster):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
   #Check if we have defined needed tags and create them if missing
-  check_tags(api,options)
+  check_tags(api, options)
 
   # TAGALL?
   #Add elas_maint TAG to every single vm to automate the management

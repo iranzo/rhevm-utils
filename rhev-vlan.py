@@ -90,7 +90,7 @@ if __name__ == "__main__":
         print "Network %s already attached to cluster" % red.name
 
     query = "cluster = %s" % api.clusters.get(id=cluster.id).name
-    for host in listhosts(api,query):
+    for host in listhosts(api, query):
       if host.cluster.id == cluster.id:
         if options.verbosity > 4:    
           print "Host %s is in cluster" % host.name

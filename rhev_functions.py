@@ -26,7 +26,7 @@ from ovirtsdk.api import API
 from ovirtsdk.xml import params
 
 #FUNCTIONS
-def check_tags(api,options):
+def check_tags(api, options):
   """Checks if required tags have been already defined and creates them if missing"""
   if options.verbosity >= 1:
     print "Looking for tags prior to start..."
@@ -43,7 +43,7 @@ def check_tags(api,options):
 
   return
 
-def migra(api,options,vm, action=None):
+def migra(api, options, vm, action=None):
   """Initiates migration action of the vm to specified host or automatically if None"""
   if not action:
     try:
@@ -74,7 +74,7 @@ def migra(api,options,vm, action=None):
         print "Exiting on max loop retries"
   return
 
-def vmused(api,vm):
+def vmused(api, vm):
   """Returns amount of memory used by the VM from Agent if installed or configured if not"""
   # Get memory usage from agent
   used = vm.statistics.get("memory.used").values.value[0].datum
@@ -84,7 +84,7 @@ def vmused(api,vm):
 
   return used
 
-def listvms(api,oquery=""):
+def listvms(api, oquery=""):
   """Returns a list of VM's based on query"""
   vms = []
   page = 0
@@ -97,7 +97,7 @@ def listvms(api,oquery=""):
     for vm in tanda:
       yield vm
 
-def listhosts(api,oquery=""):
+def listhosts(api, oquery=""):
   """Returns a list of Hosts based on query"""
   hosts = []
   page = 0
