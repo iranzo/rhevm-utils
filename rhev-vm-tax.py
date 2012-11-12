@@ -173,7 +173,7 @@ if __name__ == "__main__":
   if not options.name:
     data = []
     data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)"])
-    for vm in listvms():
+    for vm in listvms(api):
       try:
         data.append(VMdata(vm.name))
       except:

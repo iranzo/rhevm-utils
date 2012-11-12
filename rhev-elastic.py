@@ -164,7 +164,7 @@ def process_cluster(clusid):
   hosts_with_vms = 0
 
   query = "cluster = %s" % api.clusters.get(id=clusid).name
-  for host in listhosts(query):
+  for host in listhosts(api,query):
     if host.tags.get(name="elas_manage"):
       vms = api.hosts.get(id=host.id).summary.total
       status = "discarded"
@@ -284,7 +284,7 @@ def process_cluster(clusid):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
   #Check if we have defined needed tags and create them if missing
-  check_tags()
+  check_tags(api)
 
   # TAGALL?
   #Add elas_maint TAG to every single host to automate the management
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     if options.verbosity >= 1:
       print "Tagging all hosts with elas_manage"
 
-    for host in listhosts():
+    for host in listhosts(api):
       try:
         host.tags.add(params.Tag(name="elas_manage"))
       except:
@@ -302,7 +302,7 @@ if __name__ == "__main__":
   #Sanity checks
   ## Check hosts with elas_maint tag and status active
   query = "tag = elas_maint and status = up"
-  for host in listhosts(query):
+  for host in listhosts(api,query):
     if host.status.state == "up":
       if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
         if options.verbosity >= 1:

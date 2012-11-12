@@ -76,7 +76,7 @@ def process_cluster(cluster):
   
   # Get host list from this cluster
   query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name
-  for host in listhosts(query):
+  for host in listhosts(api,query):
     if host.cluster.id == cluster.id:
       if host.status.state == "up":
         hosts_in_cluster.append(host.id)
@@ -91,7 +91,7 @@ def process_cluster(cluster):
   
   #Populate the list of tags and VM's
   query = "cluster = %s and status = up and tag = elas_manage" % api.clusters.get(id=cluster.id).name
-  for vm in listvms(query):
+  for vm in listvms(api,query):
     if vm.cluster.id == cluster.id:
       if vm.status.state == "up":
         if not vm.tags.get("elas_manage"):
@@ -187,7 +187,7 @@ def process_cluster(cluster):
         maquina.update()
             
         #Migrate VM to target HOST to satisfy rules
-        migra(api.vms.get(name=vm), params.Action(host=api.hosts.get(id=target)))
+        migra(api,options,api.vms.get(name=vm), params.Action(host=api.hosts.get(id=target)))
         tags_vm_used.add(target)        
       else:
         if options.verbosity > 4:
@@ -208,14 +208,14 @@ def process_cluster(cluster):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
   #Check if we have defined needed tags and create them if missing
-  check_tags()
+  check_tags(api)
 
   # TAGALL?
   #Add elas_maint TAG to every single vm to automate the management
   if options.tagall == 1:
     if options.verbosity >= 1:
       print "Tagging all VM's with elas_manage"
-    for vm in listvms():
+    for vm in listvms(api):
       try:
         vm.tags.add(params.Tag(name="elas_manage"))
       except:
@@ -225,7 +225,7 @@ if __name__ == "__main__":
   # CLEANUP
   # Remove pinning from vm's in down state to allow to start in any host
   query = "status = down"
-  for vm in listvms(query):
+  for vm in listvms(api,query):
     if vm.status.state == "down":
         if vm.tags.get("elas_manage"):
           for tag in vm.tags.list():

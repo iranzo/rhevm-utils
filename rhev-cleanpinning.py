@@ -52,7 +52,7 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 def process_cluster(clusid):
   """Processes cluster with specified cluster ID"""
   query = "cluster = %s" % api.clusters.get(id=clusid).name
-  for vm in listvms(query):
+  for vm in listvms(api,query):
     if vm.cluster.id == clusid:
       if vm.tags.get("elas_manage"):
         for tag in vm.tags.list():
