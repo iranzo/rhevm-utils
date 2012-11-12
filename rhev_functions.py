@@ -111,4 +111,3 @@ def listhosts(oquery=""):
     for host in tanda:
       hosts.append(host)
   return(hosts)
-  
