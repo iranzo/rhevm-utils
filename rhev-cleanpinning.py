@@ -50,6 +50,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 def listvms(oquery=""):
+  """Returns a list of VM's based on query"""
   vms = []
   page = 0
   length = 100
@@ -64,6 +65,7 @@ def listvms(oquery=""):
   
 
 def process_cluster(clusid):
+  """Processes cluster with specified cluster ID"""
   query = "cluster = %s" % api.clusters.get(id=clusid).name
   for vm in listvms(query):
     if vm.cluster.id == clusid:

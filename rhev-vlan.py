@@ -51,6 +51,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 def listhosts(oquery=""):
+  """Returns a list of Hosts based on query"""
   hosts = []
   page = 0
   length = 100

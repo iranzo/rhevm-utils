@@ -64,6 +64,7 @@ except:
 
 
 def listvms(oquery=""):
+  """Returns a list of VM's based on query"""
   vms = []
   page = 0
   length = 100
@@ -113,6 +114,7 @@ dateend = "%s-%s-%s 23:59" % (year, month, endday)
 cur = con.cursor()
 
 def gatherVMdata(vmname):
+  """Obtans VM data from Postgres database and RHEV api"""
   # Get VM ID for the query
   vmid = api.vms.get(name=vmname).id
 
@@ -139,6 +141,7 @@ def gatherVMdata(vmname):
     return totcpu / totsample, totmemory / totsample
 
 def VMdata(vmname):
+  """Returns a list of VM data"""
   vm = api.vms.get(name=vmname)
   ## VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
   vmdata = []
@@ -157,6 +160,7 @@ def VMdata(vmname):
   return vmdata
 
 def HTMLRow(list):
+  """Returns an HTML row for a table"""
   table = "<tr>"
   for elem in list:
     table = table + "<td>%s</td>" % elem
@@ -164,6 +168,7 @@ def HTMLRow(list):
   return table
 
 def HTMLTable(listoflists):
+  """Returns an HTML table based on Rows"""
   table = "<table>"
   for elem in listoflists:
     table = table + HTMLRow(elem)

@@ -61,6 +61,7 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 #FUNCTIONS
 def listvms(oquery=""):
+  """Returns a list of VM's based on query"""
   vms = []
   page = 0
   length = 100
@@ -74,6 +75,7 @@ def listvms(oquery=""):
   return(vms)
 
 def listhosts(oquery=""):
+  """Returns a list of Hosts based on query"""
   hosts = []
   page = 0
   length = 100
@@ -87,6 +89,7 @@ def listhosts(oquery=""):
   return(hosts)
   
 def check_tags():
+  """Checks if the required tags have been already created"""
   if options.verbosity >= 1:
     print "Looking for tags elas_manage prior to start..."
 
@@ -98,6 +101,7 @@ def check_tags():
   return
 
 def migra(vm, action=None):
+  """Initiates migration action of the vm"""
   if not action:
     try:
       vm.migrate()
@@ -128,6 +132,7 @@ def migra(vm, action=None):
   return
 
 def vmused(vm):
+  """Returns amount of memory used by the VM"""
   # Get memory usage from agent
   used = vm.statistics.get("memory.used").values.value[0].datum
   if  used == 0:
@@ -137,6 +142,7 @@ def vmused(vm):
   return used
 
 def process_cluster(cluster):
+  """Processes cluster"""
   # Emtpy vars for further processing
   hosts_in_cluster = []
   vms_in_cluster = []

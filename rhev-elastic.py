@@ -70,6 +70,7 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 #FUNCTIONS
 def listhosts(oquery=""):
+  """Returns a list of Hosts based on query"""
   hosts = []
   page = 0
   length = 100
@@ -84,6 +85,7 @@ def listhosts(oquery=""):
 
 
 def check_tags():
+  """Checks if required tags have been created previously"""
   if options.verbosity >= 1:
     print "Looking for tags elas_manage and elas_maint prior to start..."
 
@@ -100,6 +102,7 @@ def check_tags():
   return
 
 def deactivate_host(target):
+  """Deactivates hosts putting it on maintenance"""
   host = api.hosts.get(id=target)
   # Shutting down one host at a time...
   if options.verbosity > 0:
@@ -146,6 +149,7 @@ def deactivate_host(target):
   return
 
 def activate_host(target):
+  "Reactivates host by removing associated tags and leaving maintenance mode"""
   # Activate  one host at a time...
   if options.verbosity > 0:
     print "Activating target %s" % target
@@ -173,6 +177,7 @@ def activate_host(target):
   return
 
 def process_cluster(clusid):
+  """Processes cluster"""
   if options.verbosity > 1:
     print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
     print "#############################################################################"

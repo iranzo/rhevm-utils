@@ -71,6 +71,7 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 #FUNCTIONS
 def listhosts(oquery=""):
+  """Returns a list of Hosts based on query"""
   hosts = []
   page = 0
   length = 100
@@ -84,6 +85,7 @@ def listhosts(oquery=""):
   return(hosts)  
 
 def activate_host(target):
+  """Activates host"""
   # Activate  one host at a time...
   if options.verbosity > 0:
     print "Activating target %s" % target
@@ -111,6 +113,7 @@ def activate_host(target):
   return  
 
 def process_cluster(clusid):
+  """Processes cluster"""
   enablable = []
   query = "status = maintenance and tag = elas_manage and tag = elas_main and cluster = %s" % api.clusters.get(id=clusid).name
   for host in listhosts(query):

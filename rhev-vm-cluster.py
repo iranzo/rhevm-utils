@@ -66,6 +66,7 @@ api = API(url=baseurl, username=options.username, password=options.password, ins
 
 #FUNCTIONS
 def listvms(oquery=""):
+  """Returns a list of VM's based on query"""
   vms = []
   page = 0
   length = 100
@@ -79,6 +80,7 @@ def listvms(oquery=""):
   return(vms)
   
 def listhosts(oquery=""):
+  """Returns a list of Hosts based on query"""
   hosts = []
   page = 0
   length = 100
@@ -92,6 +94,7 @@ def listhosts(oquery=""):
   return(hosts)  
 
 def check_tags():
+  """Checks if required tags have been already defined"""
   if options.verbosity >= 1:
     print "Looking for tags prior to start..."
 
@@ -108,6 +111,7 @@ def check_tags():
   return  
   
 def migra(vm, action=None):
+  """Migrates a VM to a specified target host or automatically if none"""
   if not action:
     try:
       vm.migrate()
@@ -137,6 +141,7 @@ def migra(vm, action=None):
   return
   
 def process_cluster(cluster):
+  """Processes cluster"""
   # Emtpy vars for further processing
   hosts_in_cluster = []
   vms_in_cluster = []
