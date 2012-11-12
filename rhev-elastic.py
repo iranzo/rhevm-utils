@@ -284,7 +284,7 @@ def process_cluster(clusid):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
   #Check if we have defined needed tags and create them if missing
-  check_tags(api)
+  check_tags(api,options)
 
   # TAGALL?
   #Add elas_maint TAG to every single host to automate the management
