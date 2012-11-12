@@ -93,14 +93,13 @@ def gatherVMdata(vmname):
 
     return totcpu / totsample, totmemory / totsample
 
-def VMdata(vmname):
+def VMdata(vm):
   """Returns a list of VM data"""
-  vm = api.vms.get(name=vmname)
   ## VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
   vmdata = []
   vmdata.append(vm.name)
   vmdata.append(vm.memory / 1024 / 1024 / 1024)
-  vmramavg, vmcpuavg = gatherVMdata(vmname)
+  vmramavg, vmcpuavg = gatherVMdata(vm.name)
   vmdata.append(vmramavg)
   vmdata.append(vm.cpu.topology.cores)
   vmdata.append(vmcpuavg)
@@ -175,13 +174,13 @@ if __name__ == "__main__":
     data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)"])
     for vm in listvms(api):
       try:
-        data.append(VMdata(vm.name))
+        data.append(VMdata(vm))
       except:
         skip = 1
   else:
     data = []
-    data.append = (["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE"])
-    data.append(VMdata(options.name))
+    data.append(["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE"])
+    data.append(VMdata(api.vms.get(name=options.name)))
 
   print HTMLTable(data)
 
