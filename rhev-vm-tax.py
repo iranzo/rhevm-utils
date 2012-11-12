@@ -104,7 +104,7 @@ def VMdata(vmname):
   vmdata.append(vmramavg)
   vmdata.append(vm.cpu.topology.cores)
   vmdata.append(vmcpuavg)
-  storage = api.storagedomains.get(id=vm.disks.list()[0].storage_domains.storage_domain[0].id)
+  storage = api.storagedomains.get(id=vm.disks.list()[0].storage_domains.storage_domain[0].id).name
   vmdata.append(storage)
   tamanyo = 0
   for disk in vm.disks.list():
