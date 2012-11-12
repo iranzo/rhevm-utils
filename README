@@ -6,6 +6,8 @@ Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 
 Please, check individual README files for specific behaviour and description
 
+rhev_functions.py:		Common set of functions for usage by other scripts
+
 rhev-elastic.py:            	Manage hosts and power them off if unused
 rhev-vm-cluster.py:         	Use tags to migrate VM's away from each other (sort of anti-affinity)
 rhev-vlan.py:               	Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
