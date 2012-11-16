@@ -86,12 +86,15 @@ def gatherVMdata(vmname):
   else:
     for row in rows:
       id = "%s" % row[0]
-      cpu = "%i" % int(row[1])
-      memory = "%i" % int(row[2])
-      totcpu = int(totcpu) + int(cpu)
-      totmemory = int(totmemory) + int(memory)
+      cpu = "%f" % float(row[1])
+      memory = "%f" % float(row[2])
+      totcpu = float(totcpu) + float(cpu)
+      totmemory = float(totmemory) + float(memory)
 
-    return totcpu / totsample, totmemory / totsample
+    cpuavg="%.4f" % float(totcpu/totsample)
+    ramavg="%.4f" % float(totmemory/totsample)
+    
+    return cpuavg, ramavg
 
 def VMdata(vm):
   """Returns a list of VM data"""
