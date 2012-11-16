@@ -99,7 +99,7 @@ def VMdata(vm):
   vmdata = []
   vmdata.append(vm.name)
   vmdata.append(vm.memory / 1024 / 1024 / 1024)
-  vmramavg, vmcpuavg = gatherVMdata(vm.name)
+  vmcpuavg, vmramavg = gatherVMdata(vm.name)
   vmdata.append(vmramavg)
   vmdata.append(vm.cpu.topology.cores)
   vmdata.append(vmcpuavg)
