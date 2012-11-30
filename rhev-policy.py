@@ -12,7 +12,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
 import sys
@@ -51,32 +51,32 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
-# FUNCTIONS
 
+# FUNCTIONS
 def process_cluster(clusid):
-  """Processes cluster"""
-  if options.verbosity > 1:
-    print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
-    print "#############################################################################"
-    
-  cluster = api.clusters.get(id=clusid)
-  cluster.scheduling_policy.policy = options.policy
-  try:
-    cluster.update()
-  except:
-    if options.verbosity > 2:
-      print "Problem updating policy"
-    
-  #evenly_distributed
-  #power_saving
+    """Processes cluster"""
+    if options.verbosity > 1:
+        print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
+        print "#############################################################################"
+
+    cluster = api.clusters.get(id=clusid)
+    cluster.scheduling_policy.policy = options.policy
+    try:
+        cluster.update()
+    except:
+        if options.verbosity > 2:
+            print "Problem updating policy"
+
+    #evenly_distributed
+    #power_saving
 
 
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
 
-  if not options.cluster:
-    # Processing each cluster of our RHEVM
-    for cluster in api.clusters.list():
-      process_cluster(cluster.id)
-  else:
-    process_cluster(api.clusters.get(name=options.cluster).id)
+    if not options.cluster:
+        # Processing each cluster of our RHEVM
+        for cluster in api.clusters.list():
+            process_cluster(cluster.id)
+    else:
+        process_cluster(api.clusters.get(name=options.cluster).id)

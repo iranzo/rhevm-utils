@@ -14,7 +14,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
 # Goals:
@@ -27,8 +27,8 @@
 
 
 # tags behaviour
-#	 elas_manage: manage this host by using the elastic management script (EMS)
-#	 elas_maint : this host has been put on maintenance by the EMS
+#     elas_manage: manage this host by using the elastic management script (EMS)
+#     elas_maint : this host has been put on maintenance by the EMS
 
 import sys
 import getopt
@@ -67,70 +67,69 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 
-
-
 #FUNCTIONS
 def activate_host(target):
-  """Activates host from maintenance mode removing required tags"""
-  # Activate  one host at a time...
-  if options.verbosity > 0:
-    print "Activating target %s" % target
-   
-  #Remove elas_maint TAG to host
-  if not api.hosts.get(id=target).tags.get(name="elas_maint"):
-    try:
-      api.hosts.get(id=target).tags.get(name="elas_maint").delete()
-    except:
-      print "Error deleting tag elas_maint from host %s" % api.host.get(id=target).name
+    """Activates host from maintenance mode removing required tags"""
+    # Activate    one host at a time...
+    if options.verbosity > 0:
+        print "Activating target %s" % target
 
-  if api.hosts.get(id=target).status.state == "maintenance":
-    api.hosts.get(id=target).activate()
+    #Remove elas_maint TAG to host
+    if not api.hosts.get(id=target).tags.get(name="elas_maint"):
+        try:
+            api.hosts.get(id=target).tags.get(name="elas_maint").delete()
+        except:
+            print "Error deleting tag elas_maint from host %s" % api.host.get(id=target).name
 
-  #Get Host MAC
-  for nic in api.hosts.get(id=target).nics.list():
-    mac = nic.mac.get_address()
-    # By default, send wol using every single nic at RHEVM host
-    if mac != "":
-      comando = "for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" % mac
-      if options.verbosity >= 1:
-        print "Sending %s the power on action via %s" % (target, mac)
-      os.system(comando)
+    if api.hosts.get(id=target).status.state == "maintenance":
+        api.hosts.get(id=target).activate()
 
-  return  
+    #Get Host MAC
+    for nic in api.hosts.get(id=target).nics.list():
+        mac = nic.mac.get_address()
+        # By default, send wol using every single nic at RHEVM host
+        if mac != "":
+            comando = "for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" % mac
+            if options.verbosity >= 1:
+                print "Sending %s the power on action via %s" % (target, mac)
+            os.system(comando)
+
+    return
+
 
 def process_cluster(clusid):
-  """Processes cluster"""
-  enablable = []
-  query = "status = maintenance and tag = elas_manage and tag = elas_main and cluster = %s" % api.clusters.get(id=clusid).name
-  for host in listhosts(api, query):
-    if host.status.state == "maintenance":
-      if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
-        if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
-          if options.verbosity >= 1:
-            print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
-          enablable.append(host.id)   
+    """Processes cluster"""
+    enablable = []
+    query = "status = maintenance and tag = elas_manage and tag = elas_main and cluster = %s" % api.clusters.get(id=clusid).name
+    for host in listhosts(api, query):
+        if host.status.state == "maintenance":
+            if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
+                if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
+                    if options.verbosity >= 1:
+                        print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
+                    enablable.append(host.id)
 
-  number = 0
+    number = 0
 
-  while number < options.batch:
-    number = number + 1
-    victima = None
-    try:
-      victima = choice(enablable)
-      enablable.remove(victima)
-      if options.verbosity > 3:
-        print "Enabling host %s" % victima
-      activate_host(victima)
-    except:
-      if options.verbosity > 4:
-        print "No more hosts to enable"
+    while number < options.batch:
+        number = number + 1
+        victima = None
+        try:
+            victima = choice(enablable)
+            enablable.remove(victima)
+            if options.verbosity > 3:
+                print "Enabling host %s" % victima
+            activate_host(victima)
+        except:
+            if options.verbosity > 4:
+                print "No more hosts to enable"
 
 ################################ MAIN PROGRAM ############################
 #Sanity checks
 if __name__ == "__main__":
-  if not options.cluster:
-    # Processing each cluster of our RHEVM
-    for cluster in api.clusters.list():
-      process_cluster(cluster)
-  else:	
-    process_cluster(api.clusters.get(name=options.cluster))
+    if not options.cluster:
+        # Processing each cluster of our RHEVM
+        for cluster in api.clusters.list():
+            process_cluster(cluster)
+    else:
+        process_cluster(api.clusters.get(name=options.cluster))
