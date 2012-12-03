@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
-#
-# Description: Script for creating VM's
-#
-# Requires rhevm-sdk to work or RHEVM api equivalent
+# Description: Script for creating VM's via API
 #
 # This software is based on GPL code so:
 #
@@ -16,6 +12,15 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
+#
+# Requires rhevm-sdk to work or RHEVM api equivalent
+#
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+#
+# Contributors:
+# Vincent Van der Kussen  (vincent@vanderkussen.org)
+#
+
 
 import sys
 import getopt
