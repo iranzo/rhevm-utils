@@ -24,7 +24,7 @@ FICHEROSALVA="/etc/ovirt-engine/ /etc/sysconfig/ovirt-engine /etc/yum/pluginconf
 TIME=$(echo 7*24|bc)
 
 #Create folders just in case... (to be clustered friendly)
-[ -d $RUTALOCA ] || exit 1
+[ -d $RUTALOCAL ] || exit 1
 
 echo "Cleaning up files older than 7*24 hours"
 tmpwatch $TIME $RUTALOCAL
