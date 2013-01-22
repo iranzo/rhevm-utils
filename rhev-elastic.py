@@ -108,7 +108,7 @@ def deactivate_host(target):
         if options.verbosity >= 1:
             print "Sending %s the power action %s" % (host, options.action)
 
-        comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/rhevm/keys/rhevm_id_rsa root@%s %s " % (ip, options.action)
+        comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/ovirt-engine/keys/engine_id_rsa root@%s %s " % (ip, options.action)
 
         os.system(comando)
         os.system(comando)
