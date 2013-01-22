@@ -130,6 +130,6 @@ if __name__ == "__main__":
     if not options.cluster:
         # Processing each cluster of our RHEVM
         for cluster in api.clusters.list():
-            process_cluster(cluster)
+            process_cluster(cluster.id)
     else:
-        process_cluster(api.clusters.get(name=options.cluster))
+        process_cluster(api.clusters.get(name=options.cluster).id)
