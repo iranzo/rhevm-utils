@@ -15,7 +15,7 @@ RUTA=/var/backup/rhevm
 # /usr/bin/pg_restore -d $DDBB -c -U postgres < /path/to/DDBB_dump
 
 # Do not edit... only after each RHEV updated after checking new/modified configuration files for that release
-FICHEROSALVA="/etc/ovirt-engine/ /etc/sysconfig/ovirt-engine /etc/yum/pluginconf.d/versionlock.list  /etc/pki/ovirt-engine/  /usr/share/ovirt-engine/dbscripts/create_db.sh.log  /var/lib/ovirt-engine/backups  /var/lib/ovirt-engine/deployments  /usr/share/ovirt-engine-reports/default_master.properties  /root/.rnd  /usr/share/ovirt-engine-reports/reports/users/rhevm-002dadmin.xml /usr/share/jasperreports-server-pro/buildomatic"
+FICHEROSALVA="/etc/ovirt-engine/ /etc/sysconfig/ovirt-engine /etc/yum/pluginconf.d/versionlock.list  /etc/pki/ovirt-engine/   /var/lib/ovirt-engine/backups  /var/lib/ovirt-engine/deployments  /usr/share/ovirt-engine-reports/default_master.properties  /root/.rnd  /usr/share/ovirt-engine-reports/reports/users/rhevm-002dadmin.xml /usr/share/jasperreports-server-pro/buildomatic"
 
 
 
