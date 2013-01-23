@@ -36,6 +36,9 @@ tmpwatch $TIME $RUTALOCAL
 cd /usr/share/ovirt-engine/dbscripts
 sh backup.sh -l $RUTALOCAL -u postgres
 
+# Compress sql dumps
+gzip $RUTALOCAL/*.sql
+
 echo "Output file is $FILECONFIG"
 tar cjPpf $FILECONFIG $FICHEROSALVA 
 SALIDA="$?" 
