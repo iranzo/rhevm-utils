@@ -56,7 +56,7 @@ else
 fi
 
 echo "Output file is $FILEREPORTHIST" 
-/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILEREPORTHIST" rhevm_history
+/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILEREPORTHIST" ovirt_engine_history
 SALIDA="$?" 
 if [ "$SALIDA" == "0" ]
 then
