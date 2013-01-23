@@ -8,6 +8,9 @@
 RUTALOCAL="/var/lib/pgsql/rhevm" 
 
 FILECONFIG="$RUTALOCAL/config_$(date '+%Y%m%d_%R').tar.bz2" 
+FILEREPORT="$RUTALOCAL/dump_RHEVREPORTDB_BACKUP_$(date '+%Y%m%d_%R').sql.gz" 
+FILEREPORTHIST="$RUTALOCAL/dump_RHEVREPORTHISTDB_BACKUP_$(date '+%Y%m%d_%R').sql.gz" 
+
 RUTA=/var/backup/rhevm 
 
 
