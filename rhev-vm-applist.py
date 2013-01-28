@@ -49,7 +49,7 @@ p.add_option("-n", "--name", dest="name", help="VM name", metavar="name")
 baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
-con = psycopg2.connect(database='ovirt_engine_history', user=options.dbuser, password=options.dbpass)
+con = psycopg2.connect(database='engine', user=options.dbuser, password=options.dbpass)
 
 try:
     value = api.vms.list()
@@ -66,11 +66,11 @@ def gatherVMdata(vmname):
 
     # SQL Query for gathering date from range
     SQL = "select app_list as vm_apps from vm_dynamic where vm_guid='%s' ;" % vmid
-    
+
     cur.execute(SQL)
     rows = cur.fetchall()
-    
-    return rows
+
+    return rows[0]
 
 def VMdata(vm):
     """Returns a list of VM data"""
