@@ -19,7 +19,7 @@ rhev-poweron.py:         	Power on (remove maintenance) from all rhev_elastic ho
 rhev-vm-start.py:	 	Start VM specified or remaining VM's if specified is up
 rhev-vm-create.py:	 	Create a new VM with specified parameters
 rhev-vm-tax.py:			Create a table with information about last month usage and configured values for CPU/RAM/HDD
-
+rhev-vm-applist.py:		Create a table with information about VM's and apps reported by rhev-agent
 
 
 
