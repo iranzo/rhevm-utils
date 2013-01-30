@@ -72,9 +72,10 @@ def gatherVMdata(vmname):
 
     return rows[0]
 
+
 def VMdata(vm):
     """Returns a list of VM data"""
-    # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
+    # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
     vmdata = []
     vmdata.append(vm.name)
     vmdata.append(gatherVMdata(vm.name))
