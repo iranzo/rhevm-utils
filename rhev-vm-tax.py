@@ -36,7 +36,7 @@ p = optparse.OptionParser("rhev-vm-tax.py [arguments]", description=description)
 p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="redhat")
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="server", default="127.0.0.1")
-p.add_option("--dbuser", dest="dbuser", help="RHEV-M database user", metavar="dbuser", default="rhevm")
+p.add_option("--dbuser", dest="dbuser", help="RHEV-M database user", metavar="dbuser", default="engine")
 p.add_option("--dbpass", dest="dbpass", help="RHEV-M database password", metavar="dbpass", default="redhat")
 
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
