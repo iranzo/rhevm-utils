@@ -170,7 +170,7 @@ def process_cluster(cluster):
                                 if options.verbosity > 5:
                                     print "VM can be processed (not already in processed hosts)"
 
-                                host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                                host_free = api.hosts.get(id=host).max_scheduling_memory
                                 if host_free > vmused(api, maquina):
                                     # We've free space, move in there...
                                     if options.verbosity > 2:
@@ -204,7 +204,7 @@ def process_cluster(cluster):
                                         print "VM's to excomulgate: %s\n" % vms_to_excomulgate
 
                                     fits_in_ram = False
-                                    host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                                    host_free = api.hosts.get(id=host).max_scheduling_memory
                                     mem_to_free = host_free
                                     for virtual in vms_to_excomulgate:
                                         mem_to_free = mem_to_free + vmused(api, api.vms.get(name=virtual))
@@ -237,7 +237,7 @@ def process_cluster(cluster):
                                             vms_to_excomulgate.remove(victima)
                                             migra(api, options, api.vms.get(name=victima))
 
-                                        host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                                        host_free = api.hosts.get(id=host).max_scheduling_memory
                                         if host_free > vmused(api, maquina):
                                             # Enough RAM, exit loop to start moving in a new machine, if not, keep running to make more room
                                             keeplooping = False
@@ -252,7 +252,7 @@ def process_cluster(cluster):
                                     # Check new ram status
 
                                     # MV moved away, recheck ram to make it fit
-                                    host_free = api.hosts.get(id=host).statistics.get("memory.total").values.value[0].datum - api.hosts.get(id=host).statistics.get("memory.used").values.value[0].datum
+                                    host_free = api.hosts.get(id=host).max_scheduling_memory
 
                                     if options.verbosity > 5:
                                         print "Host free RAM %s" % host_free
