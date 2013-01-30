@@ -29,7 +29,6 @@ import os
 import time
 
 
-
 description = """
 vmcreate is a script for creating vm's based on specified values
 
