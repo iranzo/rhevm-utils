@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Author:    Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
-# Description: Script for accessing RHEV-M DB for gathering app list for a given VM 
+# Description: Script for accessing RHEV-M DB for gathering app list for a given VM
 #
 # Requires rhevm-sdk to work and psycopg2 (for PG access)
 #
