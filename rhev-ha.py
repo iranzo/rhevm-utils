@@ -56,7 +56,9 @@ except:
     print "Error accessing RHEV-M api, please check data and connection and retry"
     sys.exit(1)
 
-for vm in listvms():
+query=""
+
+for vm in listvms(api,query):
     if vm.high_availability.enabled is not True:
         vm.high_availability.enabled is True
         vm.memory_policy.guaranteed = 1 * 1024 * 1024
