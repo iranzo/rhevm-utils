@@ -51,16 +51,6 @@ else
 	rm -f "$FILECONFIG"
 fi
 
-/usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILEREPORT" rhevmreports
-SALIDA="$?" 
-if [ "$SALIDA" == "0" ]
-then
-	echo "Generated OK"
-else
-	echo "Generation failed, removing file"
-	rm -f "$FILEREPORT"
-fi
-
 echo "Output file is $FILEREPORTHIST" 
 /usr/bin/pg_dump -C -E UTF8  --disable-triggers -U postgres --format=p --compress=9 -f "$FILEREPORTHIST" ovirt_engine_history
 SALIDA="$?" 
