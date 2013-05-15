@@ -53,7 +53,7 @@ def getvminfo(host, vmid, display, root):
     cmd["displayNetwork"] = display
     disks = []
     for child in root:
-        if child.tag == "Section" and "ovf: DiskSection_Type" in child.attrib.values():
+        if child.tag == "Section" and "ovf:DiskSection_Type" in child.attrib.values():
             for disk in child.findall("Disk"):
                 for info in disk.attrib:
                     if "boot" in info:
@@ -74,7 +74,7 @@ def getvminfo(host, vmid, display, root):
             cmd["display"] = "qxl"
         sections = content.findall("Section")
         for hardware in sections:
-            if "ovf: VirtualHardwareSection_Type" in hardware.attrib.values():
+            if "ovf:VirtualHardwareSection_Type" in hardware.attrib.values():
                 macs = []
                 nicnames = []
                 bridges = []
