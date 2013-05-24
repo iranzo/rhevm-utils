@@ -39,7 +39,7 @@ p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostna
 p.add_option("--dbuser", dest="dbuser", help="RHEV-M database user", metavar="dbuser", default="engine")
 p.add_option("--dbpass", dest="dbpass", help="RHEV-M database password", metavar="dbpass", default="redhat")
 
-p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
 p.add_option("-n", "--name", dest="name", help="VM name", metavar="name")
 

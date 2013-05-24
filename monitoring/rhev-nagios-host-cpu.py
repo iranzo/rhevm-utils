@@ -38,7 +38,7 @@ p = optparse.OptionParser("rhev-nagios-host-cpu.py [arguments]", description=des
 p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
-p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="8443", default="8443")
+p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
 p.add_option("--host", dest="host", help="Show messages while running", metavar='host')
 
