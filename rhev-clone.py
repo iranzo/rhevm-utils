@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
         print 'Waiting for VM to reach Down status'
         while api.vms.get(NEW_VM_NAME).status.state != 'down':
-            sleep(1)
+            time.sleep(1)
 
     except Exception as e:
         print 'Failed to create VM from Template:\n%s' % str(e)
