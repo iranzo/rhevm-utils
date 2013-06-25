@@ -55,6 +55,7 @@ def snapclone_to_export(api, vmname):
     name = vmmame
 
     vm = api.vms.get(name=name)
+    cluster=api.clusters.get(id=vm.cluster.id)
 
     if not vm:
         print "VM %s not found" % vmname
@@ -76,16 +77,13 @@ def snapclone_to_export(api, vmname):
     # Create new VM from SNAPSHOT (NOT WORKING AT THE MOMENT)
     newname = "%s-deleteme"
 
-    api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=api.clusters.get(name="Default"), template=api.templates.get(name="Blank")))
+    api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=cluster, template=api.templates.get(name="Blank")))
     # Wait for create to finish
     while api.vms.get(name=newname).status.state == "image_locked":
         sleep(1)
 
-    # Get Cluster:
-    cluster = vm.cluster.id
-
     # DC
-    dc = api.datacenters.get(id=api.clusters.get(id=cluster).data_center.id)
+    dc = api.datacenters.get(id=cluster.data_center.id)
 
     # Get Export domain from our DC
     for sd in dc.storagedomains.list():
@@ -106,8 +104,6 @@ def snapclone_to_export(api, vmname):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
     NEW_VM_NAME = options.name
-    CLUSTER_NAME = options.cluster
-    TEMPLATE_NAME = options.template
 
     try:
         snapclone_to_export(api, vm=options.name)
