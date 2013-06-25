@@ -28,7 +28,7 @@ from ovirtsdk.xml import params
 from rhev_functions import *
 
 description = """
-RHEV-clone is a script for creating clones based from a template
+RHEV-vm-clone-to-export is a script for creating clones based from a vm snapshot
 
 """
 
