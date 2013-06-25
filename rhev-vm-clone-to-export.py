@@ -48,39 +48,36 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
 
 
-def snapclone_to_export(api, vmname):
-    """Generates a snapshot of a VM, clones it, then exports, and removes the temporary VM"""    
+def snapclone_to_export(api, vm):
+    """Generates a snapshot of a VM, clones it, then exports, and removes the temporary VM"""
 
     # GET VM
-    name = vmmame
-
-    vm = api.vms.get(name=name)
-    cluster=api.clusters.get(id=vm.cluster.id)
+    cluster = api.clusters.get(id=vm.cluster.id)
 
     if not vm:
-        print "VM %s not found" % vmname
+        print "VM %s not found" % vm.name
         sys.exit(1)
 
     # Create new snapshot
     vm.snapshots.add(params.Snapshot(description="Preexport", vm=vm))
 
     # Wait for snapshot to finish
-    while api.vms.get(name=name).status.state == "image_locked":
-        sleep(1)
+    while api.vms.get(name=vm.name).status.state == "image_locked":
+        time.sleep(1)
 
     # Get snapshot object
-    snap = api.vms.get(name=name).snapshots.list(description="Preexport")[0]
+    snap = api.vms.get(name=vm.name).snapshots.list(description="Preexport")[0]
 
     # Build snapshots collection
     snapshots = params.Snapshots(snapshot=[params.Snapshot(id=snap.id)])
 
     # Create new VM from SNAPSHOT (NOT WORKING AT THE MOMENT)
-    newname = "%s-deleteme"
+    newname = "%s-deleteme" % vm.name
 
     api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=cluster, template=api.templates.get(name="Blank")))
     # Wait for create to finish
     while api.vms.get(name=newname).status.state == "image_locked":
-        sleep(1)
+        time.sleep(1)
 
     # DC
     dc = api.datacenters.get(id=cluster.data_center.id)
@@ -94,7 +91,7 @@ def snapclone_to_export(api, vmname):
     api.vms.get(name=newname).export(params.Action(storage_domain=sd))
     # Wait for create to finish
     while api.vms.get(name=newname).status.state == "image_locked":
-        sleep(1)
+        time.sleep(1)
 
     api.vms.get(name=newname).delete()
 
@@ -104,9 +101,8 @@ def snapclone_to_export(api, vmname):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
     NEW_VM_NAME = options.name
-
     try:
-        snapclone_to_export(api, vm=options.name)
+        snapclone_to_export(api, vm=api.vms.get(name=options.name))
         print 'VM was exported succesfully"'
 
     except Exception as e:
