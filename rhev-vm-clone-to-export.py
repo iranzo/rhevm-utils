@@ -101,6 +101,10 @@ def snapclone_to_export(api, vm):
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
     NEW_VM_NAME = options.name
+    if not options.name:
+        print "VM name is required"
+        sys.exit(1)
+        
     try:
         snapclone_to_export(api, vm=api.vms.get(name=options.name))
         print 'VM was exported succesfully"'
