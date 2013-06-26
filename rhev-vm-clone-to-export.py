@@ -61,16 +61,16 @@ def snapclone_to_export(api, vm):
     # Create new snapshot
     if options.verbosity > 0:
         print "Creating snapshot..."
-       
+
     vm.snapshots.add(params.Snapshot(description="Preexport", vm=vm))
 
     # Wait for snapshot to finish
-    i=0
+    i = 0
     while api.vms.get(name=vm.name).status.state == "image_locked":
         if options.verbosity > 0:
             print "waiting for snapshot to finish %s..." % i
         time.sleep(1)
-        i=i+1
+        i = i+1
 
     # Get snapshot object
     snap = api.vms.get(name=vm.name).snapshots.list(description="Preexport")[0]
@@ -85,11 +85,11 @@ def snapclone_to_export(api, vm):
             print "Creating new VM based on snapshot..."
     api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=cluster, template=api.templates.get(name="Blank")))
     # Wait for create to finish
-    i=0
+    i = 0
     while api.vms.get(name=newname).status.state == "image_locked":
         if options.verbosity > 0:
             print "Waiting for creation to finish..."
-        i=i+1
+        i = i+1
         time.sleep(1)
 
     # DC
@@ -106,9 +106,9 @@ def snapclone_to_export(api, vm):
     api.vms.get(name=newname).export(params.Action(storage_domain=sd))
 
     # Wait for create to finish
-    i=0
+    i = 0
     while api.vms.get(name=newname).status.state == "image_locked":
-        i=i+1
+        i = i+1
         if options.verbosity > 0:
             print "waiting for export to finish..."
         time.sleep(1)
@@ -120,7 +120,7 @@ def snapclone_to_export(api, vm):
     if options.verbosity > 0:
         print "Deleting temporary snapshot..."
         print "NOT YET SUPPORTED BY RHEV API"
-    
+
     return
 
 
@@ -131,15 +131,15 @@ if __name__ == "__main__":
         print "VM name is required"
         sys.exit(1)
 
-    valid=False
+    valid = False
     if api.get_product_info().version.major >= 3:
         if api.get_product_info().version.minor >= 2:
-            valid=True
+            valid = True
 
     if not valid:
         print "This functionality requires api >= 3.2"
         sys.exit(1)
-       
+
     try:
         snapclone_to_export(api, vm=api.vms.get(name=options.name))
         print 'VM was exported succesfully"'
