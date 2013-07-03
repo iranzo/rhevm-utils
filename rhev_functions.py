@@ -27,6 +27,14 @@ from ovirtsdk.xml import params
 
 
 #FUNCTIONS
+def check_version(api, major, minor):
+    """Checks if required version or higher is installed"""
+    valid = False
+    if api.get_product_info().version.major >= major:
+        if api.get_product_info().version.minor >= minor:
+            valid = True
+    return valid
+
 def check_tags(api, options):
     """Checks if required tags have been already defined and creates them if missing"""
     if options.verbosity >= 1:

@@ -69,7 +69,7 @@ def snapclone_to_export(api, vm):
     while api.vms.get(name=vm.name).status.state == "image_locked":
         if options.verbosity > 0:
             print "waiting for snapshot to finish %s..." % i
-        time.sleep(1)
+        time.sleep(10)
         i = i+1
 
     # Get snapshot object
@@ -84,25 +84,33 @@ def snapclone_to_export(api, vm):
     if options.verbosity > 0:
             print "Creating new VM based on snapshot..."
     api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=cluster, template=api.templates.get(name="Blank")))
+
     # Wait for create to finish
     i = 0
     while api.vms.get(name=newname).status.state == "image_locked":
         if options.verbosity > 0:
             print "Waiting for creation to finish..."
         i = i+1
-        time.sleep(1)
+        time.sleep(10)
 
     # DC
     dc = api.datacenters.get(id=cluster.data_center.id)
 
     # Get Export domain from our DC
+    export = None
+
     for sd in dc.storagedomains.list():
         if sd.type_ == "export":
             export = sd
 
-    # Export cloned VM to export domain for backup
+    if not export:
+        print "Export domain required, and none found, exitting..."
+        sys.exit(1)
+
     if options.verbosity > 0:
         print "Exporting cloned VM to export domain..."
+
+    # Export cloned VM to export domain for backup
     api.vms.get(name=newname).export(params.Action(storage_domain=sd))
 
     # Wait for create to finish
@@ -111,7 +119,7 @@ def snapclone_to_export(api, vm):
         i = i+1
         if options.verbosity > 0:
             print "waiting for export to finish..."
-        time.sleep(1)
+        time.sleep(10)
 
     if options.verbosity > 0:
             print "Deleting temporary VM..."
@@ -131,12 +139,7 @@ if __name__ == "__main__":
         print "VM name is required"
         sys.exit(1)
 
-    valid = False
-    if api.get_product_info().version.major >= 3:
-        if api.get_product_info().version.minor >= 2:
-            valid = True
-
-    if not valid:
+    if not check_version(api, major=3, minor=2):
         print "This functionality requires api >= 3.2"
         sys.exit(1)
 
