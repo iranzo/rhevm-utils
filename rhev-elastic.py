@@ -299,7 +299,7 @@ if __name__ == "__main__":
 
     #Sanity checks
     ## Check hosts with elas_maint tag and status active
-    query = ""
+    query = "status = up"
     for host in listhosts(api, query):
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
