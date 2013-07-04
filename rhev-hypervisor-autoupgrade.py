@@ -298,7 +298,7 @@ if __name__ == "__main__":
 
     #Sanity checks
     ## Check hosts with elas_upgrade tag and status active
-    query = "tag = elas_upgrade and status = up"
+    query = ""
     for host in listhosts(api, query):
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_upgrade"):
@@ -307,7 +307,7 @@ if __name__ == "__main__":
                 api.hosts.get(id=host.id).tags.get(name="elas_upgrade").delete()
 
     ## Check hosts with elas_maint tag and status active
-    query = "tag = elas_maint and status = up"
+    query = ""
     for host in listhosts(api, query):
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
