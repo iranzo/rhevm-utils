@@ -121,7 +121,7 @@ def upgrade_host(target):
                 time.sleep(1)
             i = i + 1
 
-        # if host is listed as installation failed, enable it as this is a pending BZ
+        # if host is listed as installation failed, enable it as this is a pending BZ, and probably host is OK
         if api.hosts.get(id=target).status.state == "install_failed":
             api.hosts.get(id=target).activate()
 
