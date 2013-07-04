@@ -117,7 +117,7 @@ def upgrade_host(target):
                 i = options.delay
             else:
                 if options.verbosity > 6:
-                    print "Host still not on maintenance... sleeping"
+                    print "Host still not up... sleeping"
                 time.sleep(1)
             i = i + 1
 
@@ -149,18 +149,15 @@ def get_max_version():
         version = None
     #Couldn't get version from disk, get it from the API
     if not version:
-        versions = []
-        releases = []
+        maxversion=None
         # FIXME only query rhev-h hosts
         for host in listhosts(api, oquery=""):
-            version = host.os.version.full_version.split("-")[1].strip()  # 20130528.0.el6_4
-            release = host.os.version.full_version.split("-")[0].strip()  # 6.4
-            if version not in versions:
-                versions.append(version)
-            if release not in releases:
-                releases.append(release)
+            if host.os.version.full_version > maxversion:
+                maxversion=host.os.version.full_version
+                version = maxversion.split("-")[1].strip()  # 20130528.0.el6_4
+                release = maxversion.split("-")[0].strip()  # 6.4
         try:
-            version = "rhevh-%s-%s.iso" % (sorted(releases, key=lambda x: x[1], reverse=False)[0], sorted(versions, key=lambda x: x[1], reverse=False)[0])
+            version = "rhevh-%s-%s.iso" % (release,version)
         except:
             version = None
 
