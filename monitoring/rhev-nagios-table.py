@@ -48,7 +48,7 @@ p.add_option("-t", "--table", dest="table", help="Output file in CSV format", me
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 ################################ MAIN PROGRAM ############################

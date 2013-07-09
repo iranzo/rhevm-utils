@@ -48,7 +48,7 @@ p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to pro
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 def process_cluster(clusid):

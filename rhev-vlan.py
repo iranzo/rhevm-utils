@@ -48,7 +48,7 @@ p.add_option('-b', "--bond", dest="bond", help="Bond to create under", metavar='
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True)
+api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 if __name__ == "__main__":
     dc = options.datacenter
