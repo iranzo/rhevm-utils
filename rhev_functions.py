@@ -22,8 +22,8 @@ import os
 import time
 import operator
 
-
 from ovirtsdk.xml import params
+from ovirtsdk.api import API
 
 
 #FUNCTIONS
@@ -34,15 +34,18 @@ def check_version(api, major, minor):
         if api.get_product_info().version.minor >= minor:
             valid = True
     return valid
-    
-def apilogin(url,username,password,insecure=True,persistent_auth=True, session_timeout=3600)
+
+
+def apilogin(url, username, password, insecure=True, persistent_auth=True, session_timeout=3600):
+    api = None
     try:
-        api=API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+        api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
     except:
         print "Error while logging in with supplied credentials, please check and try again"
         sys.exit(1)
-        
+
     return api
+
 
 def check_tags(api, options):
     """Checks if required tags have been already defined and creates them if missing"""
@@ -98,7 +101,7 @@ def vmused(api, vm):
     """Returns amount of memory used by the VM from Agent if installed or configured if not"""
     # Get memory usage from agent
     used = vm.statistics.get("memory.used").values.value[0].datum
-    if    used == 0:
+    if used == 0:
         #If no value received, return installed memory
         used = vm.statistics.get("memory.installed").values.value[0].datum
 

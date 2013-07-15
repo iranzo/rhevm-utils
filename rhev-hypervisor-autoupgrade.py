@@ -149,15 +149,15 @@ def get_max_version():
         version = None
     #Couldn't get version from disk, get it from the API
     if not version:
-        maxversion=None
+        maxversion = None
         # FIXME only query rhev-h hosts
         for host in listhosts(api, oquery=""):
             if host.os.version.full_version > maxversion:
-                maxversion=host.os.version.full_version
+                maxversion = host.os.version.full_version
                 version = maxversion.split("-")[1].strip()  # 20130528.0.el6_4
                 release = maxversion.split("-")[0].strip()  # 6.4
         try:
-            version = "rhevh-%s-%s.iso" % (release,version)
+            version = "rhevh-%s-%s.iso" % (release, version)
         except:
             version = None
 
