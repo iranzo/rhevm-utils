@@ -59,13 +59,13 @@ p.add_option("--vmserv", dest="vmserv", help="Service Network to use", metavar="
 
 (options, args) = p.parse_args()
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from rhev_functions import *
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 try:
     value = api.hosts.list()

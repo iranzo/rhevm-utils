@@ -22,9 +22,10 @@ import optparse
 import os
 import time
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from random import choice
+from rhev_functions import *
 
 description = """
 RHEV-nagios-table-host output  is a script for querying RHEVM via API to get host status

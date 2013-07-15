@@ -22,9 +22,10 @@ import optparse
 import os
 import time
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from random import choice
+from rhev_functions import *
 
 description = """
 RHEV-nagios-host output  is a script for querying RHEVM via API to get host status
@@ -46,7 +47,7 @@ p.add_option("--host", dest="host", help="Show messages while running", metavar=
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 ################################ MAIN PROGRAM ############################

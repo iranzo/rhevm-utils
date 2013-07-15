@@ -23,7 +23,7 @@ import optparse
 import os
 import time
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from rhev_functions import *
 
@@ -45,7 +45,7 @@ p.add_option("-n", "--name", dest="name", help="VM name", metavar="name", defaul
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 def snapclone_to_export(api, vm):

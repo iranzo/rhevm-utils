@@ -23,7 +23,7 @@ import time
 import calendar
 import datetime
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from rhev_functions import *
 
@@ -48,7 +48,7 @@ p.add_option("-n", "--name", dest="name", help="VM name", metavar="name")
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 con = psycopg2.connect(database='engine', user=options.dbuser, password=options.dbpass)
 
 try:

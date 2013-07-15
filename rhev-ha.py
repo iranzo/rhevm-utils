@@ -24,7 +24,7 @@ import os
 import time
 import subprocess
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from random import choice
 from rhev_functions import *
@@ -48,7 +48,7 @@ p.add_option("--ha", dest="ha", help="High Availability enabled", metavar="ha", 
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 try:
     value = api.hosts.list()

@@ -24,9 +24,10 @@ import optparse
 import os
 import time
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from random import choice
+from rhev_functions import *
 
 description = """
 RHEV-nagios-table is a script for querying RHEV-M status and put in on a table for later querying
@@ -48,7 +49,7 @@ p.add_option("-t", "--table", dest="table", help="Output file in CSV format", me
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 ################################ MAIN PROGRAM ############################

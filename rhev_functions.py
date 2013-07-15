@@ -22,7 +22,7 @@ import os
 import time
 import operator
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 
 
@@ -34,6 +34,15 @@ def check_version(api, major, minor):
         if api.get_product_info().version.minor >= minor:
             valid = True
     return valid
+    
+def apilogin(url,username,password,insecure=True,persistent_auth=True, session_timeout=3600)
+    try:
+        api=API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+    except:
+        print "Error while logging in with supplied credentials, please check and try again"
+        sys.exit(1)
+        
+    return api
 
 def check_tags(api, options):
     """Checks if required tags have been already defined and creates them if missing"""

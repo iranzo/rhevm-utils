@@ -33,7 +33,7 @@ import optparse
 import os
 import time
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from rhev_functions import *
 
@@ -59,7 +59,7 @@ p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to pro
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 #FUNCTIONS

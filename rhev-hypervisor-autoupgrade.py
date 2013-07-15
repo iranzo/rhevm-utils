@@ -33,7 +33,7 @@ import os
 import time
 import glob
 
-from ovirtsdk.api import API
+
 from ovirtsdk.xml import params
 from random import choice
 from rhev_functions import *
@@ -63,7 +63,7 @@ p.add_option('-d', "--delay", dest="delay", help="Set delay to way until activat
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
 
 
 #FUNCTIONS
