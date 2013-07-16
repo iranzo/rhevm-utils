@@ -52,7 +52,6 @@ p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
-p.add_option("-a", "--action", dest="action", help="Power action to execute", metavar="action", default="pm-suspend")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
 p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 p.add_option('-t', "--tagall", dest="tagall", help="Tag all hosts with elas_manage", metavar='0/1', default=0, type='int')
