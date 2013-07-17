@@ -141,7 +141,7 @@ def get_max_version():
     for fichero in glob.glob("/usr/share/rhev-hypervisor/rhevh-6.*.iso"):
         file = fichero.split("/")[-1]
         if file > version:
-            version=file
+            version = file
 
     #Couldn't get version from disk, get it from the API
     if not version:

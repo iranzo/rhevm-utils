@@ -38,7 +38,7 @@ def check_version(api, major, minor):
 
 def apilogin(url, username, password, insecure=True, persistent_auth=True, session_timeout=36000):
     api = None
-    
+
     try:
         api = API(url=url, username=username, password=password, insecure=insecure, persistent_auth=persistent_auth, session_timeout=session_timeout)
     except:
