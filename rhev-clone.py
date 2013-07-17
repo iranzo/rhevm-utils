@@ -58,7 +58,7 @@ p.add_option("-t", "--template", dest="template", help="VM template", metavar="t
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 ################################ MAIN PROGRAM ############################
 #Check if we have defined needed tags and create them if missing

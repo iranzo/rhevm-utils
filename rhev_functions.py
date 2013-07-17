@@ -36,7 +36,7 @@ def check_version(api, major, minor):
     return valid
 
 
-def apilogin(url, username, password, insecure=True, persistent_auth=True, session_timeout=3600):
+def apilogin(url, username, password, insecure=True, persistent_auth=True, session_timeout=36000):
     api = None
     
     try:

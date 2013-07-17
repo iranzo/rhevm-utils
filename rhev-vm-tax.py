@@ -53,7 +53,7 @@ p.add_option("-y", "--year", dest="year", help="Year to gather data from", metav
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password)
 con = psycopg2.connect(database='ovirt_engine_history', user=options.dbuser, password=options.dbpass)
 
 try:

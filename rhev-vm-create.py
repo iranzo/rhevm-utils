@@ -65,7 +65,7 @@ from rhev_functions import *
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 try:
     value = api.hosts.list()

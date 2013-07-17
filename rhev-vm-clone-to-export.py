@@ -45,7 +45,7 @@ p.add_option("-n", "--name", dest="name", help="VM name", metavar="name", defaul
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
 def snapclone_to_export(api, vm):

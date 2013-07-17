@@ -62,7 +62,7 @@ p.add_option('-d', "--delay", dest="delay", help="Set delay to way until activat
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
-api = apilogin(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
 #FUNCTIONS
