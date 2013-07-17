@@ -38,8 +38,9 @@ def check_version(api, major, minor):
 
 def apilogin(url, username, password, insecure=True, persistent_auth=True, session_timeout=3600):
     api = None
+    
     try:
-        api = API(url=baseurl, username=options.username, password=options.password, insecure=True, persistent_auth=True, session_timeout=3600)
+        api = API(url=url, username=username, password=password, insecure=insecure, persistent_auth=persistent_auth, session_timeout=session_timeout)
     except:
         print "Error while logging in with supplied credentials, please check and try again"
         sys.exit(1)

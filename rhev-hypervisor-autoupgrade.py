@@ -138,14 +138,11 @@ def get_max_version():
 
     available = []
     # Check all available hypervisor versions on disk (only on RHEV-M host)
-    for fichero in glob.glob("/usr/share/rhev-hypervisor/rhevh*.iso"):
+    for fichero in glob.glob("/usr/share/rhev-hypervisor/rhevh-6.*.iso"):
         file = fichero.split("/")[-1]
-        available.append(file)
+        if file > version:
+            version=file
 
-    try:
-        version = sorted(available, key=lambda x: x[1], reverse=False)[0]
-    except:
-        version = None
     #Couldn't get version from disk, get it from the API
     if not version:
         maxversion = None
