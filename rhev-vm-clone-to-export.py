@@ -16,6 +16,9 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+# Contributors:
+# Ian Lochrin LOCHRINI at stgeorge.com.au
+
 
 import sys
 import getopt
@@ -50,6 +53,7 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 def snapclone_to_export(api, vm):
     """Generates a snapshot of a VM, clones it, then exports, and removes the temporary VM"""
+    description = "Preexport-%s" % time.mktime(time.gmtime())
 
     # GET VM
     cluster = api.clusters.get(id=vm.cluster.id)
@@ -62,7 +66,7 @@ def snapclone_to_export(api, vm):
     if options.verbosity > 0:
         print "Creating snapshot..."
 
-    vm.snapshots.add(params.Snapshot(description="Preexport", vm=vm))
+    vm.snapshots.add(params.Snapshot(description=description, vm=vm))
 
     # Wait for snapshot to finish
     i = 0
@@ -73,7 +77,7 @@ def snapclone_to_export(api, vm):
         i = i+1
 
     # Get snapshot object
-    snap = api.vms.get(name=vm.name).snapshots.list(description="Preexport")[0]
+    snap = api.vms.get(name=vm.name).snapshots.list(description=description)[0]
 
     # Build snapshots collection
     snapshots = params.Snapshots(snapshot=[params.Snapshot(id=snap.id)])
@@ -111,7 +115,7 @@ def snapclone_to_export(api, vm):
         print "Exporting cloned VM to export domain..."
 
     # Export cloned VM to export domain for backup
-    api.vms.get(name=newname).export(params.Action(storage_domain=sd))
+    api.vms.get(name=newname).export(params.Action(storage_domain=export))
 
     # Wait for create to finish
     i = 0
