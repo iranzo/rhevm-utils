@@ -97,7 +97,7 @@ def gatherVMdata(vmname):
 
 def VMdata(vm):
     """Returns a list of VM data"""
-    # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
+    # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE, HOST
     vmdata = []
     vmdata.append(vm.name)
     vmdata.append(vm.memory / 1024 / 1024 / 1024)
@@ -111,6 +111,12 @@ def VMdata(vm):
     for disk in vm.disks.list():
         tamanyo = tamanyo + disk.size / 1024 / 1024 / 1024
     vmdata.append(tamanyo)
+    try:
+        host=api.hosts.get(id=vm.host.id).name
+    except:
+        host=none
+    vmdata.append(host)
+    
     return vmdata
 
 
@@ -173,7 +179,7 @@ if __name__ == "__main__":
 
     if not options.name:
         data = []
-        data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)"])
+        data.append(["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)","HOST"])
         for vm in listvms(api):
             try:
                 data.append(VMdata(vm))
@@ -181,7 +187,7 @@ if __name__ == "__main__":
                 skip = 1
     else:
         data = []
-        data.append(["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE"])
+        data.append(["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE","HOST"])
         data.append(VMdata(api.vms.get(name=options.name)))
 
     print HTMLTable(data)
