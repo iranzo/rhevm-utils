@@ -82,6 +82,13 @@ def snapclone_to_export(api, vm):
     # Build snapshots collection
     snapshots = params.Snapshots(snapshot=[params.Snapshot(id=snap.id)])
 
+    i = 0
+    while api.vms.get(name=vm.name).snapshots.get(id=snap.id).snapshot_status != "ok":
+        if options.verbosity > 0:
+            print "waiting for snapshot to finish %s..." % i
+        time.sleep(10)
+        i = i+1
+
     # Create new VM from SNAPSHOT (NOT WORKING AT THE MOMENT)
     newname = "%s-deleteme" % vm.name
 
@@ -137,6 +144,12 @@ def snapclone_to_export(api, vm):
 
 
 ################################ MAIN PROGRAM ############################
+#
+# Uncomment for debug the exception creation
+#
+#snapclone_to_export(api, vm=api.vms.get(name=options.name))
+#sys.exit(0)
+
 if __name__ == "__main__":
     NEW_VM_NAME = options.name
     if not options.name:
