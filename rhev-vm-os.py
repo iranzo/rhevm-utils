@@ -141,7 +141,7 @@ def process_cluster(cluster):
         tag = sorted_tag[i]
         if tag not in ordered_tags:
             ordered_tags.append(tag)
-        i = i + 1
+        i += 1
 
     sorted_tag = ordered_tags
 
@@ -192,7 +192,7 @@ def process_cluster(cluster):
 
                                     while j <= i:
                                         os_not_to_excomulgate.append(sorted_tag[j])
-                                        j = j + 1
+                                        j += 1
 
                                     # Fill list with vms that can be moved away
                                     vms_to_excomulgate = []
@@ -268,7 +268,7 @@ def process_cluster(cluster):
                                         if options.verbosity > 2:
                                             print "Not enough ram, hopping to next host"
             hosts_used.append(host)
-        i = i + 1
+        i += 1
     return
 
 ################################ MAIN PROGRAM ############################

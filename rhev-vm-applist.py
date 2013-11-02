@@ -62,15 +62,15 @@ except:
 
 
 ################################ FUNCTIONS        ############################
-def gatherVMdata(vmname):
+def gathervmdata(vmname):
     """Obtans VM data from Postgres database and RHEV api"""
     # Get VM ID for the query
     vmid = api.vms.get(name=vmname).id
 
-    # SQL Query for gathering date from range
-    SQL = "select app_list as vm_apps from vm_dynamic where vm_guid='%s' ;" % vmid
+    # sql Query for gathering date from range
+    sql = "select app_list as vm_apps from vm_dynamic where vm_guid='%s' ;" % vmid
 
-    cur.execute(SQL)
+    cur.execute(sql)
     rows = cur.fetchall()
 
     return rows[0]
@@ -79,9 +79,7 @@ def gatherVMdata(vmname):
 def VMdata(vm):
     """Returns a list of VM data"""
     # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
-    vmdata = []
-    vmdata.append(vm.name)
-    vmdata.append(gatherVMdata(vm.name))
+    vmdata = [vm.name, gathervmdata(vm.name)]
     return vmdata
 
 
@@ -89,8 +87,8 @@ def HTMLRow(list):
     """Returns an HTML row for a table"""
     table = "<tr>"
     for elem in list:
-        table = table + "<td>%s</td>" % elem
-    table = table + "</tr>"
+        table += "<td>%s</td>" % elem
+    table += "</tr>"
     return table
 
 
@@ -98,8 +96,8 @@ def HTMLTable(listoflists):
     """Returns an HTML table based on Rows"""
     table = "<table>"
     for elem in listoflists:
-        table = table + HTMLRow(elem)
-    table = table + "</table>"
+        table += HTMLRow(elem)
+    table += "</table>"
     return table
 
 ################################ MAIN PROGRAM ############################
@@ -112,17 +110,14 @@ if __name__ == "__main__":
     print "<head><title>VM Table</title></head><body>"
 
     if not options.name:
-        data = []
-        data.append(["Name", "App list"])
+        data = [["Name", "App list"]]
         for vm in listvms(api):
             try:
                 data.append(VMdata(vm))
             except:
                 skip = 1
     else:
-        data = []
-        data.append(["VMNAME", "APP list"])
-        data.append(VMdata(api.vms.get(name=options.name)))
+        data = [["VMNAME", "APP list"], VMdata(api.vms.get(name=options.name))]
 
     print HTMLTable(data)
 

@@ -119,8 +119,8 @@ def process_cluster(cluster):
                 tags_with_more_than_one.append(tag.name)
 
     if options.verbosity > 3:
-        print "\nTAGS/VM organization: %s" % tags_vm
-        print "TAGS with more than one vm: %s" % tags_with_more_than_one
+        print("\nTAGS/VM organization: %s" % tags_vm)
+        print("TAGS with more than one vm: %s" % tags_with_more_than_one)
 
     tags_to_manage = []
 

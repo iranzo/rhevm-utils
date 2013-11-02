@@ -107,7 +107,7 @@ def upgrade_host(target):
             if options.verbosity > 6:
                 print "Host still not on maintenance... sleeping"
             time.sleep(2)
-        i = i + 1
+        i += 1
 
     if api.hosts.get(id=target).status.state == "maintenance":
         #Execute upgrade for host with latest available version
@@ -128,7 +128,7 @@ def upgrade_host(target):
                 if options.verbosity > 6:
                     print "Host still not up... sleeping"
                 time.sleep(1)
-            i = i + 1
+            i += 1
 
         # if host is listed as installation failed, enable it as this is a pending BZ, and probably host is OK
         if api.hosts.get(id=target).status.state == "install_failed":
@@ -232,19 +232,19 @@ def process_cluster(clusid):
                     print "Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status)
 
                 #Counters
-                hosts_total = hosts_total + inc
+                hosts_total += inc
 
                 if host.status.state == "up":
-                    hosts_up = hosts_up + inc
+                    hosts_up += inc
                     if vms == 0:
-                        hosts_without_vms = hosts_without_vms + inc
+                        hosts_without_vms += inc
                     else:
-                        hosts_with_vms = hosts_with_vms + inc
+                        hosts_with_vms += inc
                 else:
                     if host.status.state == "maintenance":
-                        hosts_maintenance = hosts_maintenance + inc
+                        hosts_maintenance += inc
                     else:
-                        hosts_other = hosts_other + inc
+                        hosts_other += inc
 
     if options.verbosity >= 1:
         if hosts_total > 0:

@@ -36,20 +36,9 @@ p.add_option('-f', "--file", dest="file", help="OVF file to parse",
 def getvminfo(host, vmid, display, root):
     """Parses XML tree to gather all the information from VM"""
 
-    cmd = {}
-    cmd["vmId"] = vmid
-    cmd["kvmEnable"] = "True"
-    cmd["vmType"] = "kvm"
-    cmd["tabletEnable"] = "True"
-    cmd["vmEnable"] = "True"
-    cmd["irqChip"] = "True"
-    cmd["nice"] = 0
-    cmd["keyboardLayout"] = "en-us"
-    cmd["acpiEnable"] = "True"
-    cmd["display"] = "qxl"
-    cmd["displayIp"] = host
-    cmd["spiceMonitors"] = "1"
-    cmd["displayNetwork"] = display
+    cmd = {"vmId": vmid, "kvmEnable": "True", "vmType": "kvm", "tabletEnable": "True", "vmEnable": "True",
+           "irqChip": "True", "nice": 0, "keyboardLayout": "en-us", "acpiEnable": "True", "display": "qxl",
+           "displayIp": host, "spiceMonitors": "1", "displayNetwork": display}
     disks = []
     for child in root:
         if child.tag == "Section" and "ovf:DiskSection_Type" in child.attrib.values():
@@ -114,7 +103,7 @@ def getvminfo(host, vmid, display, root):
         cmd["drives"].append(disk)
         cmd["drives"][counter]["domainID"] = diskdomids[counter]
         cmd["drives"][counter]["poolID"] = diskpoolids[counter]
-        counter = counter + 1
+        counter += 1
 
     cmd["memSize"] = memory
     cmd["smpCoresPerSocket"] = cpuspersocket

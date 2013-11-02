@@ -62,7 +62,7 @@ def process_cluster(clusid):
                     if tag.name[0:8] == "cluster_":
                         if vm.placement_policy.affinity != "migratable":
                             if options.verbosity > 1:
-                                print "VM %s pinning removed" % vm.name
+                                print("VM %s pinning removed" % vm.name)
                         vm.placement_policy.affinity = "migratable"
                         vm.placement_policy.host = params.Host()
                         vm.update()

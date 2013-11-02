@@ -80,7 +80,7 @@ def snapclone_to_export(api, vm):
         if options.verbosity > 0:
             print "waiting for snapshot to finish %s..." % i
         time.sleep(10)
-        i = i+1
+        i += 1
 
     # Get snapshot object
     snap = api.vms.get(name=vm.name).snapshots.list(description=description)[0]
@@ -93,7 +93,7 @@ def snapclone_to_export(api, vm):
         if options.verbosity > 0:
             print "waiting for snapshot to finish %s..." % i
         time.sleep(10)
-        i = i+1
+        i += 1
 
     # Create new VM from SNAPSHOT (NOT WORKING AT THE MOMENT)
     newname = "%s-deleteme" % vm.name
@@ -107,7 +107,7 @@ def snapclone_to_export(api, vm):
     while api.vms.get(name=newname).status.state == "image_locked":
         if options.verbosity > 0:
             print "Waiting for creation to finish..."
-        i = i+1
+        i += 1
         time.sleep(10)
 
     # DC
@@ -133,7 +133,7 @@ def snapclone_to_export(api, vm):
     # Wait for create to finish
     i = 0
     while api.vms.get(name=newname).status.state == "image_locked":
-        i = i+1
+        i += 1
         if options.verbosity > 0:
             print "waiting for export to finish..."
         time.sleep(10)

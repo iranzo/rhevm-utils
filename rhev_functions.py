@@ -85,7 +85,7 @@ def migra(api, options, vm, action=None):
         if options.verbosity > 8:
             print "VM migration loop %s" % counter
         time.sleep(10)
-        counter = counter + 1
+        counter += 1
 
         if counter > 12:
             loop = False
@@ -111,7 +111,7 @@ def listvms(api, oquery=""):
     page = 0
     length = 100
     while (length > 0):
-        page = page + 1
+        page += 1
         query = "%s page %s" % (oquery, page)
         tanda = api.vms.list(query=query)
         length = len(tanda)
@@ -125,7 +125,7 @@ def listhosts(api, oquery=""):
     page = 0
     length = 100
     while (length > 0):
-        page = page + 1
+        page += 1
         query = "%s page %s" % (oquery, page)
         tanda = api.hosts.list(query=query)
         length = len(tanda)

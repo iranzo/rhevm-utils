@@ -118,7 +118,7 @@ def process_cluster(clusid):
     number = 0
 
     while number < options.batch:
-        number = number + 1
+        number += 1
         victima = None
         try:
             victima = choice(enablable)

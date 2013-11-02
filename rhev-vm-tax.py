@@ -105,9 +105,7 @@ def gatherVMdata(vmname):
 def VMdata(vm):
     """Returns a list of VM data"""
     # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE, HOST
-    vmdata = []
-    vmdata.append(vm.name)
-    vmdata.append(vm.memory / 1024 / 1024 / 1024)
+    vmdata = [vm.name, vm.memory / 1024 / 1024 / 1024]
     vmcpuavg, vmramavg = gatherVMdata(vm.name)
     vmdata.append(vmramavg)
     vmdata.append(vm.cpu.topology.cores)
@@ -116,7 +114,7 @@ def VMdata(vm):
     vmdata.append(storage)
     tamanyo = 0
     for disk in vm.disks.list():
-        tamanyo = tamanyo + disk.size / 1024 / 1024 / 1024
+        tamanyo += disk.size / 1024 / 1024 / 1024
     vmdata.append(tamanyo)
     try:
         host = api.hosts.get(id=vm.host.id).name
@@ -131,8 +129,8 @@ def HTMLRow(list):
     """Returns an HTML row for a table"""
     table = "<tr>"
     for elem in list:
-        table = table + "<td>%s</td>" % elem
-    table = table + "</tr>"
+        table += "<td>%s</td>" % elem
+    table += "</tr>"
     return table
 
 
@@ -140,8 +138,8 @@ def HTMLTable(listoflists):
     """Returns an HTML table based on Rows"""
     table = "<table>"
     for elem in listoflists:
-        table = table + HTMLRow(elem)
-    table = table + "</table>"
+        table += HTMLRow(elem)
+    table += "</table>"
     return table
 
 ################################ MAIN PROGRAM ############################
@@ -162,7 +160,7 @@ if __name__ == "__main__":
             month = now.month - 1
         else:
             month = 12
-            year = year - 1
+            year -= 1
     else:
         month = options.month
 
@@ -185,18 +183,16 @@ if __name__ == "__main__":
     print "<head><title>VM Table</title></head><body>"
 
     if not options.name:
-        data = []
-        data.append(
-            ["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)", "HOST"])
+        data = [
+            ["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)", "HOST"]]
         for vm in listvms(api):
             try:
                 data.append(VMdata(vm))
             except:
                 skip = 1
     else:
-        data = []
-        data.append(["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE", "HOST"])
-        data.append(VMdata(api.vms.get(name=options.name)))
+        data = [["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE", "HOST"],
+                VMdata(api.vms.get(name=options.name))]
 
     print HTMLTable(data)
 
