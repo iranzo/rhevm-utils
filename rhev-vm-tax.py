@@ -66,20 +66,20 @@ con = psycopg2.connect(database='ovirt_engine_history', user=options.dbuser, pas
 try:
     value = api.vms.list()
 except:
-    print "Error accessing RHEV-M api, please check data and connection and retry"
+    print("Error accessing RHEV-M api, please check data and connection and retry")
     sys.exit(1)
 
 
 ################################ FUNCTIONS        ############################
-def gatherVMdata(vmname):
+def gathervmdata(vmname):
     """Obtans VM data from Postgres database and RHEV api"""
     # Get VM ID for the query
     vmid = api.vms.get(name=vmname).id
 
     # SQL Query for gathering date from range
-    SQL = "select history_datetime as DateTime, cpu_usage_percent as CPU, memory_usage_percent as Memory from vm_daily_history where vm_id='%s' and history_datetime >= '%s' and history_datetime <= '%s' ;" % (vmid, datestart, dateend)
+    sql = "select history_datetime as DateTime, cpu_usage_percent as CPU, memory_usage_percent as Memory from vm_daily_history where vm_id='%s' and history_datetime >= '%s' and history_datetime <= '%s' ;" % (vmid, datestart, dateend)
 
-    cur.execute(SQL)
+    cur.execute(sql)
     rows = cur.fetchall()
 
     totcpu = 0
@@ -90,7 +90,7 @@ def gatherVMdata(vmname):
         return 0, 0
     else:
         for row in rows:
-            id = "%s" % row[0]
+            ident = "%s" % row[0]
             cpu = "%f" % float(row[1])
             memory = "%f" % float(row[2])
             totcpu = float(totcpu) + float(cpu)
@@ -102,11 +102,11 @@ def gatherVMdata(vmname):
         return cpuavg, ramavg
 
 
-def VMdata(vm):
+def vmdata(vm):
     """Returns a list of VM data"""
     # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE, HOST
     vmdata = [vm.name, vm.memory / 1024 / 1024 / 1024]
-    vmcpuavg, vmramavg = gatherVMdata(vm.name)
+    vmcpuavg, vmramavg = gathervmdata(vm.name)
     vmdata.append(vmramavg)
     vmdata.append(vm.cpu.topology.cores)
     vmdata.append(vmcpuavg)
@@ -125,20 +125,20 @@ def VMdata(vm):
     return vmdata
 
 
-def HTMLRow(list):
+def htmlrow(lista):
     """Returns an HTML row for a table"""
     table = "<tr>"
-    for elem in list:
+    for elem in lista:
         table += "<td>%s</td>" % elem
     table += "</tr>"
     return table
 
 
-def HTMLTable(listoflists):
+def htmltable(listoflists):
     """Returns an HTML table based on Rows"""
     table = "<table>"
     for elem in listoflists:
-        table += HTMLRow(elem)
+        table += htmlrow(elem)
     table += "</table>"
     return table
 
@@ -179,24 +179,24 @@ if __name__ == "__main__":
     # Open connection
     cur = con.cursor()
 
-    print "<html>"
-    print "<head><title>VM Table</title></head><body>"
+    print("<html>")
+    print("<head><title>VM Table</title></head><body>")
 
     if not options.name:
         data = [
             ["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)", "HOST"]]
         for vm in listvms(api):
             try:
-                data.append(VMdata(vm))
+                data.append(vmdata(vm))
             except:
                 skip = 1
     else:
         data = [["VMNAME", "VMRAM", "VM RAM AVG", "VM CPU", "VM CPU AVG", "VM Storage", "HDD SIZE", "HOST"],
-                VMdata(api.vms.get(name=options.name))]
+                vmdata(api.vms.get(name=options.name))]
 
-    print HTMLTable(data)
+    print(htmltable(data))
 
     if con:
         con.close()
 
-    print "</body></html>"
+    print("</body></html>")

@@ -57,7 +57,7 @@ con = psycopg2.connect(database='engine', user=options.dbuser, password=options.
 try:
     value = api.vms.list()
 except:
-    print "Error accessing RHEV-M api, please check data and connection and retry"
+    print("Error accessing RHEV-M api, please check data and connection and retry")
     sys.exit(1)
 
 
@@ -76,27 +76,27 @@ def gathervmdata(vmname):
     return rows[0]
 
 
-def VMdata(vm):
+def vmdata(vm):
     """Returns a list of VM data"""
     # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
     vmdata = [vm.name, gathervmdata(vm.name)]
     return vmdata
 
 
-def HTMLRow(list):
+def htmlrow(lista):
     """Returns an HTML row for a table"""
     table = "<tr>"
-    for elem in list:
+    for elem in lista:
         table += "<td>%s</td>" % elem
     table += "</tr>"
     return table
 
 
-def HTMLTable(listoflists):
+def htmltable(listoflists):
     """Returns an HTML table based on Rows"""
     table = "<table>"
     for elem in listoflists:
-        table += HTMLRow(elem)
+        table += htmlrow(elem)
     table += "</table>"
     return table
 
@@ -106,22 +106,22 @@ if __name__ == "__main__":
     # Open connection
     cur = con.cursor()
 
-    print "<html>"
-    print "<head><title>VM Table</title></head><body>"
+    print("<html>")
+    print("<head><title>VM Table</title></head><body>")
 
     if not options.name:
         data = [["Name", "App list"]]
         for vm in listvms(api):
             try:
-                data.append(VMdata(vm))
+                data.append(vmdata(vm))
             except:
                 skip = 1
     else:
-        data = [["VMNAME", "APP list"], VMdata(api.vms.get(name=options.name))]
+        data = [["VMNAME", "APP list"], vmdata(api.vms.get(name=options.name))]
 
-    print HTMLTable(data)
+    print(htmltable(data))
 
     if con:
         con.close()
 
-    print "</body></html>"
+    print("</body></html>")

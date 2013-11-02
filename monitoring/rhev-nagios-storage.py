@@ -52,10 +52,10 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 try:
   sd = api.storagedomains.get(name=options.storage)
 except:
-  print "Storage Domain %s not found" % options.storage
+  print("Storage Domain %s not found" % options.storage)
   
 if not sd:
-  print "Storage Domain %s not found" % options.storage
+  print("Storage Domain %s not found" % options.storage)
   sys.exit(3)
   
 #NAGIOS PRIOS:
@@ -77,5 +77,5 @@ if percentage >= 90:
 else:
   retorno = 0
 
-print percentage
+print(percentage)
 sys.exit(retorno)

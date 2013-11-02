@@ -13,23 +13,23 @@ DEV_MAPPER_PATH = "/dev/mapper"
 DEV_DIRECTLUN_PATH = '/dev/directlun'
 NUM_OF_PCI = 27
 
-def indexToDiskName(i):
+def indextodiskname(i):
     s = ''
     while True:
         s = chr(ord('a') + i % 26) + s
-        i = i / 26
+        i /= 26
         if i == 0:
             break
     return 'vd' + (s or 'a')
 
 def createDiskElement(domxml, devpath, lunid, options):
-    '''
+    """
     <disk device="disk" type="block">
         <source dev="/dev/mapper/lunid"/>
         <target bus="virtio" dev="vda"/>
         <driver cache="none" error_policy="stop" name="qemu" type="raw"/>
     </disk>
-    '''
+    """
 
     disk = domxml.createElement('disk')
     disk.setAttribute('device', 'disk')
@@ -48,8 +48,8 @@ def createDiskElement(domxml, devpath, lunid, options):
         disks.append(d.getElementsByTagName('target')[0].getAttribute('dev'))
 
     for i in range(0, NUM_OF_PCI):
-        if not indexToDiskName(i) in disks:
-            target.setAttribute('dev', indexToDiskName(i))
+        if not indextodiskname(i) in disks:
+            target.setAttribute('dev', indextodiskname(i))
             break
 
     disk.appendChild(target)
@@ -84,7 +84,7 @@ def createDirectory(dirpath):
 
 
 def cloneDeviceNode(srcpath, devpath):
-    '''Clone a device node into a temporary private location.'''
+    """Clone a device node into a temporary private location."""
 
     # we don't use os.remove/mknod/chmod/chown because we need sudo
     command = ['/bin/rm', '-f', devpath]

@@ -20,19 +20,19 @@ def indexToDiskName(i):
     s = ''
     while True:
         s = chr(ord('a') + i % 26) + s
-        i = i / 26
+        i /= 26
         if i == 0:
             break
     return 'vd' + (s or 'a')
 
 def createDiskElement(domxml, devpath, drivertype):
-    '''
+    """
     <disk device="disk" type="file">
         <source file="/net/myhost/myimage.img"/>
         <target bus="virtio" dev="vda"/>
         <driver cache="none" error_policy="stop" name="qemu" type="qcow2"/>
     </disk>
-    '''
+    """
 
     disk = domxml.createElement('disk')
     disk.setAttribute('device', 'disk')

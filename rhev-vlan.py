@@ -71,43 +71,43 @@ if __name__ == "__main__":
     try:
         red = api.networks.add(nueva)
     except:
-        print "ERROR creating VLAN %s with ID %s" % (vlanname, vlan)
+        print("ERROR creating VLAN %s with ID %s" % (vlanname, vlan))
 
     red = api.networks.get(name=vlanname)
 
     if not red:
-        print "Network %s was not found, exitting" % vlanname
+        print("Network %s was not found, exitting" % vlanname)
         sys.exit(1)
 
     if red.name != vlanname:
-        print "ERROR Found network is not the same as the VLAN we're trying to add!!!!"
+        print("ERROR Found network is not the same as the VLAN we're trying to add!!!!")
         sys.exit(1)
 
     if options.cluster:
         if options.verbosity > 4:
-            print "Attaching network %s to cluster" % red.name
+            print("Attaching network %s to cluster" % red.name)
         cluster = api.clusters.get(name=options.cluster)
         try:
             cluster.networks.add(red)
         except:
             if options.verbosity > 4:
-                print "Network %s already attached to cluster" % red.name
+                print("Network %s already attached to cluster" % red.name)
 
         query = "cluster = %s" % api.clusters.get(id=cluster.id).name
         for host in listhosts(api, query):
             if host.cluster.id == cluster.id:
                 if options.verbosity > 4:
-                    print "Host %s is in cluster" % host.name
+                    print("Host %s is in cluster" % host.name)
                 accion = params.Action(network=params.Network(name=red.name))
                 tarjeta = host.nics.get(name=options.bond)
                 try:
                     tarjeta.attach(accion)
                 except:
                     if options.verbosity > 4:
-                        print "Error attaching network %s to NIC %s" % (red.name, tarjeta.name)
+                        print("Error attaching network %s to NIC %s" % (red.name, tarjeta.name))
 
                 try:
                     host.commitnetconfig()
                 except:
                     if options.verbosity > 4:
-                        print "Error commiting network    %s config    to host %s" % (red.name, host.name)
+                        print("Error commiting network    %s config    to host %s" % (red.name, host.name))

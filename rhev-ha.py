@@ -57,7 +57,7 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 try:
     value = api.hosts.list()
 except:
-    print "Error accessing RHEV-M api, please check data and connection and retry"
+    print("Error accessing RHEV-M api, please check data and connection and retry")
     sys.exit(1)
 
 query = ""
@@ -68,6 +68,6 @@ for vm in listvms(api, query):
         vm.memory_policy.guaranteed = 1 * 1024 * 1024
         try:
             vm.update()
-            print "VM %s updated" % vm.name
+            print("VM %s updated" % vm.name)
         except:
-            print "Failure updating VM HA %s" % vm.name
+            print("Failure updating VM HA %s" % vm.name)

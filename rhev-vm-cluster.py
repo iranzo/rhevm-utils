@@ -86,8 +86,8 @@ def process_cluster(cluster):
                 hosts_in_cluster.append(host.id)
 
     if options.verbosity > 2:
-        print "\nProcessing cluster %s..." % cluster.name
-        print "##############################################"
+        print("\nProcessing cluster %s..." % cluster.name)
+        print("##############################################")
 
     #Create the empty set of vars that we'll populate later
     for tag in api.tags.list():
@@ -100,14 +100,14 @@ def process_cluster(cluster):
             if vm.status.state == "up":
                 if not vm.tags.get("elas_manage"):
                     if options.verbosity > 3:
-                        print "VM %s is discarded because it has no tag elas_manage" % vm.name
+                        print("VM %s is discarded because it has no tag elas_manage" % vm.name)
                 else:
                     # Add the VM Id to the list of VMS to manage in this cluster
                     vms_in_cluster.append(vm.id)
                     for tag in vm.tags.list():
                         if tag.name[0:8] == "cluster_":
                             if options.verbosity > 3:
-                                print "VM %s in cluster %s has tag %s" % (vm.name, cluster.name, tag.name)
+                                print("VM %s in cluster %s has tag %s" % (vm.name, cluster.name, tag.name))
                             # Put the TAG in the list of used for this cluster and put the VM to the ones with this tag
                             tags_in_cluster.append(tag.id)
                             tags_vm[tag.name].append(vm.name)
@@ -127,10 +127,10 @@ def process_cluster(cluster):
     for etiqueta in tags_with_more_than_one:
         if len(tags_vm[etiqueta]) > len(hosts_in_cluster):
             if options.verbosity > 3:
-                print "\nMore VM's with tag than available hosts for tag %s, will do as much as I can..." % etiqueta
+                print("\nMore VM's with tag than available hosts for tag %s, will do as much as I can..." % etiqueta)
         else:
             if options.verbosity > 3:
-                print "\nContinuing for tag %s" % etiqueta
+                print("\nContinuing for tag %s" % etiqueta)
         if etiqueta[0:8] == "cluster_":
             tags_to_manage.append(etiqueta)
 
@@ -139,22 +139,22 @@ def process_cluster(cluster):
     tags_in_cluster = tags
 
     if options.verbosity > 3:
-        print "Hosts in cluster:"
-        print hosts_in_cluster
+        print("Hosts in cluster:")
+        print(hosts_in_cluster)
 
-        print "Vm's in cluster"
-        print vms_in_cluster
+        print("Vm's in cluster")
+        print(vms_in_cluster)
 
-        print "Tags in cluster"
-        print tags_in_cluster
+        print("Tags in cluster")
+        print(tags_in_cluster)
 
     for etiqueta in tags_to_manage:
         tags_vm_used = set([])
         if options.verbosity > 3:
-            print "Managing tag %s" % etiqueta
+            print("Managing tag %s" % etiqueta)
         for vm in tags_vm[etiqueta]:
             if options.verbosity > 4:
-                print "Processing vm %s for tag %s at host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name)
+                print("Processing vm %s for tag %s at host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name))
 
             #Set target as actual running host
             target = api.vms.get(name=vm).host.id
@@ -167,10 +167,10 @@ def process_cluster(cluster):
                 for host in hosts_in_cluster:
                     if host in tags_vm_used:
                         if options.verbosity > 4:
-                            print "Host %s used, skipping" % host
+                            print("Host %s used, skipping" % host)
                     else:
                         if options.verbosity > 4:
-                            print "Host %s not used, migrating there" % host
+                            print("Host %s not used, migrating there" % host)
                         # Setting new host
                         target = host
 
@@ -181,7 +181,7 @@ def process_cluster(cluster):
 
             if maquina.host.id != target:
                 if options.verbosity > 3:
-                    print "Processing vm %s for tag %s at host %s needs migration to host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name, nombre)
+                    print("Processing vm %s for tag %s at host %s needs migration to host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name, nombre))
                 # Allow migration
                 maquina.placement_policy.host = params.Host()
                 maquina.placement_policy.affinity = "migratable"
@@ -192,7 +192,7 @@ def process_cluster(cluster):
                 tags_vm_used.add(target)
             else:
                 if options.verbosity > 4:
-                    print "Skipping migration target=host"
+                    print("Skipping migration target=host")
 
             # Discard further migration of any machine
             maquina.placement_policy.affinity = "pinned"
@@ -201,7 +201,7 @@ def process_cluster(cluster):
                 maquina.update()
             except:
                 if options.verbosity > 4:
-                    print "Problem updating VM parameters for pinning"
+                    print("Problem updating VM parameters for pinning")
 
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
@@ -212,12 +212,12 @@ if __name__ == "__main__":
     #Add elas_maint TAG to every single vm to automate the management
     if options.tagall == 1:
         if options.verbosity >= 1:
-            print "Tagging all VM's with elas_manage"
+            print("Tagging all VM's with elas_manage")
         for vm in listvms(api):
             try:
                 vm.tags.add(params.Tag(name="elas_manage"))
             except:
-                print "Error adding elas_manage tag to vm %s" % vm.name
+                print("Error adding elas_manage tag to vm %s" % vm.name)
 
     # CLEANUP
     # Remove pinning from vm's in down state to allow to start in any host
@@ -228,7 +228,7 @@ if __name__ == "__main__":
                     for tag in vm.tags.list():
                         if tag.name[0:8] == "cluster_":
                             if options.verbosity >= 5:
-                                print "Cleaning VM %s pinning to allow to start on any host" % vm.name
+                                print("Cleaning VM %s pinning to allow to start on any host" % vm.name)
                             # If powered down, allow machine to be migratable so it can start on any host
                             maquina = vm
                             maquina.placement_policy.host = params.Host()
@@ -236,7 +236,7 @@ if __name__ == "__main__":
                             maquina.update()
                 if vm.tags.get("elas_start"):
                     if options.verbosity >= 5:
-                        print "VM %s should be running, starting..." % vm.name
+                        print("VM %s should be running, starting..." % vm.name)
                     # Start machine, as if it had host pinning it couldn't be autostarted using HA
                     vm.start()
 

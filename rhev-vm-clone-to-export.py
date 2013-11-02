@@ -65,12 +65,12 @@ def snapclone_to_export(api, vm):
     cluster = api.clusters.get(id=vm.cluster.id)
 
     if not vm:
-        print "VM %s not found" % vm.name
+        print("VM %s not found" % vm.name)
         sys.exit(1)
 
     # Create new snapshot
     if options.verbosity > 0:
-        print "Creating snapshot..."
+        print("Creating snapshot...")
 
     vm.snapshots.add(params.Snapshot(description=description, vm=vm))
 
@@ -78,7 +78,7 @@ def snapclone_to_export(api, vm):
     i = 0
     while api.vms.get(name=vm.name).status.state == "image_locked":
         if options.verbosity > 0:
-            print "waiting for snapshot to finish %s..." % i
+            print("waiting for snapshot to finish %s..." % i)
         time.sleep(10)
         i += 1
 
@@ -91,7 +91,7 @@ def snapclone_to_export(api, vm):
     i = 0
     while api.vms.get(name=vm.name).snapshots.get(id=snap.id).snapshot_status != "ok":
         if options.verbosity > 0:
-            print "waiting for snapshot to finish %s..." % i
+            print("waiting for snapshot to finish %s..." % i)
         time.sleep(10)
         i += 1
 
@@ -99,14 +99,14 @@ def snapclone_to_export(api, vm):
     newname = "%s-deleteme" % vm.name
 
     if options.verbosity > 0:
-            print "Creating new VM based on snapshot..."
+            print("Creating new VM based on snapshot...")
     api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=cluster, template=api.templates.get(name="Blank")))
 
     # Wait for create to finish
     i = 0
     while api.vms.get(name=newname).status.state == "image_locked":
         if options.verbosity > 0:
-            print "Waiting for creation to finish..."
+            print("Waiting for creation to finish...")
         i += 1
         time.sleep(10)
 
@@ -121,11 +121,11 @@ def snapclone_to_export(api, vm):
             export = sd
 
     if not export:
-        print "Export domain required, and none found, exitting..."
+        print("Export domain required, and none found, exitting...")
         sys.exit(1)
 
     if options.verbosity > 0:
-        print "Exporting cloned VM to export domain..."
+        print("Exporting cloned VM to export domain...")
 
     # Export cloned VM to export domain for backup
     api.vms.get(name=newname).export(params.Action(storage_domain=export))
@@ -135,16 +135,16 @@ def snapclone_to_export(api, vm):
     while api.vms.get(name=newname).status.state == "image_locked":
         i += 1
         if options.verbosity > 0:
-            print "waiting for export to finish..."
+            print("waiting for export to finish...")
         time.sleep(10)
 
     if options.verbosity > 0:
-            print "Deleting temporary VM..."
+            print("Deleting temporary VM...")
     api.vms.get(name=newname).delete()
 
     if options.verbosity > 0:
-        print "Deleting temporary snapshot..."
-        print "NOT YET SUPPORTED BY RHEV API"
+        print("Deleting temporary snapshot...")
+        print("NOT YET SUPPORTED BY RHEV API")
 
     return
 
@@ -159,16 +159,16 @@ def snapclone_to_export(api, vm):
 if __name__ == "__main__":
     NEW_VM_NAME = options.name
     if not options.name:
-        print "VM name is required"
+        print("VM name is required")
         sys.exit(1)
 
     if not check_version(api, major=3, minor=2):
-        print "This functionality requires api >= 3.2"
+        print("This functionality requires api >= 3.2")
         sys.exit(1)
 
     try:
         snapclone_to_export(api, vm=api.vms.get(name=options.name))
-        print 'VM was exported succesfully"'
+        print('VM was exported succesfully')
 
     except Exception as e:
-        print 'Failed to export VM'
+        print('Failed to export VM')

@@ -71,7 +71,7 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def process_cluster(cluster):
-    "Processes cluster"
+    """Processes cluster"""
     # Emtpy vars for further processing
     hosts_in_cluster = []
     vms_in_cluster = []
@@ -86,8 +86,8 @@ def process_cluster(cluster):
             hosts_in_cluster.append(host.id)
 
     if options.verbosity > 2:
-        print "\nProcessing cluster %s..." % cluster.name
-        print "##############################################"
+        print("\nProcessing cluster %s..." % cluster.name)
+        print("##############################################")
 
     #Populate the list of tags and VM's
     query = "cluster = %s" % api.clusters.get(id=cluster.id).name
@@ -103,11 +103,11 @@ def process_cluster(cluster):
                     vms_in_cluster.append(vm.id)
 
     if options.verbosity > 3:
-        print "Hosts in cluster:"
-        print hosts_in_cluster
+        print("Hosts in cluster:")
+        print(hosts_in_cluster)
 
-        print "Vm's in cluster"
-        print vms_in_cluster
+        print("Vm's in cluster")
+        print(vms_in_cluster)
 
     destino = None
     for vm in vms_in_cluster:
@@ -119,7 +119,7 @@ def process_cluster(cluster):
                 destino = maquina
             else:
                 if options.verbosity > 4:
-                    print "Specified target machine has no elas_manage tag attached"
+                    print("Specified target machine has no elas_manage tag attached")
                 sys.exit(1)
 
     # Iterate for all the machines in our cluster and check behaviour based on reverse value
@@ -128,7 +128,7 @@ def process_cluster(cluster):
             if options.reverse == 0:
                 if destino.status.state == "down":
                     if options.verbosity > 3:
-                        print "Our VM is down... try to start it if possible"
+                        print("Our VM is down... try to start it if possible")
                     one_is_up = False
                     for host in hosts_in_cluster:
                         if api.hosts.get(id=host).status.state == "up":
@@ -138,7 +138,7 @@ def process_cluster(cluster):
                             destino.start()
                         except:
                             if options.verbosity > 3:
-                                print "Error starting up machine %s" % destino.name
+                                print("Error starting up machine %s" % destino.name)
             else:
                 # Reverse is != 0... then just boot if target machine is already up
                 if destino.status.state == "up":
@@ -152,13 +152,13 @@ def process_cluster(cluster):
                                         maquina.start()
                                     except:
                                         if options.verbosity > 3:
-                                            print "Error starting %s" % maquina.name
+                                            print("Error starting %s" % maquina.name)
                         else:
                             if options.verbosity > 4:
-                                print "VM %s has no elas_manage tag associated" % maquina.name
+                                print("VM %s has no elas_manage tag associated" % maquina.name)
                 else:
                     if options.verbosity > 3:
-                        print "Target machine is not up, not starting vm"
+                        print("Target machine is not up, not starting vm")
 
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
@@ -169,15 +169,14 @@ if __name__ == "__main__":
     #Add elas_maint TAG to every single vm to automate the management
     if options.tagall == 1:
         if options.verbosity >= 1:
-            print "Tagging all VM's with elas_manage"
+            print("Tagging all VM's with elas_manage")
         for vm in listvms(api):
             try:
                 vm.tags.add(params.Tag(name="elas_manage"))
             except:
-                print "Error adding elas_manage tag to vm %s" % vm.name
-
+                print("Error adding elas_manage tag to vm %s" % vm.name)
     if options.machine == "":
-        print "Error machine name must be defined"
+        print("Error machine name must be defined")
         sys.exit(1)
 
     if not options.cluster:

@@ -52,10 +52,10 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 try:
   host = api.hosts.get(name=options.host)
 except:
-  print "Host %s not found" % options.host
+  print("Host %s not found" % options.host)
   
 if not host:
-  print "Host %s not found" % options.host
+  print("Host %s not found" % options.host)
   sys.exit(3)
   
 #NAGIOS PRIOS:
@@ -76,5 +76,5 @@ if host.status.state != "up":
   if host.status.state == "maintenance":
     retorno = 1
 
-print host.status.state
+print(host.status.state)
 sys.exit(retorno)

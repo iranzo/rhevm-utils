@@ -81,7 +81,7 @@ def upgrade_host(target):
     host = api.hosts.get(id=target)
     # Shutting down one host at a time...
     if options.verbosity > 0:
-        print "Preparing target %s" % target
+        print("Preparing target %s" % target)
 
     #Add elas_maint TAG to host
     host.tags.add(params.Tag(name="elas_upgrade"))
@@ -90,7 +90,7 @@ def upgrade_host(target):
     try:
         host.deactivate()
     except:
-        print "Error deactivating host %s" % api.hosts.get(id=target).name
+        print("Error deactivating host %s" % api.hosts.get(id=target).name)
 
     #Get host IP
     ip = host.address
@@ -101,11 +101,11 @@ def upgrade_host(target):
     while i < 30:
         if api.hosts.get(id=target).status.state == "maintenance":
             if options.verbosity > 6:
-                print "Host is now on maintenance..."
+                print("Host is now on maintenance...")
             i = 30
         else:
             if options.verbosity > 6:
-                print "Host still not on maintenance... sleeping"
+                print("Host still not on maintenance... sleeping")
             time.sleep(2)
         i += 1
 
@@ -113,20 +113,20 @@ def upgrade_host(target):
         #Execute upgrade for host with latest available version
         image = "%s" % get_max_version()
         try:
-            print "Trying to upgrade %s" % host.name
+            print("Trying to upgrade %s" % host.name)
             host.install(params.Action(image=image))
         except:
-            print "Host failed to install"
+            print("Host failed to install")
 
         i = 0
         while i < options.delay:
             if api.hosts.get(id=target).status.state == "up":
                 if options.verbosity > 6:
-                    print "Host is now up again..."
+                    print("Host is now up again...")
                 i = options.delay
             else:
                 if options.verbosity > 6:
-                    print "Host still not up... sleeping"
+                    print("Host still not up... sleeping")
                 time.sleep(1)
             i += 1
 
@@ -156,6 +156,8 @@ def get_max_version():
     #Couldn't get version from disk, get it from the API
     if not version:
         maxversion = None
+        release = None
+        version = None
         # FIXME only query rhev-h hosts
         for host in listhosts(api, oquery=""):
             if host.os.version.full_version > maxversion:
@@ -173,8 +175,8 @@ def get_max_version():
 def process_cluster(clusid):
     """Processes cluster"""
     if options.verbosity > 1:
-        print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
-        print "#############################################################################"
+        print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
+        print("#############################################################################")
 
     #Emptying maintanable and activable hosts list
     upgradable = []
@@ -202,7 +204,7 @@ def process_cluster(clusid):
             if host.cluster.id != clusid:
                 # Not process this host if doesn't pertain to cluster
                 if options.verbosity >= 3:
-                    print "Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid)
+                    print("Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid))
             else:
                 #Preparing list of valid hosts
                 hostver = "rhevh-%s-%s.iso" % (host.os.version.full_version.split("-")[0].strip(), host.os.version.full_version.split("-")[1].strip())
@@ -229,7 +231,7 @@ def process_cluster(clusid):
                     status = "already done"
 
                 if options.verbosity >= 2:
-                    print "Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status)
+                    print("Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status))
 
                 #Counters
                 hosts_total += inc
@@ -248,14 +250,14 @@ def process_cluster(clusid):
 
     if options.verbosity >= 1:
         if hosts_total > 0:
-            print "\nMax version: %s" % version
-            print "\nHost list to manage:"
-            print "\tCandidates to upgrade: %s" % upgradable
-            print "\tPriority to upgrade: %s" % upgradable_prio
-            print "\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total, hosts_up, hosts_maintenance, hosts_other)
-            print "Hosts        UP (with VM's/ without):    %s/%s" % (hosts_with_vms, hosts_without_vms)
+            print("\nMax version: %s" % version)
+            print("\nHost list to manage:")
+            print("\tCandidates to upgrade: %s" % upgradable)
+            print("\tPriority to upgrade: %s" % upgradable_prio)
+            print("\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total, hosts_up, hosts_maintenance, hosts_other))
+            print("Hosts        UP (with VM's/ without):    %s/%s" % (hosts_with_vms, hosts_without_vms))
         else:
-            print "\nNo hosts in cluster %s, skipping" % clusid
+            print("\nNo hosts in cluster %s, skipping" % clusid)
 
     #### CODE TO CHECK HOST COUNT, Host still active, etc
 
@@ -269,17 +271,17 @@ def process_cluster(clusid):
         else:
             target = choice(upgradable)
         if options.verbosity >= 2:
-            print "\nPutting host %s into upgrade because there are more than 1 host without vm's\n" % target
+            print("\nPutting host %s into upgrade because there are more than 1 host without vm's\n" % target)
         upgrade_host(target)
         return 0
     else:
-        print "\nNo host to put into maintenance for upgrade\n"
+        print("\nNo host to put into maintenance for upgrade\n")
         return 1
 
     ############################# NOTHING TO DO SECTION ###################################
 
     if options.verbosity >= 2:
-        print "\nNothing to do as enable/disable scripts conditions are not met"
+        print("\nNothing to do as enable/disable scripts conditions are not met")
 
     return
 
@@ -294,13 +296,13 @@ if __name__ == "__main__":
     if options.tagall == 1:
 
         if options.verbosity >= 1:
-            print "Tagging all hosts with elas_manage"
+            print("Tagging all hosts with elas_manage")
 
         for host in listhosts(api):
             try:
                 host.tags.add(params.Tag(name="elas_manage"))
             except:
-                print "Error adding elas_manage tag to host %s" % host.name
+                print("Error adding elas_manage tag to host %s" % host.name)
 
     #Sanity checks
     ## Check hosts with elas_upgrade tag and status active
@@ -309,7 +311,7 @@ if __name__ == "__main__":
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_upgrade"):
                 if options.verbosity >= 1:
-                    print "Host %s is tagged as elas_upgrade and it's active, removing tag..." % host.id
+                    print("Host %s is tagged as elas_upgrade and it's active, removing tag..." % host.id)
                 api.hosts.get(id=host.id).tags.get(name="elas_upgrade").delete()
 
     ## Check hosts with elas_maint tag and status active
@@ -318,11 +320,11 @@ if __name__ == "__main__":
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
                 if options.verbosity >= 1:
-                    print "Host %s is tagged as elas_maint and it's active, removing tag..." % host.id
+                    print("Host %s is tagged as elas_maint and it's active, removing tag..." % host.id)
                 api.hosts.get(id=host.id).tags.get(name="elas_maint").delete()
 
     if not check_version(api, major=3, minor=2):
-        print "This functionality requires api >= 3.2"
+        print("This functionality requires api >= 3.2")
         sys.exit(1)
 
     if not options.cluster:

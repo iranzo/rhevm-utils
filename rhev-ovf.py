@@ -16,7 +16,7 @@
 # GNU General Public License for more details.
 
 
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as elementtree
 import sys
 import optparse
 
@@ -40,6 +40,10 @@ def getvminfo(host, vmid, display, root):
            "irqChip": "True", "nice": 0, "keyboardLayout": "en-us", "acpiEnable": "True", "display": "qxl",
            "displayIp": host, "spiceMonitors": "1", "displayNetwork": display}
     disks = []
+    diskboot = None
+    diskvolid = None
+    diskimageid = None
+    diskformat = None
     for child in root:
         if child.tag == "Section" and "ovf:DiskSection_Type" in child.attrib.values():
             for disk in child.findall("Disk"):
@@ -116,9 +120,9 @@ def getvminfo(host, vmid, display, root):
 
 
 try:
-    tree = ET.parse(options.file)
+    tree = elementtree.parse(options.file)
 except:
-    print "Error opening the ovf file %s" % options.file
+    print("Error opening the ovf file %s" % options.file)
     sys.exit(1)
 
 root = tree.getroot()
@@ -135,4 +139,4 @@ display = "spice"
 host = "localhost"
 cmd = getvminfo(host, vmid, display, root)
 
-print cmd
+print(cmd)

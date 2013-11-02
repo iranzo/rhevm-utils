@@ -59,8 +59,8 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 def process_cluster(clusid):
     """Processes cluster"""
     if options.verbosity > 1:
-        print "\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name)
-        print "#############################################################################"
+        print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
+        print("#############################################################################")
 
     cluster = api.clusters.get(id=clusid)
     cluster.scheduling_policy.policy = options.policy
@@ -68,7 +68,7 @@ def process_cluster(clusid):
         cluster.update()
     except:
         if options.verbosity > 2:
-            print "Problem updating policy"
+            print("Problem updating policy")
 
     #evenly_distributed
     #power_saving

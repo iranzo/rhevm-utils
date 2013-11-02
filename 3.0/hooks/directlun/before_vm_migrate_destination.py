@@ -12,7 +12,7 @@ import hooking
 DEV_MAPPER_PATH = "/dev/mapper"
 DEV_DIRECTLUN_PATH = '/dev/directlun'
 
-def createDirectory(dirpath):
+def createdirectory(dirpath):
 
     # we don't use os.mkdir/chown because we need sudo
     command = ['/bin/mkdir', '-p', dirpath]
@@ -29,7 +29,7 @@ def createDirectory(dirpath):
 
 
 def cloneDeviceNode(srcpath, devpath):
-    '''Clone a device node into a temporary private location.'''
+    """Clone a device node into a temporary private location."""
 
     # we don't use os.remove/mknod/chmod/chown because we need sudo
     command = ['/bin/rm', '-f', devpath]
@@ -71,7 +71,7 @@ if os.environ.has_key('directlun'):
 
         domxml = hooking.read_domxml()
 
-        createDirectory(DEV_DIRECTLUN_PATH)
+        createdirectory(DEV_DIRECTLUN_PATH)
 
         for lun in luns.split(','):
             try:

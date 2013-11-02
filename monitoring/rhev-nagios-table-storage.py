@@ -39,17 +39,17 @@ p.add_option("--storage", dest="storage", help="Show messages while running", me
 
 ################################ MAIN PROGRAM ############################
 if not options.storage:
-  print "Storage not defined, exiting"
+  print("Storage not defined, exiting")
   sys.exit(1)
 
 if not options.table:
-  print "CSV table not defined, exiting"
+  print("CSV table not defined, exiting")
   sys.exit(1)
 
 try:
   f = file(options.table)   #fichero a procesar
 except:
-  print "Problem opening the file %s" % options.table
+  print("Problem opening the file %s" % options.table)
   sys.exit(1)
 
 #NAGIOS PRIOS:
@@ -77,6 +77,6 @@ for line in f:
       else:
         retorno = 0
 
-      print usage
+      print(usage)
       sys.exit(retorno)
 

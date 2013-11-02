@@ -50,10 +50,10 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 try:
   host = api.hosts.get(name=options.host)
 except:
-  print "Host %s not found" % options.host
+  print("Host %s not found" % options.host)
 
 if not host:
-  print "Host %s not found" % options.host
+  print("Host %s not found" % options.host)
   sys.exit(3)
 
 #NAGIOS PRIOS:
@@ -73,5 +73,5 @@ if usage >= 90:
 else:
   retorno = 0
 
-print usage
+print(usage)
 sys.exit(retorno)

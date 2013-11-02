@@ -38,7 +38,7 @@ def apilogin(url, username, password, insecure=True, persistent_auth=True, sessi
     try:
         api = API(url=url, username=username, password=password, insecure=insecure, persistent_auth=persistent_auth, session_timeout=session_timeout)
     except:
-        print "Error while logging in with supplied credentials, please check and try again"
+        print("Error while logging in with supplied credentials, please check and try again")
         sys.exit(1)
 
     return api
@@ -47,16 +47,16 @@ def apilogin(url, username, password, insecure=True, persistent_auth=True, sessi
 def check_tags(api, options):
     """Checks if required tags have been already defined and creates them if missing"""
     if options.verbosity >= 1:
-        print "Looking for tags prior to start..."
+        print("Looking for tags prior to start...")
 
     if not api.tags.get(name="elas_manage"):
         if options.verbosity >= 2:
-            print "Creating tag elas_manage..."
+            print("Creating tag elas_manage...")
         api.tags.add(params.Tag(name="elas_manage"))
 
     if not api.tags.get(name="elas_start"):
         if options.verbosity >= 2:
-            print "Creating tag elas_start..."
+            print("Creating tag elas_start...")
         api.tags.add(params.Tag(name="elas_start"))
 
     return
@@ -69,13 +69,13 @@ def migra(api, options, vm, action=None):
             vm.migrate()
         except:
             if options.verbosity > 4:
-                print "Problem migrating auto %s" % vm.name
+                print("Problem migrating auto %s" % vm.name)
     else:
         try:
             vm.migrate(action)
         except:
             if options.verbosity > 4:
-                print "Problem migrating fixed %s" % vm.name
+                print("Problem migrating fixed %s" % vm.name)
 
     loop = True
     counter = 0
@@ -83,14 +83,14 @@ def migra(api, options, vm, action=None):
         if vm.status.state == "up":
             loop = False
         if options.verbosity > 8:
-            print "VM migration loop %s" % counter
+            print("VM migration loop %s" % counter)
         time.sleep(10)
         counter += 1
 
         if counter > 12:
             loop = False
             if options.verbosity > 8:
-                print "Exiting on max loop retries"
+                print("Exiting on max loop retries")
     return
 
 
@@ -110,7 +110,7 @@ def listvms(api, oquery=""):
     vms = []
     page = 0
     length = 100
-    while (length > 0):
+    while length > 0:
         page += 1
         query = "%s page %s" % (oquery, page)
         tanda = api.vms.list(query=query)
@@ -124,7 +124,7 @@ def listhosts(api, oquery=""):
     hosts = []
     page = 0
     length = 100
-    while (length > 0):
+    while length > 0:
         page += 1
         query = "%s page %s" % (oquery, page)
         tanda = api.hosts.list(query=query)
@@ -134,4 +134,4 @@ def listhosts(api, oquery=""):
 
 
 if __name__ == "__main__":
-    print """This file is intented to be used as a library of functions and it's not expected to be executed directly"""
+    print("This file is intended to be used as a library of functions and it's not expected to be executed directly")

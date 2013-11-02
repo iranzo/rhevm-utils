@@ -75,7 +75,7 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 try:
     value = api.hosts.list()
 except:
-    print "Error accessing RHEV-M api, please check data and connection and retry"
+    print("Error accessing RHEV-M api, please check data and connection and retry")
     sys.exit(1)
 
 # Define VM based on parameters
@@ -93,14 +93,14 @@ if __name__ == "__main__":
     try:
         api.vms.add(vmparams)
     except:
-        print "Error creating VM with specified parameters, recheck"
+        print("Error creating VM with specified parameters, recheck")
         sys.exit(1)
 
     if options.verbosity > 1:
-        print "VM created successfuly"
+        print("VM created successfuly")
 
     if options.verbosity > 1:
-        print "Attaching networks and boot order..."
+        print("Attaching networks and boot order...")
     vm = api.vms.get(name=options.name)
     vm.nics.add(nic_gest)
     vm.nics.add(nic_serv)
@@ -113,21 +113,21 @@ if __name__ == "__main__":
     try:
         vm.update()
     except:
-        print "Error attaching networks, please recheck and remove configurations left behind"
+        print('Error attaching networks, please recheck and remove configurations left behind')
         sys.exit(1)
 
     if options.verbosity > 1:
-        print "Adding HDD"
+        print("Adding HDD")
     try:
         vm.disks.add(vmdisk)
     except:
-        print "Error attaching disk, please recheck and remove any leftover configuration"
+        print('Error attaching disk, please recheck and remove any leftover configuration')
 
     if options.verbosity > 1:
-        print "VM creation successful"
+        print("VM creation successful")
 
     vm = api.vms.get(name=options.name)
     vm.memory_policy.guaranteed = 1 * 1024 * 1024
     vm.high_availability.enabled = True
     vm.update()
-    print "MAC:%s" % vm.nics.get(name="eth0").mac.get_address()
+    print('MAC:%s' % vm.nics.get(name="eth0").mac.get_address())

@@ -38,17 +38,17 @@ p.add_option("-t", "--table", dest="table", help="Input file in CSV format", met
 
 ################################ MAIN PROGRAM ############################
 if not options.host:
-  print "Host not defined, exiting"
+  print("Host not defined, exiting")
   sys.exit(1)
 
 if not options.table:
-  print "CSV table not defined, exiting"
+  print("CSV table not defined, exiting")
   sys.exit(1)
 
 try:
   f = file(options.table)   #fichero a procesar
 except:
-  print "Problem opening the file %s" % options.table
+  print("Problem opening the file %s" % options.table)
   sys.exit(1)
 
 #NAGIOS PRIOS:
@@ -75,5 +75,5 @@ for line in f:
         if usage == "maintenance":
           retorno = 1
 
-      print usage
+      print(usage)
       sys.exit(retorno)

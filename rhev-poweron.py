@@ -78,14 +78,14 @@ def activate_host(target):
     """Activates host from maintenance mode removing required tags"""
     # Activate    one host at a time...
     if options.verbosity > 0:
-        print "Activating target %s" % target
+        print("Activating target %s" % target)
 
     #Remove elas_maint TAG to host
     if not api.hosts.get(id=target).tags.get(name="elas_maint"):
         try:
             api.hosts.get(id=target).tags.get(name="elas_maint").delete()
         except:
-            print "Error deleting tag elas_maint from host %s" % api.host.get(id=target).name
+            print("Error deleting tag elas_maint from host %s" % api.host.get(id=target).name)
 
     if api.hosts.get(id=target).status.state == "maintenance":
         api.hosts.get(id=target).activate()
@@ -97,7 +97,7 @@ def activate_host(target):
         if mac != "":
             comando = "for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" % mac
             if options.verbosity >= 1:
-                print "Sending %s the power on action via %s" % (target, mac)
+                print("Sending %s the power on action via %s" % (target, mac))
             os.system(comando)
 
     return
@@ -112,7 +112,7 @@ def process_cluster(clusid):
             if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
                 if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
                     if options.verbosity >= 1:
-                        print "Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id
+                        print("Host %s is tagged as elas_maint and it's down, adding to activation list..." % host.id)
                     enablable.append(host.id)
 
     number = 0
@@ -124,11 +124,11 @@ def process_cluster(clusid):
             victima = choice(enablable)
             enablable.remove(victima)
             if options.verbosity > 3:
-                print "Enabling host %s" % victima
+                print("Enabling host %s" % victima)
             activate_host(victima)
         except:
             if options.verbosity > 4:
-                print "No more hosts to enable"
+                print("No more hosts to enable")
 
 ################################ MAIN PROGRAM ############################
 #Sanity checks
