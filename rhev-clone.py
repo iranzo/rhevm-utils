@@ -28,11 +28,9 @@
 #	 elas_manage: manage this host by using the elastic management script (EMS)
 #	 elas_maint : this host has been put on maintenance by the EMS
 
-import sys
-import getopt
 import optparse
-import os
 import time
+import getpass
 
 
 from ovirtsdk.xml import params
@@ -45,16 +43,24 @@ RHEV-clone is a script for creating clones based from a template
 
 # Option parsing
 p = optparse.OptionParser("rhev-clone.py [arguments]", description=description)
-p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
-p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
-p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal",
+             default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
+             default="admin")
+p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
+             default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option("-n", "--name", dest="name", help="VM name", metavar="name", default="name")
 p.add_option("-c", "--cluster", dest="cluster", help="VM cluster", metavar="cluster", default="cluster")
 p.add_option("-t", "--template", dest="template", help="VM template", metavar="template", default="template")
 
 (options, args) = p.parse_args()
+
+if options.askpassword:
+    options.password = getpass.getpass("Enter password: ")
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 

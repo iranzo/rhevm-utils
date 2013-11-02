@@ -14,18 +14,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
-import psycopg2
 import sys
-import getopt
 import optparse
-import os
-import time
-import calendar
-import datetime
+import getpass
 
-
+import psycopg2
 from ovirtsdk.xml import params
 from rhev_functions import *
+
 
 description = """
 rhev-vm-applist is a script for gathering statistics about VM usage that can be used to tax usage
@@ -33,18 +29,25 @@ rhev-vm-applist is a script for gathering statistics about VM usage that can be 
 
 # Option parsing
 p = optparse.OptionParser("rhev-vm-applist.py [arguments]", description=description)
-p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
-p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="redhat")
-p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="server", default="127.0.0.1")
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal",
+             default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
+             default="redhat")
+p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="server",
+             default="127.0.0.1")
 p.add_option("--dbuser", dest="dbuser", help="RHEV-M database user", metavar="dbuser", default="engine")
 p.add_option("--dbpass", dest="dbpass", help="RHEV-M database password", metavar="dbpass", default="redhat")
 
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option("-n", "--name", dest="name", help="VM name", metavar="name")
 
-
 (options, args) = p.parse_args()
+
+if options.askpassword:
+    options.password = getpass.getpass("Enter password: ")
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 

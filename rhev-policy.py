@@ -15,12 +15,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
-import sys
-import getopt
 import optparse
-import os
-import time
-
+import getpass
 
 from ovirtsdk.xml import params
 from rhev_functions import *
@@ -36,16 +32,23 @@ Actual policy is:
 
 # Option parsing
 p = optparse.OptionParser("rhev-policy.py [arguments]", description=description)
-p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
-p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
-p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal",
+             default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
+             default="admin")
+p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
+             default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option("--policy", dest="policy", help="Set destination policy", metavar='policy', default="power_saving")
 p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
 
-
 (options, args) = p.parse_args()
+
+if options.askpassword:
+    options.password = getpass.getpass("Enter password: ")
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 

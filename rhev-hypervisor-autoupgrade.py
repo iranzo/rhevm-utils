@@ -27,16 +27,15 @@
 #     elas_maint:   this host status has been set by rhev-elastic, so it can be installed/activated
 
 import sys
-import getopt
 import optparse
-import os
 import time
 import glob
-
+import getpass
+from random import choice
 
 from ovirtsdk.xml import params
-from random import choice
 from rhev_functions import *
+
 
 description = """
 RHEV-hypervisor-autoupgrade is a script for automatically upgrade RHEV-H hosts under RHEV
@@ -48,17 +47,28 @@ ones with no VM's running on them.
 
 # Option parsing
 p = optparse.OptionParser("rhev-hypevisor-autoupgrade.py [arguments]", description=description)
-p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
-p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
-p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal",
+             default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
+             default="admin")
+p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
+             default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to process", metavar='cluster', default=None)
-p.add_option('-t', "--tagall", dest="tagall", help="Tag all hosts with elas_manage", metavar='0/1', default=0, type='int')
-p.add_option('-r', "--release", dest="release", help="Select release to deploy. Like 20130528.0.el6_4", metavar='release', default="latest")
-p.add_option('-d', "--delay", dest="delay", help="Set delay to way until activation after install is sent", metavar='delay', default=900)
+p.add_option('-t', "--tagall", dest="tagall", help="Tag all hosts with elas_manage", metavar='0/1', default=0,
+             type='int')
+p.add_option('-r', "--release", dest="release", help="Select release to deploy. Like 20130528.0.el6_4",
+             metavar='release', default="latest")
+p.add_option('-d', "--delay", dest="delay", help="Set delay to way until activation after install is sent",
+             metavar='delay', default=900)
 
 (options, args) = p.parse_args()
+
+if options.askpassword:
+    options.password = getpass.getpass("Enter password: ")
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 

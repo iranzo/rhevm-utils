@@ -18,7 +18,6 @@
 
 import xml.etree.ElementTree as ET
 import sys
-import getopt
 import optparse
 
 description = """

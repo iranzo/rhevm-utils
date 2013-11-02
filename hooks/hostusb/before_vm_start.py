@@ -5,9 +5,11 @@ import os
 import sys
 import grp
 import pwd
+import traceback
+
 import utils
 import hooking
-import traceback
+
 
 '''
 host usb hook

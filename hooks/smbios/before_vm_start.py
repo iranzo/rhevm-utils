@@ -3,8 +3,10 @@
 import os
 import sys
 import ast
-import hooking
 import traceback
+
+import hooking
+
 
 '''
 smbios vdsm hook

@@ -2,8 +2,10 @@
 
 import os
 import sys
-import hooking
 import traceback
+
+import hooking
+
 
 '''
 vmdisk hook:

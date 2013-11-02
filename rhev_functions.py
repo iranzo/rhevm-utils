@@ -16,11 +16,7 @@
 # GNU General Public License for more details.
 
 import sys
-import getopt
-import optparse
-import os
 import time
-import operator
 
 from ovirtsdk.xml import params
 from ovirtsdk.api import API

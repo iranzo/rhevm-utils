@@ -17,14 +17,9 @@
 # GNU General Public License for more details.
 
 import sys
-import getopt
 import optparse
-import os
-import time
-
 
 from ovirtsdk.xml import params
-from random import choice
 from rhev_functions import *
 
 description = """

@@ -3,11 +3,11 @@
 import os
 import re
 import sys
-import grp
-import pwd
+import traceback
+
 import utils
 import hooking
-import traceback
+
 
 '''
 after_vm_destroy:
