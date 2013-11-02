@@ -36,7 +36,8 @@ def apilogin(url, username, password, insecure=True, persistent_auth=True, sessi
     api = None
 
     try:
-        api = API(url=url, username=username, password=password, insecure=insecure, persistent_auth=persistent_auth, session_timeout=session_timeout)
+        api = API(url=url, username=username, password=password, insecure=insecure, persistent_auth=persistent_auth,
+                  session_timeout=session_timeout)
     except:
         print("Error while logging in with supplied credentials, please check and try again")
         sys.exit(1)

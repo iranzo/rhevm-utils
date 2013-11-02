@@ -16,6 +16,7 @@ return the original owner of the usb device
 
 HOOK_HOSTUSB_PATH = '/var/run/vdsm/hooks/hostusb-permissions'
 
+
 def get_owner(devpath):
     uid = pid = -1
     content = ''
@@ -44,7 +45,6 @@ def get_owner(devpath):
 # merge chown with before_vm_start.py
 # maybe put it in hooks.py?
 def chown(vendorid, productid):
-
     # remove the 0x from the vendor and product id
     devid = vendorid[2:] + ':' + productid[2:]
     command = ['lsusb', '-d', devid]
@@ -57,7 +57,8 @@ def chown(vendorid, productid):
 
     uid, gid = get_owner(devpath)
     if uid == -1:
-        sys.stderr.write('hostusb after_vm_destroy: cannot find devpath: %s in file: %s\n' % (devpath, HOOK_HOSTUSB_PATH))
+        sys.stderr.write(
+            'hostusb after_vm_destroy: cannot find devpath: %s in file: %s\n' % (devpath, HOOK_HOSTUSB_PATH))
         return
 
     # we don't use os.chown because we need sudo
@@ -68,13 +69,16 @@ def chown(vendorid, productid):
         sys.stderr.write('hostusb after_vm_destroy: error chown %s to %s, err = %s\n' % (devpath, owner, err))
         sys.exit(2)
 
+
 if os.environ.has_key('hostusb'):
     try:
         regex = re.compile('^0x[\d,A-F,a-f]{4}$')
         for usb in os.environ['hostusb'].split('&'):
             vendorid, productid = usb.split(':')
             if len(regex.findall(vendorid)) != 1 or len(regex.findall(productid)) != 1:
-                sys.stderr.write('hostusb after_vm_destroy: bad input, expected 0x0000 format for vendor and product id, input: %s:%s\n' % (vendorid, productid))
+                sys.stderr.write(
+                    'hostusb after_vm_destroy: bad input, expected 0x0000 format for vendor and product id, input: %s:%s\n' % (
+                    vendorid, productid))
                 sys.exit(2)
             chown(vendorid, productid)
 

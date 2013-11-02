@@ -13,6 +13,7 @@ DEV_MAPPER_PATH = "/dev/mapper"
 DEV_DIRECTLUN_PATH = '/dev/directlun'
 NUM_OF_PCI = 27
 
+
 def indextodiskname(i):
     s = ''
     while True:
@@ -21,6 +22,7 @@ def indextodiskname(i):
         if i == 0:
             break
     return 'vd' + (s or 'a')
+
 
 def createDiskElement(domxml, devpath, lunid, options):
     """
@@ -68,7 +70,6 @@ def createDiskElement(domxml, devpath, lunid, options):
 
 
 def createDirectory(dirpath):
-
     # we don't use os.mkdir/chown because we need sudo
     command = ['/bin/mkdir', '-p', dirpath]
     retcode, out, err = utils.execCmd(command, sudo=True, raw=True)

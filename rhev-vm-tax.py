@@ -40,7 +40,8 @@ p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostna
              default="127.0.0.1")
 p.add_option("--dbuser", dest="dbuser", help="RHEV-M database user", metavar="dbuser", default="engine")
 p.add_option("--dbpass", dest="dbpass", help="RHEV-M database password", metavar="dbpass", default="redhat")
-p.add_option("-D", action="store_true", dest="dbaskpassword", help="Ask for DB password", metavar="admin", default=False)
+p.add_option("-D", action="store_true", dest="dbaskpassword", help="Ask for DB password", metavar="admin",
+             default=False)
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
 p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
              type='int')
@@ -77,7 +78,8 @@ def gathervmdata(vmname):
     vmid = api.vms.get(name=vmname).id
 
     # SQL Query for gathering date from range
-    sql = "select history_datetime as DateTime, cpu_usage_percent as CPU, memory_usage_percent as Memory from vm_daily_history where vm_id='%s' and history_datetime >= '%s' and history_datetime <= '%s' ;" % (vmid, datestart, dateend)
+    sql = "select history_datetime as DateTime, cpu_usage_percent as CPU, memory_usage_percent as Memory from vm_daily_history where vm_id='%s' and history_datetime >= '%s' and history_datetime <= '%s' ;" % (
+        vmid, datestart, dateend)
 
     cur.execute(sql)
     rows = cur.fetchall()

@@ -31,11 +31,15 @@ It's goal is to output a table of host/vm status for simple monitoring via exter
 
 # Option parsing
 p = optparse.OptionParser("rhev-nagios-host.py [arguments]", description=description)
-p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal", default="admin@internal")
-p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin", default="admin")
-p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1", default="127.0.0.1")
+p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal",
+             default="admin@internal")
+p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
+             default="admin")
+p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
+             default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option("--storage", dest="storage", help="Show messages while running", metavar='storage')
 
 (options, args) = p.parse_args()
@@ -50,14 +54,14 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 #if not options.host:
 
 try:
-  sd = api.storagedomains.get(name=options.storage)
+    sd = api.storagedomains.get(name=options.storage)
 except:
-  print("Storage Domain %s not found" % options.storage)
-  
+    print("Storage Domain %s not found" % options.storage)
+
 if not sd:
-  print("Storage Domain %s not found" % options.storage)
-  sys.exit(3)
-  
+    print("Storage Domain %s not found" % options.storage)
+    sys.exit(3)
+
 #NAGIOS PRIOS:
 # 0 -> ok
 # 1 -> warning
@@ -71,11 +75,11 @@ percentage = int(100 * memory / memtotal)
 
 retorno = 3
 if percentage >= 90:
-  retorno = 1
-  if percentage >= 95:
-    retorno = 2
+    retorno = 1
+    if percentage >= 95:
+        retorno = 2
 else:
-  retorno = 0
+    retorno = 0
 
 print(percentage)
 sys.exit(retorno)

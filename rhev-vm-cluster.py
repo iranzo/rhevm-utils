@@ -30,7 +30,6 @@
 import optparse
 import getpass
 
-
 from ovirtsdk.xml import params
 from rhev_functions import *
 
@@ -108,7 +107,7 @@ def process_cluster(cluster):
                         if tag.name[0:8] == "cluster_":
                             if options.verbosity > 3:
                                 print("VM %s in cluster %s has tag %s" % (vm.name, cluster.name, tag.name))
-                            # Put the TAG in the list of used for this cluster and put the VM to the ones with this tag
+                                # Put the TAG in the list of used for this cluster and put the VM to the ones with this tag
                             tags_in_cluster.append(tag.id)
                             tags_vm[tag.name].append(vm.name)
 
@@ -154,7 +153,8 @@ def process_cluster(cluster):
             print("Managing tag %s" % etiqueta)
         for vm in tags_vm[etiqueta]:
             if options.verbosity > 4:
-                print("Processing vm %s for tag %s at host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name))
+                print('Processing vm %s for tag %s at host %s' % (
+                    vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name))
 
             #Set target as actual running host
             target = api.vms.get(name=vm).host.id
@@ -171,7 +171,7 @@ def process_cluster(cluster):
                     else:
                         if options.verbosity > 4:
                             print("Host %s not used, migrating there" % host)
-                        # Setting new host
+                            # Setting new host
                         target = host
 
             nombre = api.hosts.get(id=target).name
@@ -181,8 +181,9 @@ def process_cluster(cluster):
 
             if maquina.host.id != target:
                 if options.verbosity > 3:
-                    print("Processing vm %s for tag %s at host %s needs migration to host %s" % (vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name, nombre))
-                # Allow migration
+                    print('Processing vm %s for tag %s at host %s needs migration to host %s' % (
+                        vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name, nombre))
+                    # Allow migration
                 maquina.placement_policy.host = params.Host()
                 maquina.placement_policy.affinity = "migratable"
                 maquina.update()
@@ -224,21 +225,21 @@ if __name__ == "__main__":
     query = "status = down"
     for vm in listvms(api, query):
         if vm.status.state == "down":
-                if vm.tags.get("elas_manage"):
-                    for tag in vm.tags.list():
-                        if tag.name[0:8] == "cluster_":
-                            if options.verbosity >= 5:
-                                print("Cleaning VM %s pinning to allow to start on any host" % vm.name)
+            if vm.tags.get("elas_manage"):
+                for tag in vm.tags.list():
+                    if tag.name[0:8] == "cluster_":
+                        if options.verbosity >= 5:
+                            print("Cleaning VM %s pinning to allow to start on any host" % vm.name)
                             # If powered down, allow machine to be migratable so it can start on any host
-                            maquina = vm
-                            maquina.placement_policy.host = params.Host()
-                            maquina.placement_policy.affinity = "migratable"
-                            maquina.update()
-                if vm.tags.get("elas_start"):
-                    if options.verbosity >= 5:
-                        print("VM %s should be running, starting..." % vm.name)
+                        maquina = vm
+                        maquina.placement_policy.host = params.Host()
+                        maquina.placement_policy.affinity = "migratable"
+                        maquina.update()
+            if vm.tags.get("elas_start"):
+                if options.verbosity >= 5:
+                    print("VM %s should be running, starting..." % vm.name)
                     # Start machine, as if it had host pinning it couldn't be autostarted using HA
-                    vm.start()
+                vm.start()
 
     if not options.cluster:
         # Processing each cluster of our RHEVM

@@ -30,7 +30,8 @@ It's goal is to output a table of host/vm status for simple monitoring via exter
 
 # Option parsing
 p = optparse.OptionParser("rhev-nagios-table-host-mem.py [arguments]", description=description)
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option("--host", dest="host", help="Show messages while running", metavar='host')
 p.add_option("-t", "--table", dest="table", help="Input file in CSV format", metavar='table')
 
@@ -39,18 +40,18 @@ p.add_option("-t", "--table", dest="table", help="Input file in CSV format", met
 
 ################################ MAIN PROGRAM ############################
 if not options.host:
-  print("Host not defined, exiting")
-  sys.exit(1)
+    print("Host not defined, exiting")
+    sys.exit(1)
 
 if not options.table:
-  print("CSV table not defined, exiting")
-  sys.exit(1)
+    print("CSV table not defined, exiting")
+    sys.exit(1)
 
 try:
-  f = file(options.table)   #fichero a procesar
+    f = file(options.table)   #fichero a procesar
 except:
-  print("Problem opening the file %s" % options.table)
-  sys.exit(1)
+    print("Problem opening the file %s" % options.table)
+    sys.exit(1)
 
 #NAGIOS PRIOS:
 # 0 -> ok
@@ -65,17 +66,17 @@ except:
 
 
 for line in f:
-  if line.split(";")[0] == "host":
-    if line.split(";")[1] == options.host:
-      usage = float(line.split(";")[4])
-      retorno = 3
-      if usage >= 90:
-        retorno = 1
-        if usage >= 95:
-          retorno = 2
-      else:
-        retorno = 0
+    if line.split(";")[0] == "host":
+        if line.split(";")[1] == options.host:
+            usage = float(line.split(";")[4])
+            retorno = 3
+            if usage >= 90:
+                retorno = 1
+                if usage >= 95:
+                    retorno = 2
+            else:
+                retorno = 0
 
-      print(float(line.split(";")[6])/(1024*1024))
-      sys.exit(retorno)
+            print(float(line.split(";")[6]) / (1024 * 1024))
+            sys.exit(retorno)
 

@@ -72,7 +72,7 @@ def listvms(oquery=""):
         length = len(tanda)
         for vm in tanda:
             vms.append(vm)
-    return(vms)
+    return (vms)
 
 
 def listhosts(oquery=""):

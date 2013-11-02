@@ -207,7 +207,9 @@ def process_cluster(clusid):
                     print("Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid))
             else:
                 #Preparing list of valid hosts
-                hostver = "rhevh-%s-%s.iso" % (host.os.version.full_version.split("-")[0].strip(), host.os.version.full_version.split("-")[1].strip())
+                hostver = "rhevh-%s-%s.iso" % (
+                    host.os.version.full_version.split("-")[0].strip(),
+                    host.os.version.full_version.split("-")[1].strip())
                 if version > hostver:
                     status = "accepted upgrading from %s to %s" % (hostver, version)
                     if host.status.state == "up":
@@ -231,7 +233,9 @@ def process_cluster(clusid):
                     status = "already done"
 
                 if options.verbosity >= 2:
-                    print("Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status))
+                    print("Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (
+                        host.name, host.id, vms, api.hosts.get(id=host.id).status.state,
+                        api.hosts.get(id=host.id).storage_manager.valueOf_, status))
 
                 #Counters
                 hosts_total += inc
@@ -254,7 +258,8 @@ def process_cluster(clusid):
             print("\nHost list to manage:")
             print("\tCandidates to upgrade: %s" % upgradable)
             print("\tPriority to upgrade: %s" % upgradable_prio)
-            print("\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total, hosts_up, hosts_maintenance, hosts_other))
+            print("\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (
+                hosts_total, hosts_up, hosts_maintenance, hosts_other))
             print("Hosts        UP (with VM's/ without):    %s/%s" % (hosts_with_vms, hosts_without_vms))
         else:
             print("\nNo hosts in cluster %s, skipping" % clusid)

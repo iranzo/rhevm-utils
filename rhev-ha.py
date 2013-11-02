@@ -21,7 +21,6 @@ import sys
 import optparse
 import getpass
 
-
 from ovirtsdk.xml import params
 from rhev_functions import *
 

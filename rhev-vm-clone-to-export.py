@@ -99,7 +99,7 @@ def snapclone_to_export(api, vm):
     newname = "%s-deleteme" % vm.name
 
     if options.verbosity > 0:
-            print("Creating new VM based on snapshot...")
+        print("Creating new VM based on snapshot...")
     api.vms.add(params.VM(name=newname, snapshots=snapshots, cluster=cluster, template=api.templates.get(name="Blank")))
 
     # Wait for create to finish
@@ -139,7 +139,7 @@ def snapclone_to_export(api, vm):
         time.sleep(10)
 
     if options.verbosity > 0:
-            print("Deleting temporary VM...")
+        print("Deleting temporary VM...")
     api.vms.get(name=newname).delete()
 
     if options.verbosity > 0:

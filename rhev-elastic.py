@@ -116,7 +116,8 @@ def deactivate_host(target):
         if options.verbosity >= 1:
             print("Sending %s the power action %s" % (host, options.action))
 
-        comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/ovirt-engine/keys/engine_id_rsa root@%s %s " % (ip, options.action)
+        comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/ovirt-engine/keys/engine_id_rsa root@%s %s " % (
+            ip, options.action)
 
         os.system(comando)
         os.system(comando)
@@ -199,7 +200,9 @@ def process_cluster(clusid):
                             status = "No elas_maint tag discarded"
                             inc = 0
                 if options.verbosity >= 2:
-                    print("Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (host.name, host.id, vms, api.hosts.get(id=host.id).status.state, api.hosts.get(id=host.id).storage_manager.valueOf_, status))
+                    print("Host (%s) %s with %s vms detected with status %s and spm status %s (%s for operation)" % (
+                        host.name, host.id, vms, api.hosts.get(id=host.id).status.state,
+                        api.hosts.get(id=host.id).storage_manager.valueOf_, status))
 
                 #Counters
                 hosts_total += inc
@@ -222,7 +225,8 @@ def process_cluster(clusid):
             print("\tCandidates to maintenance: %s" % maintable)
             print("\tPriority to maintenance: %s" % maintable_prio)
             print("\tCandidates to activation:    %s" % enablable)
-            print("\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (hosts_total, hosts_up, hosts_maintenance, hosts_other))
+            print("\nHosts TOTAL (Total/Up/Maintenance/other): %s/%s/%s/%s" % (
+                hosts_total, hosts_up, hosts_maintenance, hosts_other))
             print("Hosts        UP (with VM's/ without):    %s/%s" % (hosts_with_vms, hosts_without_vms))
         else:
             print("\nNo hosts in cluster %s, skipping" % clusid)

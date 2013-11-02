@@ -178,13 +178,15 @@ def process_cluster(cluster):
                                 if host_free > vmused(api, maquina):
                                     # We've free space, move in there...
                                     if options.verbosity > 2:
-                                        print("Enough memory on %s to migrate %s" % (api.hosts.get(id=host).name, maquina.name))
+                                        print("Enough memory on %s to migrate %s" % (
+                                            api.hosts.get(id=host).name, maquina.name))
                                     migra(api, options, maquina, params.Action(host=api.hosts.get(id=host)))
 
                                 else:
                                     if options.verbosity > 5:
                                         print("Not enought RAM, let's try to make more room...")
-                                    # Not enough ram, let's see if we can kick out other O.S. VM's    from this Host to make room
+                                        # Not enough ram, let's see if we can kick out other O.S. VM's
+                                        # from this Host to make room
 
                                     # Fill list of OS already processed to avoid them
                                     os_not_to_excomulgate = []
@@ -217,7 +219,8 @@ def process_cluster(cluster):
 
                                     if options.verbosity > 6:
                                         print("Mem that will be freed by excomulgating hosts %s" % mem_to_free)
-                                        print("Mem required for VM %s" % maquina.statistics.get("memory.installed").values.value[0].datum)
+                                        print("Mem required for VM %s" %
+                                              maquina.statistics.get("memory.installed").values.value[0].datum)
 
                                     if fits_in_ram:
                                         keeplooping = True
@@ -231,7 +234,8 @@ def process_cluster(cluster):
                                             # We've one machine to excomulgate so let's do it
                                             if not victima:
                                                 victima = virtual
-                                            if vmused(api, api.vms.get(name=virtual)) > vmused(api, api.vms.get(name=victima)):
+                                            if vmused(api, api.vms.get(name=virtual)) > vmused(api, api.vms.get(
+                                                    name=victima)):
                                                 victima = virtual
 
                                         # Machine with higher ram usage has been selected, move it away to make room for the next one to enter

@@ -29,7 +29,6 @@ import sys
 import optparse
 import getpass
 
-
 from ovirtsdk.xml import params
 from rhev_functions import *
 
@@ -99,8 +98,8 @@ def process_cluster(cluster):
     for vm in listvms(api, query):
         if vm.cluster.id == cluster.id:
             if vm.tags.get("elas_manage"):
-                    # Add the VM Id to the list of VMS to manage in this cluster
-                    vms_in_cluster.append(vm.id)
+                # Add the VM Id to the list of VMS to manage in this cluster
+                vms_in_cluster.append(vm.id)
 
     if options.verbosity > 3:
         print("Hosts in cluster:")

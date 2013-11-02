@@ -80,8 +80,13 @@ except:
 
 # Define VM based on parameters
 if __name__ == "__main__":
-    vmparams = params.VM(os=params.OperatingSystem(type_=options.osver), cpu=params.CPU(topology=params.CpuTopology(cores=int(options.vmcpu))), name=options.name, memory=1024 * 1024 * 1024 * int(options.vmmem), cluster=api.clusters.get(name=options.cluster), template=api.templates.get(name="Blank"), type_="server")
-    vmdisk = params.Disk(size=1024 * 1024 * 1024 * int(options.sdsize), wipe_after_delete=True, sparse=True, interface="virtio", type_="System", format="cow", storage_domains=params.StorageDomains(storage_domain=[api.storagedomains.get(name="data_domain")]))
+    vmparams = params.VM(os=params.OperatingSystem(type_=options.osver),
+                         cpu=params.CPU(topology=params.CpuTopology(cores=int(options.vmcpu))), name=options.name,
+                         memory=1024 * 1024 * 1024 * int(options.vmmem), cluster=api.clusters.get(name=options.cluster),
+                         template=api.templates.get(name="Blank"), type_="server")
+    vmdisk = params.Disk(size=1024 * 1024 * 1024 * int(options.sdsize), wipe_after_delete=True, sparse=True,
+                         interface="virtio", type_="System", format="cow", storage_domains=params.StorageDomains(
+                             storage_domain=[api.storagedomains.get(name="data_domain")]))
     vmnet = params.NIC()
 
     network_gest = params.Network(name=options.vmgest)

@@ -70,8 +70,8 @@ def process_cluster(clusid):
         if options.verbosity > 2:
             print("Problem updating policy")
 
-    #evenly_distributed
-    #power_saving
+            #evenly_distributed
+            #power_saving
 
 
 ################################ MAIN PROGRAM ############################

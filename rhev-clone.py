@@ -32,7 +32,6 @@ import optparse
 import time
 import getpass
 
-
 from ovirtsdk.xml import params
 from rhev_functions import *
 
@@ -74,7 +73,8 @@ if __name__ == "__main__":
     TEMPLATE_NAME = options.template
 
     try:
-        api.vms.add(params.VM(name=NEW_VM_NAME, memory=268435456, cluster=api.clusters.get(CLUSTER_NAME), template=api.templates.get(TEMPLATE_NAME)))
+        api.vms.add(params.VM(name=NEW_VM_NAME, memory=268435456, cluster=api.clusters.get(CLUSTER_NAME),
+                              template=api.templates.get(TEMPLATE_NAME)))
         print('VM was created from Template successfully')
 
         print('Waiting for VM to reach Down status')

@@ -16,6 +16,7 @@ syntax:
 
 driver_types = ('raw', 'qcow2')
 
+
 def indexToDiskName(i):
     s = ''
     while True:
@@ -24,6 +25,7 @@ def indexToDiskName(i):
         if i == 0:
             break
     return 'vd' + (s or 'a')
+
 
 def createDiskElement(domxml, devpath, drivertype):
     """
@@ -64,6 +66,7 @@ def createDiskElement(domxml, devpath, drivertype):
     disk.appendChild(driver)
 
     return disk
+
 
 if os.environ.has_key('vmdisk'):
     try:

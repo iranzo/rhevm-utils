@@ -12,8 +12,8 @@ import hooking
 DEV_MAPPER_PATH = "/dev/mapper"
 DEV_DIRECTLUN_PATH = '/dev/directlun'
 
-def createdirectory(dirpath):
 
+def createdirectory(dirpath):
     # we don't use os.mkdir/chown because we need sudo
     command = ['/bin/mkdir', '-p', dirpath]
     retcode, out, err = utils.execCmd(command, sudo=True, raw=True)
@@ -64,6 +64,7 @@ def cloneDeviceNode(srcpath, devpath):
     if retcode != 0:
         sys.stderr.write('directlun: error chown %s to %s, err = %s\n' % (devpath, owner, err))
         sys.exit(2)
+
 
 if os.environ.has_key('directlun'):
     try:

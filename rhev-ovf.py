@@ -55,7 +55,7 @@ def getvminfo(host, vmid, display, root):
                     if "volume-format" in info:
                         diskformat = disk.attrib[info].lower()
                 disks.append({"boot": diskboot, "volumeID": diskvolid,
-                             "imageID": diskimageid, "format": diskformat})
+                              "imageID": diskimageid, "format": diskformat})
 
     for content in root.findall("Content"):
         name = content.findall("Name")[0].text
@@ -90,12 +90,12 @@ def getvminfo(host, vmid, display, root):
                         if "Connection" in element.tag:
                             bridges.append(element.text)
                         if "ResourceSubType" in element.tag:
-                                if element.text == "1":
-                                    nicmodels.append("rtl8139")
-                                if element.text == "2":
-                                    nicmodels.append("e1000")
-                                if element.text == "3":
-                                    nicmodels.append("pv")
+                            if element.text == "1":
+                                nicmodels.append("rtl8139")
+                            if element.text == "2":
+                                nicmodels.append("e1000")
+                            if element.text == "3":
+                                nicmodels.append("pv")
                         if "StorageId" in element.tag:
                             diskdomids.append(element.text)
                         if "StoragePoolId" in element.tag:

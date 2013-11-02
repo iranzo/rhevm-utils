@@ -30,7 +30,8 @@ It's goal is to output a table of host/vm status for simple monitoring via exter
 
 # Option parsing
 p = optparse.OptionParser("rhev-nagios-table-storage.py [arguments]", description=description)
-p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0, type='int')
+p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while running", metavar='[0-n]', default=0,
+             type='int')
 p.add_option("-t", "--table", dest="table", help="Input file in CSV format", metavar='table')
 p.add_option("--storage", dest="storage", help="Show messages while running", metavar='storage')
 
@@ -39,18 +40,18 @@ p.add_option("--storage", dest="storage", help="Show messages while running", me
 
 ################################ MAIN PROGRAM ############################
 if not options.storage:
-  print("Storage not defined, exiting")
-  sys.exit(1)
+    print("Storage not defined, exiting")
+    sys.exit(1)
 
 if not options.table:
-  print("CSV table not defined, exiting")
-  sys.exit(1)
+    print("CSV table not defined, exiting")
+    sys.exit(1)
 
 try:
-  f = file(options.table)   #fichero a procesar
+    f = file(options.table)   #fichero a procesar
 except:
-  print("Problem opening the file %s" % options.table)
-  sys.exit(1)
+    print("Problem opening the file %s" % options.table)
+    sys.exit(1)
 
 #NAGIOS PRIOS:
 # 0 -> ok
@@ -66,17 +67,17 @@ except:
 
 
 for line in f:
-  if line.split(";")[0] == "SD":
-    if line.split(";")[1] == options.storage:
-      usage = int(line.split(";")[2])
-      retorno = 3
-      if usage >= 90:
-        retorno = 1
-        if usage >= 95:
-          retorno = 2
-      else:
-        retorno = 0
+    if line.split(";")[0] == "SD":
+        if line.split(";")[1] == options.storage:
+            usage = int(line.split(";")[2])
+            retorno = 3
+            if usage >= 90:
+                retorno = 1
+                if usage >= 95:
+                    retorno = 2
+            else:
+                retorno = 0
 
-      print(usage)
-      sys.exit(retorno)
+            print(usage)
+            sys.exit(retorno)
 
