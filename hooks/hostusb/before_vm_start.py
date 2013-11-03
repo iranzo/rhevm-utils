@@ -123,7 +123,7 @@ if os.environ.has_key('hostusb'):
             if len(regex.findall(vendorid)) != 1 or len(regex.findall(productid)) != 1:
                 sys.stderr.write(
                     'hostusb: bad input, expected 0x0000 format for vendor and product id, input: %s:%s\n' % (
-                    vendorid, productid))
+                        vendorid, productid))
                 sys.exit(2)
 
             hostdev = create_usb_device(domxml, vendorid, productid)

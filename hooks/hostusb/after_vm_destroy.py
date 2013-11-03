@@ -77,8 +77,9 @@ if os.environ.has_key('hostusb'):
             vendorid, productid = usb.split(':')
             if len(regex.findall(vendorid)) != 1 or len(regex.findall(productid)) != 1:
                 sys.stderr.write(
-                    'hostusb after_vm_destroy: bad input, expected 0x0000 format for vendor and product id, input: %s:%s\n' % (
-                    vendorid, productid))
+                    'hostusb after_vm_destroy: bad input, expected 0x0000 format for vendor and product id, '
+                    'input: %s:%s\n' % (
+                        vendorid, productid))
                 sys.exit(2)
             chown(vendorid, productid)
 
