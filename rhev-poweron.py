@@ -75,7 +75,9 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def activate_host(target):
-    """Activates host from maintenance mode removing required tags"""
+    """Activates host from maintenance mode removing required tags
+    @param target: Host ID to activate
+    """
     # Activate    one host at a time...
     if options.verbosity > 0:
         print("Activating target %s" % target)
@@ -105,7 +107,9 @@ def activate_host(target):
 
 
 def process_cluster(clusid):
-    """Processes cluster"""
+    """Processes cluster
+    @param clusid: Cluster ID to process
+    """
     enablable = []
     query = "status = maintenance and tag = elas_manage and tag = elas_main and cluster = %s" % api.clusters.get(
         id=clusid).name
@@ -121,7 +125,6 @@ def process_cluster(clusid):
 
     while number < options.batch:
         number += 1
-        victima = None
         try:
             victima = choice(enablable)
             enablable.remove(victima)

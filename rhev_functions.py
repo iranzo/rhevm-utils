@@ -24,7 +24,11 @@ from ovirtsdk.api import API
 
 #FUNCTIONS
 def check_version(api, major, minor):
-    """Checks if required version or higher is installed"""
+    """Checks if required version or higher is installed
+    @param api: points to API object to reuse access
+    @param major: Major version for available RHEV-H release
+    @param minor: Minor  version for available RHEV-H release
+    """
     valid = False
     if api.get_product_info().version.major >= major:
         if api.get_product_info().version.minor >= minor:
@@ -33,6 +37,15 @@ def check_version(api, major, minor):
 
 
 def apilogin(url, username, password, insecure=True, persistent_auth=True, session_timeout=36000):
+    """
+    @param url: URL for RHEV-M  / Ovirt
+    @param username: username to use
+    @param password: password for username
+    @param insecure: if True, do not validate SSL cert
+    @param persistent_auth: Use persistent authentication
+    @param session_timeout: Session timeout for non-persistent authentication
+    @return:
+    """
     api = None
 
     try:
@@ -46,7 +59,11 @@ def apilogin(url, username, password, insecure=True, persistent_auth=True, sessi
 
 
 def check_tags(api, options):
-    """Checks if required tags have been already defined and creates them if missing"""
+    """Checks if required tags have been already defined and creates them if missing
+
+    @param api: points to API object to reuse access
+    @param options: points to options object to reuse values provided on parent
+    """
     if options.verbosity >= 1:
         print("Looking for tags prior to start...")
 
@@ -64,7 +81,12 @@ def check_tags(api, options):
 
 
 def migra(api, options, vm, action=None):
-    """Initiates migration action of the vm to specified host or automatically if None"""
+    """Initiates migration action of the vm to specified host or automatically if None
+    @param api: points to API object to reuse access
+    @param options: points to options object to reuse values provided on parent
+    @param action: host to migrate the VM to or use default
+    @param vm: vm to work on
+    """
     if not action:
         try:
             vm.migrate()
@@ -96,7 +118,10 @@ def migra(api, options, vm, action=None):
 
 
 def vmused(api, vm):
-    """Returns amount of memory used by the VM from Agent if installed or configured if not"""
+    """Returns amount of memory used by the VM from Agent if installed or configured if not
+    @param api: points to API object to reuse access
+    @param vm: vm to work on
+    """
     # Get memory usage from agent
     used = vm.statistics.get("memory.used").values.value[0].datum
     if used == 0:
@@ -107,8 +132,10 @@ def vmused(api, vm):
 
 
 def listvms(api, oquery=""):
-    """Returns a list of VM's based on query"""
-    vms = []
+    """Returns a list of VM's based on query
+    @param api: points to API object to reuse access
+    @param oquery: query to pass to api search to limit results
+    """
     page = 0
     length = 100
     while length > 0:
@@ -121,8 +148,10 @@ def listvms(api, oquery=""):
 
 
 def listhosts(api, oquery=""):
-    """Returns a list of Hosts based on query"""
-    hosts = []
+    """Returns a list of Hosts based on query
+    @param api: points to API object to reuse access
+    @param oquery: query to pass to api search to limit results
+    """
     page = 0
     length = 100
     while length > 0:

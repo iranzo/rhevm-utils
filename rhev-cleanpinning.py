@@ -56,7 +56,9 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 
 def process_cluster(clusid):
-    """Processes cluster with specified cluster ID"""
+    """Processes cluster with specified cluster ID
+    @param clusid: Cluster ID to process
+    """
     query = "cluster = %s" % api.clusters.get(id=clusid).name
     for vm in listvms(api, query):
         if vm.cluster.id == clusid:

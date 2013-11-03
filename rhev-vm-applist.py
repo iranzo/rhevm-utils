@@ -63,7 +63,9 @@ except:
 
 ################################ FUNCTIONS        ############################
 def gathervmdata(vmname):
-    """Obtans VM data from Postgres database and RHEV api"""
+    """Obtans VM data from Postgres database and RHEV api
+    @param vmname: VM name to get information for
+    """
     # Get VM ID for the query
     vmid = api.vms.get(name=vmname).id
 
@@ -77,14 +79,18 @@ def gathervmdata(vmname):
 
 
 def vmdata(vm):
-    """Returns a list of VM data"""
+    """Returns a list of VM data
+    @param vm: object identifying VM and return information from it
+    """
     # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE
     vmdata = [vm.name, gathervmdata(vm.name)]
     return vmdata
 
 
 def htmlrow(lista):
-    """Returns an HTML row for a table"""
+    """Returns an HTML row for a table
+    @param lista: Elements to put as diferent columns to construct a row
+    """
     table = "<tr>"
     for elem in lista:
         table += "<td>%s</td>" % elem
@@ -93,7 +99,9 @@ def htmlrow(lista):
 
 
 def htmltable(listoflists):
-    """Returns an HTML table based on Rows"""
+    """Returns an HTML table based on Rows
+    @param listoflists: Contains a list of all table rows to generate a table
+    """
     table = "<table>"
     for elem in listoflists:
         table += htmlrow(elem)

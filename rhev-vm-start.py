@@ -70,13 +70,12 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def process_cluster(cluster):
-    """Processes cluster"""
+    """Processes cluster
+    @param cluster: Cluster to process
+    """
     # Emtpy vars for further processing
     hosts_in_cluster = []
     vms_in_cluster = []
-    tags_in_cluster = []
-    tags_vm = {}
-    tags_with_more_than_one = []
 
     # Get host list from this cluster
     query = "cluster = %s" % api.clusters.get(id=cluster.id).name
@@ -112,7 +111,6 @@ def process_cluster(cluster):
     for vm in vms_in_cluster:
         # Iterate until we get our target machine to monitor
         maquina = api.vms.get(id=vm)
-        largo = len(options.machine)
         if maquina.name.startswith(options.machine):
             if maquina.tags.get("elas_manage"):
                 destino = maquina

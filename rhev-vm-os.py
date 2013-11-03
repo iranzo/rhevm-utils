@@ -66,13 +66,13 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def process_cluster(cluster):
-    """Processes cluster"""
+    """Processes cluster
+    @param cluster: Cluster name to process
+    """
     # Emtpy vars for further processing
     hosts_in_cluster = []
     vms_in_cluster = []
-    tags_in_cluster = []
     tags_os = {}
-    tags_with_more_than_one = []
 
     # Get host list from this cluster
     query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name

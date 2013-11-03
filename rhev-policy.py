@@ -57,7 +57,9 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 # FUNCTIONS
 def process_cluster(clusid):
-    """Processes cluster"""
+    """Processes cluster
+    @param clusid: Cluster ID to process
+    """
     if options.verbosity > 1:
         print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
         print("#############################################################################")

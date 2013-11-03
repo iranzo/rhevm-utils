@@ -73,7 +73,9 @@ except:
 
 ################################ FUNCTIONS        ############################
 def gathervmdata(vmname):
-    """Obtans VM data from Postgres database and RHEV api"""
+    """Obtans VM data from Postgres database and RHEV api
+    @param vmname: VM name to gather data for
+    """
     # Get VM ID for the query
     vmid = api.vms.get(name=vmname).id
 
@@ -93,7 +95,6 @@ def gathervmdata(vmname):
         return 0, 0
     else:
         for row in rows:
-            ident = "%s" % row[0]
             cpu = "%f" % float(row[1])
             memory = "%f" % float(row[2])
             totcpu = float(totcpu) + float(cpu)
@@ -106,7 +107,9 @@ def gathervmdata(vmname):
 
 
 def vmdata(vm):
-    """Returns a list of VM data"""
+    """Returns a list of VM data
+    @param vm: VM api object for a specified VM
+    """
     # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE, HOST
     vmdata = [vm.name, vm.memory / 1024 / 1024 / 1024]
     vmcpuavg, vmramavg = gathervmdata(vm.name)
@@ -129,7 +132,9 @@ def vmdata(vm):
 
 
 def htmlrow(lista):
-    """Returns an HTML row for a table"""
+    """Returns an HTML row for a table
+    @param lista: Elements to put as diferent columns to construct a row
+    """
     table = "<tr>"
     for elem in lista:
         table += "<td>%s</td>" % elem
@@ -138,7 +143,9 @@ def htmlrow(lista):
 
 
 def htmltable(listoflists):
-    """Returns an HTML table based on Rows"""
+    """Returns an HTML table based on Rows
+    @param listoflists: Contains a list of all table rows to generate a table
+    """
     table = "<table>"
     for elem in listoflists:
         table += htmlrow(elem)

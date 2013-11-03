@@ -77,7 +77,9 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def upgrade_host(target):
-    """Deactivates hosts putting it on maintenance and associating required tags before upgrading"""
+    """Deactivates hosts putting it on maintenance and associating required tags before upgrading
+    @param target: Host ID to upgrade
+    """
     host = api.hosts.get(id=target)
     # Shutting down one host at a time...
     if options.verbosity > 0:
@@ -91,9 +93,6 @@ def upgrade_host(target):
         host.deactivate()
     except:
         print("Error deactivating host %s" % api.hosts.get(id=target).name)
-
-    #Get host IP
-    ip = host.address
 
     #Should wait until host state is 'maintenance'
 
@@ -146,7 +145,6 @@ def get_max_version():
 
     version = None
 
-    available = []
     # Check all available hypervisor versions on disk (only on RHEV-M host)
     for fichero in glob.glob("/usr/share/rhev-hypervisor/rhevh-6.*.iso"):
         file = fichero.split("/")[-1]
@@ -173,20 +171,20 @@ def get_max_version():
 
 
 def process_cluster(clusid):
-    """Processes cluster"""
+    """Processes cluster
+    @param clusid: Cluster ID to process
+    """
     if options.verbosity > 1:
         print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
         print("#############################################################################")
 
     #Emptying maintanable and activable hosts list
     upgradable = []
-    enablable = []
     upgradable_prio = []
 
     hosts_total = 0
     hosts_up = 0
     hosts_maintenance = 0
-    hosts_maintenance_prio = 0
     hosts_other = 0
     hosts_without_vms = 0
     hosts_with_vms = 0
@@ -198,7 +196,6 @@ def process_cluster(clusid):
     for host in listhosts(api, query):
         if host.tags.get(name="elas_manage"):
             vms = api.hosts.get(id=host.id).summary.total
-            status = "discarded"
             inc = 1
 
             if host.cluster.id != clusid:
@@ -283,12 +280,6 @@ def process_cluster(clusid):
         print("\nNo host to put into maintenance for upgrade\n")
         return 1
 
-    ############################# NOTHING TO DO SECTION ###################################
-
-    if options.verbosity >= 2:
-        print("\nNothing to do as enable/disable scripts conditions are not met")
-
-    return
 
 
 ################################ MAIN PROGRAM ############################

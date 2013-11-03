@@ -36,6 +36,7 @@ p.add_option('-f', "--file", dest="file", help="OVF file to parse",
 def getvminfo(host, vmid, display, root):
     """Parses XML tree to gather all the information from VM"""
 
+    global diskdomids
     cmd = {"vmId": vmid, "kvmEnable": "True", "vmType": "kvm", "tabletEnable": "True", "vmEnable": "True",
            "irqChip": "True", "nice": 0, "keyboardLayout": "en-us", "acpiEnable": "True", "display": "qxl",
            "displayIp": host, "spiceMonitors": "1", "displayNetwork": display}

@@ -58,7 +58,10 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 
 def snapclone_to_export(api, vm):
-    """Generates a snapshot of a VM, clones it, then exports, and removes the temporary VM"""
+    """Generates a snapshot of a VM, clones it, then exports, and removes the temporary VM
+    @param api: pass API call to this function
+    @param vm: VM to process
+    """
     description = "Preexport-%s" % time.mktime(time.gmtime())
 
     # GET VM

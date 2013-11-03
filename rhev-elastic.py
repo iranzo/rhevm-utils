@@ -78,7 +78,9 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def deactivate_host(target):
-    """Deactivates hosts putting it on maintenance and associating required tags"""
+    """Deactivates hosts putting it on maintenance and associating required tags
+    @param target: Host ID to activate
+    """
     host = api.hosts.get(id=target)
     # Shutting down one host at a time...
     if options.verbosity > 0:
@@ -126,7 +128,9 @@ def deactivate_host(target):
 
 
 def activate_host(target):
-    "Reactivates host by removing associated tags and leaving maintenance mode"""
+    """Reactivates host by removing associated tags and leaving maintenance mode
+    @param target: Host ID to activate
+    """
     # Activate    one host at a time...
     if options.verbosity > 0:
         print("Activating target %s" % target)
@@ -156,7 +160,9 @@ def activate_host(target):
 
 
 def process_cluster(clusid):
-    """Processes cluster"""
+    """Processes cluster
+    @param clusid: Identifies Cluster ID to process
+    """
     if options.verbosity > 1:
         print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
         print("#############################################################################")
@@ -169,7 +175,6 @@ def process_cluster(clusid):
     hosts_total = 0
     hosts_up = 0
     hosts_maintenance = 0
-    hosts_maintenance_prio = 0
     hosts_other = 0
     hosts_without_vms = 0
     hosts_with_vms = 0

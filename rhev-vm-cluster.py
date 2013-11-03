@@ -69,7 +69,9 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 
 #FUNCTIONS
 def process_cluster(cluster):
-    """Processes cluster"""
+    """Processes cluster
+    @param clusid: Cluster ID to process
+    """
     # Emtpy vars for further processing
     hosts_in_cluster = []
     vms_in_cluster = []
