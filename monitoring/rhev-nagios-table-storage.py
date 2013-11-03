@@ -19,6 +19,7 @@
 import sys
 import optparse
 
+
 from ovirtsdk.xml import params
 
 description = """
