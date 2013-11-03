@@ -281,7 +281,6 @@ def process_cluster(clusid):
         return 1
 
 
-
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
     #Check if we have defined needed tags and create them if missing
