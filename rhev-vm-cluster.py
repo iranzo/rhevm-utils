@@ -70,7 +70,7 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 #FUNCTIONS
 def process_cluster(cluster):
     """Processes cluster
-    @param clusid: Cluster ID to process
+    @param cluster: Cluster ID to process
     """
     # Emtpy vars for further processing
     hosts_in_cluster = []
@@ -121,8 +121,8 @@ def process_cluster(cluster):
                 tags_with_more_than_one.append(tag.name)
 
     if options.verbosity > 3:
-        print("\nTAGS/VM organization: %s" % tags_vm)
-        print("TAGS with more than one vm: %s" % tags_with_more_than_one)
+        print('\nTAGS/VM organization: %s' % tags_vm)
+        print('TAGS with more than one vm: %s' % tags_with_more_than_one)
 
     tags_to_manage = []
 
