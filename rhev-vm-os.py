@@ -33,7 +33,8 @@ from rhev_functions import *
 description = """
 RHEV-vm-os is a script for managing via API the VMs under RHEV command in both RHEV-H and RHEL hosts.
 
-It's goal is to keep some VM's <-> host <-> O.S.    to group VM's using same O.S. to take benefit of KSM within nodes at the same physical host.
+It's goal is to keep some VM's <-> host <-> O.S.    to group VM's using same O.S. to take benefit of KSM within nodes
+at the same physical host.
 
 """
 
@@ -134,7 +135,8 @@ def process_cluster(cluster):
     for vm in vms_to_process:
         sorted_tag.append(api.vms.get(name=vm).os.type_)
 
-    # Order the tags based on VM ordering (using the other function    "list(set(sorted_tag))" made it fail as ordering changed)
+    # Order the tags based on VM ordering (using the other function    "list(set(sorted_tag))" made it fail as
+    # ordering changed)
     ordered_tags = []
     i = 0
     while i < len(sorted_tag):
@@ -238,7 +240,8 @@ def process_cluster(cluster):
                                                     name=victima)):
                                                 victima = virtual
 
-                                        # Machine with higher ram usage has been selected, move it away to make room for the next one to enter
+                                        # Machine with higher ram usage has been selected, move it away to make room
+                                        # for the next one to enter
                                         if victima:
                                             if options.verbosity > 5:
                                                 print("Target machine to migration is %s" % victima)
@@ -247,7 +250,8 @@ def process_cluster(cluster):
 
                                         host_free = api.hosts.get(id=host).max_scheduling_memory
                                         if host_free > vmused(api, maquina):
-                                            # Enough RAM, exit loop to start moving in a new machine, if not, keep running to make more room
+                                            # Enough RAM, exit loop to start moving in a new machine, if not,
+                                            # keep running to make more room
                                             keeplooping = False
 
                                         if vms_to_excomulgate == []:

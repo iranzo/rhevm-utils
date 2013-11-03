@@ -116,8 +116,8 @@ def deactivate_host(target):
         if options.verbosity >= 1:
             print("Sending %s the power action %s" % (host, options.action))
 
-        comando = "/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i /etc/pki/ovirt-engine/keys/engine_id_rsa root@%s %s " % (
-            ip, options.action)
+        comando = '/usr/bin/ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=10 -i ' \
+                  '/etc/pki/ovirt-engine/keys/engine_id_rsa root@%s %s ' % (ip, options.action)
 
         os.system(comando)
         os.system(comando)
@@ -146,7 +146,8 @@ def activate_host(target):
         mac = nic.mac.get_address()
         # By default, send wol using every single nic at RHEVM host
         if mac != "":
-            comando = "for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do ether-wake -i $tarjeta %s ;done" % mac
+            comando = "for tarjeta in $(for card in $(ls -d /sys/class/net/*/);do echo $(basename $card);done);do " \
+                      "ether-wake -i $tarjeta %s ;done" % mac
             if options.verbosity >= 1:
                 print("Sending %s the power on action via %s" % (target, mac))
             os.system(comando)

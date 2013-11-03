@@ -98,7 +98,7 @@ if __name__ == "__main__":
     try:
         api.vms.add(vmparams)
     except:
-        print("Error creating VM with specified parameters, recheck")
+        print('Error creating VM with specified parameters, recheck')
         sys.exit(1)
 
     if options.verbosity > 1:

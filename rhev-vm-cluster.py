@@ -107,7 +107,8 @@ def process_cluster(cluster):
                         if tag.name[0:8] == "cluster_":
                             if options.verbosity > 3:
                                 print("VM %s in cluster %s has tag %s" % (vm.name, cluster.name, tag.name))
-                                # Put the TAG in the list of used for this cluster and put the VM to the ones with this tag
+                                # Put the TAG in the list of used for this cluster and put the VM to the ones with
+                                # this tag
                             tags_in_cluster.append(tag.id)
                             tags_vm[tag.name].append(vm.name)
 

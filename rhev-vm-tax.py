@@ -78,8 +78,9 @@ def gathervmdata(vmname):
     vmid = api.vms.get(name=vmname).id
 
     # SQL Query for gathering date from range
-    sql = "select history_datetime as DateTime, cpu_usage_percent as CPU, memory_usage_percent as Memory from vm_daily_history where vm_id='%s' and history_datetime >= '%s' and history_datetime <= '%s' ;" % (
-        vmid, datestart, dateend)
+    sql = "select history_datetime as DateTime, cpu_usage_percent as CPU, memory_usage_percent as Memory from " \
+          "vm_daily_history where vm_id='%s' and history_datetime >= '%s' and history_datetime <= '%s' ;" % (
+              vmid, datestart, dateend)
 
     cur.execute(sql)
     rows = cur.fetchall()
