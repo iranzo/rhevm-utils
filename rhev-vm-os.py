@@ -103,11 +103,10 @@ def process_cluster(cluster):
                 else:
                     # Add the VM Id to the list of VMS to manage in this cluster
                     vms_in_cluster.append(vm.id)
-                    for tag in vm.tags.list():
-                        tags_os[vm.os.type_].append(vm.name)
+                    tags_os[vm.os.type_].append(vm.name)
 
-                        # Remove duplicates...
-                        tags_os[vm.os.type_] = list(set(tags_os[vm.os.type_]))
+        # Remove duplicates...
+        tags_os[vm.os.type_] = list(set(tags_os[vm.os.type_]))
 
     # Sort the tags by the number of elements in it
     sorted_tags_os = sorted(tags_os.iteritems(), key=lambda x: x[1], reverse=True)

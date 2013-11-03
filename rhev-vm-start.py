@@ -2,7 +2,7 @@
 #
 # Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
 #
-# Description: Script for starting VM'susing rhevm-sdk
+# Description: Script for starting VM's using rhevm-sdk
 # api based on single VM dependency
 #
 # Requires rhevm-sdk to work
@@ -120,42 +120,42 @@ def process_cluster(cluster):
                 sys.exit(1)
 
     # Iterate for all the machines in our cluster and check behaviour based on reverse value
+    one_is_up = False
+    for host in hosts_in_cluster:
+        if api.hosts.get(id=host).status.state == "up":
+            one_is_up = True
+
     if destino:
-        for vm in vms_in_cluster:
-            if options.reverse == 0:
-                if destino.status.state == "down":
-                    if options.verbosity > 3:
-                        print("Our VM is down... try to start it if possible")
-                    one_is_up = False
-                    for host in hosts_in_cluster:
-                        if api.hosts.get(id=host).status.state == "up":
-                            one_is_up = True
-                    if one_is_up:
-                        try:
-                            destino.start()
-                        except:
-                            if options.verbosity > 3:
-                                print("Error starting up machine %s" % destino.name)
+        if options.reverse == 0:
+            if destino.status.state == "down":
+                if options.verbosity > 3:
+                    print("Our VM is down... try to start it if possible")
+                if one_is_up:
+                    try:
+                        destino.start()
+                    except:
+                        if options.verbosity > 3:
+                            print("Error starting up machine %s" % destino.name)
+        else:
+            # Reverse is != 0... then just boot if target machine is already up
+            if destino.status.state == "up":
+                # Our target VM is not down, it's safe to start our machines up!
+                for vm in vms_in_cluster:
+                    maquina = api.vms.get(id=vm)
+                    if maquina.tags.get("elas_manage"):
+                        if maquina.status.state != "up":
+                            if maquina.id != destino.id:
+                                try:
+                                    maquina.start()
+                                except:
+                                    if options.verbosity > 3:
+                                        print("Error starting %s" % maquina.name)
+                    else:
+                        if options.verbosity > 4:
+                            print("VM %s has no elas_manage tag associated" % maquina.name)
             else:
-                # Reverse is != 0... then just boot if target machine is already up
-                if destino.status.state == "up":
-                    # Our target VM is not down, it's safe to start our machines up!
-                    for vm in vms_in_cluster:
-                        maquina = api.vms.get(id=vm)
-                        if maquina.tags.get("elas_manage"):
-                            if maquina.status.state != "up":
-                                if maquina.id != destino.id:
-                                    try:
-                                        maquina.start()
-                                    except:
-                                        if options.verbosity > 3:
-                                            print("Error starting %s" % maquina.name)
-                        else:
-                            if options.verbosity > 4:
-                                print("VM %s has no elas_manage tag associated" % maquina.name)
-                else:
-                    if options.verbosity > 3:
-                        print("Target machine is not up, not starting vm")
+                if options.verbosity > 3:
+                    print("Target machine is not up, not starting vm")
 
 ################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
