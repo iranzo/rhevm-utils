@@ -8,7 +8,7 @@
 HOST=$1
 if [ "$HOST" == "" ];
 then
-	echo "No host specified, exitting..."
+	echo "No host specified, exiting..."
 	exit 1
 fi
 
