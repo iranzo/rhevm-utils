@@ -60,7 +60,7 @@ def process_cluster(clusid):
     @param clusid: Cluster ID to process
     """
     query = "cluster = %s" % api.clusters.get(id=clusid).name
-    for vm in listvms(api, query):
+    for vm in paginate(api.vms, query):
         if vm.cluster.id == clusid:
             if vm.tags.get("elas_manage"):
                 for tag in vm.tags.list():

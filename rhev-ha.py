@@ -61,7 +61,7 @@ except:
 
 query = ""
 
-for vm in listvms(api, query):
+for vm in paginate(api.vms, query):
     if vm.high_availability.enabled is not True:
         vm.high_availability.enabled = True
         vm.memory_policy.guaranteed = 1 * 1024 * 1024

@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     if not options.name:
         data = [["Name", "App list"]]
-        for vm in listvms(api):
+        for vm in paginate(api.vms):
             try:
                 data.append(vmdata(vm))
             except:

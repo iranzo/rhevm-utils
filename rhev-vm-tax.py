@@ -195,7 +195,7 @@ if __name__ == "__main__":
     if not options.name:
         data = [
             ["Name", "RAM (GB)", "% RAM used", "Cores", "%CPU used", "Storage Domain", "Total assigned (GB)", "HOST"]]
-        for vm in listvms(api):
+        for vm in paginate(api.vms):
             try:
                 data.append(vmdata(vm))
             except:

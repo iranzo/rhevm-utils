@@ -157,7 +157,7 @@ def get_max_version():
         release = None
         version = None
         # FIXME only query rhev-h hosts
-        for host in listhosts(api, oquery=""):
+        for host in paginate(api.hosts, oquery=""):
             if host.os.version.full_version > maxversion:
                 maxversion = host.os.version.full_version
                 version = maxversion.split("-")[1].strip()  # 20130528.0.el6_4
@@ -193,7 +193,7 @@ def process_cluster(clusid):
 
     # FIXME: only RHEV-H hosts
     query = "cluster = %s" % api.clusters.get(id=clusid).name
-    for host in listhosts(api, query):
+    for host in paginate(api.hosts, query):
         if host.tags.get(name="elas_manage"):
             vms = api.hosts.get(id=host.id).summary.total
             inc = 1
@@ -293,7 +293,7 @@ if __name__ == "__main__":
         if options.verbosity >= 1:
             print("Tagging all hosts with elas_manage")
 
-        for host in listhosts(api):
+        for host in paginate(api.hosts):
             try:
                 host.tags.add(params.Tag(name="elas_manage"))
             except:
@@ -302,7 +302,7 @@ if __name__ == "__main__":
     #Sanity checks
     ## Check hosts with elas_upgrade tag and status active
     query = "status = up"
-    for host in listhosts(api, query):
+    for host in paginate(api.hosts, query):
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_upgrade"):
                 if options.verbosity >= 1:
@@ -311,7 +311,7 @@ if __name__ == "__main__":
 
     ## Check hosts with elas_maint tag and status active
     query = "status = up"
-    for host in listhosts(api, query):
+    for host in paginate(api.hosts, query):
         if host.status.state == "up":
             if api.hosts.get(id=host.id).tags.get(name="elas_maint"):
                 if options.verbosity >= 1:

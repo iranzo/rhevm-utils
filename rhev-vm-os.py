@@ -76,7 +76,7 @@ def process_cluster(cluster):
 
     # Get host list from this cluster
     query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name
-    for host in listhosts(api, query):
+    for host in paginate(api.hosts, query):
         if host.cluster.id == cluster.id:
             if host.status.state == "up":
                 hosts_in_cluster.append(host.id)
@@ -87,14 +87,14 @@ def process_cluster(cluster):
 
     #Create the empty set of vars that we'll populate later
     query = "cluster = %s and status = up" % api.clusters.get(id=cluster.id).name
-    for vm in listvms(api, query):
+    for vm in paginate(api.vms, query):
         if vm.status.state == "up":
             if vm.cluster.id == cluster.id:
                 tags_os[vm.os.type_] = []
 
     #Populate the list of tags and VM's
     query = "cluster = %s and status = up and tag = elas_manage" % api.clusters.get(id=cluster.id).name
-    for vm in listvms(api, query):
+    for vm in paginate(api.vms, query):
         if vm.cluster.id == cluster.id:
             if vm.status.state == "up":
                 if not vm.tags.get("elas_manage"):
@@ -200,7 +200,7 @@ def process_cluster(cluster):
                                     # Fill list with vms that can be moved away
                                     vms_to_excomulgate = []
                                     query = "status = up and host = %s" % host
-                                    for virtual in listvms(api, query):
+                                    for virtual in paginate(api.vms, query):
                                         if virtual.status.state == "up":
                                             if virtual.host.id == host:
                                                 if virtual.os.type_ not in os_not_to_excomulgate:
@@ -288,7 +288,7 @@ if __name__ == "__main__":
     if options.tagall == 1:
         if options.verbosity >= 1:
             print("Tagging all VM's with elas_manage")
-        for vm in listvms(api):
+        for vm in paginate(api.vms):
             try:
                 vm.tags.add(params.Tag(name="elas_manage"))
             except:

@@ -131,36 +131,23 @@ def vmused(api, vm):
     return used
 
 
-def listvms(api, oquery=""):
-    """Returns a list of VM's based on query
-    @param api: points to API object to reuse access
-    @param oquery: query to pass to api search to limit results
+def paginate(element, oquery=""):
     """
+    Paginates results of .list() for an object to avoid api limitations, it is created as generator to improve performance.
+
+    @param element: points to api object for reuse
+    @param oquery:  optional query to pass to limit search results
+    """
+
     page = 0
     length = 100
     while length > 0:
         page += 1
         query = "%s page %s" % (oquery, page)
-        tanda = api.vms.list(query=query)
+        tanda = element.list(query=query)
         length = len(tanda)
-        for vm in tanda:
-            yield vm
-
-
-def listhosts(api, oquery=""):
-    """Returns a list of Hosts based on query
-    @param api: points to API object to reuse access
-    @param oquery: query to pass to api search to limit results
-    """
-    page = 0
-    length = 100
-    while length > 0:
-        page += 1
-        query = "%s page %s" % (oquery, page)
-        tanda = api.hosts.list(query=query)
-        length = len(tanda)
-        for host in tanda:
-            yield host
+        for elem in tanda:
+            yield elem
 
 
 if __name__ == "__main__":

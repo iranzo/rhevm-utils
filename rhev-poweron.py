@@ -113,7 +113,7 @@ def process_cluster(clusid):
     enablable = []
     query = "status = maintenance and tag = elas_manage and tag = elas_main and cluster = %s" % api.clusters.get(
         id=clusid).name
-    for host in listhosts(api, query):
+    for host in paginate(api.hosts, query):
         if host.status.state == "maintenance":
             if api.hosts.get(id=host.id).tags.get(name="elas_manage"):
                 if api.hosts.get(id=host.id).tags.get(name="elas_maint"):

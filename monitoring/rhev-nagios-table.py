@@ -61,7 +61,7 @@ except:
 f.write("TYPE;HOST;STATE;CPU;MEM;VMS;MEMUSED;\n")
 
 #FUNCTIONS
-for host in listhosts(api):
+for host in paginate(api.hosts):
     memory = host.statistics.get(name="memory.used").values.value[0].datum
     memtotal = host.statistics.get(name="memory.total").values.value[0].datum
     usage = (100 - host.statistics.get(name="cpu.current.idle").values.value[0].datum)

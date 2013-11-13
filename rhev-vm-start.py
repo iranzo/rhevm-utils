@@ -79,7 +79,7 @@ def process_cluster(cluster):
 
     # Get host list from this cluster
     query = "cluster = %s" % api.clusters.get(id=cluster.id).name
-    for host in listhosts(api, query):
+    for host in paginate(api.hosts, query):
         if host.cluster.id == cluster.id:
             hosts_in_cluster.append(host.id)
 
@@ -89,12 +89,12 @@ def process_cluster(cluster):
 
     #Populate the list of tags and VM's
     query = "cluster = %s" % api.clusters.get(id=cluster.id).name
-    for vm in listvms(api, query):
+    for vm in paginate(api.vms, query):
         if vm.cluster.id == cluster.id:
             vms_in_cluster.append(vm.id)
 
     query = "cluster = %s and tag = elas_manage" % api.clusters.get(id=cluster.id).name
-    for vm in listvms(api, query):
+    for vm in paginate(api.vms, query):
         if vm.cluster.id == cluster.id:
             if vm.tags.get("elas_manage"):
                 # Add the VM Id to the list of VMS to manage in this cluster
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     if options.tagall == 1:
         if options.verbosity >= 1:
             print("Tagging all VM's with elas_manage")
-        for vm in listvms(api):
+        for vm in paginate(api.vms):
             try:
                 vm.tags.add(params.Tag(name="elas_manage"))
             except:
