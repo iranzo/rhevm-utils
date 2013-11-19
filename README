@@ -9,21 +9,20 @@ Contributors:
 
 Please, check individual README files for specific behaviour and description
 
-rhev_functions.py:		Common set of functions for usage by other scripts
+rhev_functions.py:         Common set of functions for usage by other scripts
 
-rhev-elastic.py:            	Manage hosts and power them off if unused
-rhev-vm-cluster.py:         	Use tags to migrate VM's away from each other (sort of anti-affinity)
-rhev-vlan.py:               	Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
-rhev-cleanpinning.py:    	Clean VM pinning to host
-rhev-policy.py:          	Change clusters policy to the one provided
-rhev-vm-os.py:           	Group VM's by O.S. on hosts
-rhev-clone.py:           	Create a clone VM based on a Template on a specified Cluster
-rhev-poweron.py:         	Power on (remove maintenance) from all rhev_elastic hosts in maintenance in order to prepare for peak hours
-rhev-vm-start.py:	 	Start VM specified or remaining VM's if specified is up
-rhev-vm-create.py:	 	Create a new VM with specified parameters
-rhev-vm-tax.py:			Create a table with information about last month usage and configured values for CPU/RAM/HDD
-rhev-vm-applist.py:		Create a table with information about VM's and apps reported by rhev-agent
-
+rhev-elastic.py:           Manage hosts and power them off if unused
+rhev-vm-cluster.py:        Use tags to migrate VM's away from each other (sort of anti-affinity)
+rhev-vlan.py:              Create VLAN with name and vlan_id on DC and associate to specified cluster and its hosts
+rhev-cleanpinning.py:      Clean VM pinning to host
+rhev-policy.py:            Change clusters policy to the one provided
+rhev-vm-os.py:             Group VM's by O.S. on hosts
+rhev-clone.py:             Create a clone VM based on a Template on a specified Cluster
+rhev-poweron.py:           Power on (remove maintenance) from all rhev_elastic hosts in maintenance in order to prepare for peak hours
+rhev-vm-start.py:          Start VM specified or remaining VM's if specified is up
+rhev-vm-create.py:         Create a new VM with specified parameters
+rhev-vm-tax.py:            Create a table with information about last month usage and configured values for CPU/RAM/HDD
+rhev-vm-applist.py:        Create a table with information about VM's and apps reported by rhev-agent
 
 
 PD: Please, if you're using this scripts, send me an email just to know if
@@ -37,5 +36,3 @@ to newer versions.
 Philosophy is Release Early, Release Often, so some scripts can be ugly (no
 error control, etc), but provide the basic functionality, in later updates,
 they will be improved.
-
-
