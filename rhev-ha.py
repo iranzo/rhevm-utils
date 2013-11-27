@@ -30,7 +30,7 @@ ha is a script for enabling HA for each VM in the cluster
 """
 
 # Option parsing
-p = optparse.OptionParser("vmcreate.py [arguments]", description=description)
+p = optparse.OptionParser("rhev-ha.py [arguments]", description=description)
 p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM API", metavar="admin@internal",
              default="admin@internal")
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
