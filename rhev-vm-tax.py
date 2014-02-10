@@ -38,6 +38,7 @@ p.add_option("-w", "--password", dest="password", help="Password to use with use
 p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="server",
              default="127.0.0.1")
+p.add_option("--dbname", dest="dbname", help="RHEV-M database name", metavar="dbname", default="engine")
 p.add_option("--dbuser", dest="dbuser", help="RHEV-M database user", metavar="dbuser", default="engine")
 p.add_option("--dbpass", dest="dbpass", help="RHEV-M database password", metavar="dbpass", default="redhat")
 p.add_option("-D", action="store_true", dest="dbaskpassword", help="Ask for DB password", metavar="admin",
@@ -62,7 +63,7 @@ if options.dbaskpassword:
 baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
-con = psycopg2.connect(database='ovirt_engine_history', user=options.dbuser, password=options.dbpass)
+con = psycopg2.connect(database=options.dbname, user=options.dbuser, password=options.dbpass)
 
 try:
     value = api.vms.list()
