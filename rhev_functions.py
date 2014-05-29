@@ -72,6 +72,11 @@ def check_tags(api, options):
             print("Creating tag elas_manage...")
         api.tags.add(params.Tag(name="elas_manage"))
 
+    if not api.tags.get(name="elas_upgrade"):
+        if options.verbosity >= 2:
+            print("Creating tag elas_upgrade...")
+        api.tags.add(params.Tag(name="elas_upgrade"))        
+
     if not api.tags.get(name="elas_start"):
         if options.verbosity >= 2:
             print("Creating tag elas_start...")
