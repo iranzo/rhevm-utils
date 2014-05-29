@@ -22,7 +22,7 @@ from ovirtsdk.xml import params
 from ovirtsdk.api import API
 
 
-#FUNCTIONS
+# FUNCTIONS
 def check_version(api, major, minor):
     """Checks if required version or higher is installed
     @param api: points to API object to reuse access
@@ -67,20 +67,13 @@ def check_tags(api, options):
     if options.verbosity >= 1:
         print("Looking for tags prior to start...")
 
-    if not api.tags.get(name="elas_manage"):
-        if options.verbosity >= 2:
-            print("Creating tag elas_manage...")
-        api.tags.add(params.Tag(name="elas_manage"))
+    tags = "elas_maint elas_manage elas_start elas_upgrade "
 
-    if not api.tags.get(name="elas_upgrade"):
-        if options.verbosity >= 2:
-            print("Creating tag elas_upgrade...")
-        api.tags.add(params.Tag(name="elas_upgrade"))        
-
-    if not api.tags.get(name="elas_start"):
-        if options.verbosity >= 2:
-            print("Creating tag elas_start...")
-        api.tags.add(params.Tag(name="elas_start"))
+    for tag in tags:
+        if not api.tags.get(name=tag):
+            if options.verbosity >= 2:
+                print("Creating tag %s...") % tag
+            api.tags.add(params.Tag(name=tag))
 
     return
 
@@ -130,7 +123,7 @@ def vmused(api, vm):
     # Get memory usage from agent
     used = vm.statistics.get("memory.used").values.value[0].datum
     if used == 0:
-        #If no value received, return installed memory
+        # If no value received, return installed memory
         used = vm.statistics.get("memory.installed").values.value[0].datum
 
     return used
