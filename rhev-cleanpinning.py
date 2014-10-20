@@ -73,7 +73,7 @@ def process_cluster(clusid):
     return
 
 
-# ############################### MAIN PROGRAM ############################
+################################ MAIN PROGRAM ############################
 if __name__ == "__main__":
     if not options.cluster:
         # Processing each cluster of our RHEVM
