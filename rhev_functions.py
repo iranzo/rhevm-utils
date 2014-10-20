@@ -17,12 +17,28 @@
 
 import sys
 import time
+import getpass
 
 from ovirtsdk.xml import params
 from ovirtsdk.api import API
+import keyring
 
 
 # FUNCTIONS
+def getuserpass(options):
+    """Checks if it should ask for password interactively, use the keyring or just return the default values or
+    commandline values provided by arguments.
+
+    @param options: Options gathered from the script executed by user
+    """
+    if options.keyring:
+        options.username = keyring.get_password('rhevm-utils', 'username')
+        options.password = keyring.get_password('rhevm-utils', 'password'),
+    elif options.askpassword:
+        options.password = getpass.getpass("Enter password: ")
+    return options.username, options.password
+
+
 def check_version(api, major, minor):
     """Checks if required version or higher is installed
     @param api: points to API object to reuse access
@@ -72,7 +88,7 @@ def check_tags(api, options):
     for tag in tags:
         if not api.tags.get(name=tag):
             if options.verbosity >= 2:
-                print("Creating tag %s...") % tag
+                print "Creating tag %s..." % tag
             api.tags.add(params.Tag(name=tag))
 
     return
@@ -131,7 +147,8 @@ def vmused(api, vm):
 
 def paginate(element, oquery=""):
     """
-    Paginates results of .list() for an object to avoid api limitations, it is created as generator to improve performance.
+    Paginates results of .list() for an object to avoid api limitations,
+    it is created as generator to improve performance.
 
     @param element: points to api object for reuse
     @param oquery:  optional query to pass to limit search results

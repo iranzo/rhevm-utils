@@ -16,11 +16,7 @@
 # GNU General Public License for more details.
 
 import optparse
-import time
-import getpass
-import keyring
 
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 description = """
@@ -46,11 +42,11 @@ if options.askpassword:
 # remotepasseval = keyring.get_password('redhat', 'kerberos')
 
 if options.query:
-    print "Username: %s" % keyring.get_password('rhevm-utils','username')
-    print "Password: %s" % keyring.get_password('rhevm-utils','password')
+    print "Username: %s" % keyring.get_password('rhevm-utils', 'username')
+    print "Password: %s" % keyring.get_password('rhevm-utils', 'password')
 
 if options.username:
-    keyring.set_password('rhevm-utils','username',options.username)
+    keyring.set_password('rhevm-utils', 'username', options.username)
 if options.password:
-    keyring.set_password('rhevm-utils','password',options.password)
+    keyring.set_password('rhevm-utils', 'password', options.password)
 

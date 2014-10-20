@@ -16,9 +16,7 @@
 # GNU General Public License for more details.
 
 import optparse
-import getpass
 
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 description = """
@@ -72,11 +70,11 @@ def process_cluster(clusid):
         if options.verbosity > 2:
             print("Problem updating policy")
 
-            #evenly_distributed
+            # evenly_distributed
             #power_saving
 
 
-################################ MAIN PROGRAM ############################
+# ############################### MAIN PROGRAM ############################
 if __name__ == "__main__":
 
     if not options.cluster:

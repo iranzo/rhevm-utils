@@ -27,15 +27,13 @@
 
 
 # tags behaviour
-#     elas_manage: manage this host by using the elastic management script (EMS)
+# elas_manage: manage this host by using the elastic management script (EMS)
 #     elas_maint : this host has been put on maintenance by the EMS
 
 import optparse
 import os
-import getpass
 from random import choice
 
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 
