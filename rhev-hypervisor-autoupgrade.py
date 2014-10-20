@@ -22,18 +22,14 @@
 # - After timeout, set host to active (actual bug in RHEV)
 
 # tags behaviour
-#     elas_manage:  manage this host by using the elastic management script (EMS)
+# elas_manage:  manage this host by using the elastic management script (EMS)
 #     elas_upgrade: this host status has been set by automatic upgrade, so it can be installed/activated
 #     elas_maint:   this host status has been set by rhev-elastic, so it can be installed/activated
 
-import sys
 import optparse
-import time
 import glob
-import getpass
 from random import choice
 
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 
@@ -51,6 +47,8 @@ p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM
              default="admin@internal")
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
              default="admin")
+p.add_option("-k", action="store_true", dest="keyring", help="use python keyring for user/password", metavar="keyring",
+             default=False)
 p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
              default="127.0.0.1")
@@ -67,8 +65,7 @@ p.add_option('-d', "--delay", dest="delay", help="Set delay to way until activat
 
 (options, args) = p.parse_args()
 
-if options.askpassword:
-    options.password = getpass.getpass("Enter password: ")
+options.username, options.password = getuserpass(options)
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
@@ -147,9 +144,9 @@ def get_max_version():
 
     # Check all available hypervisor versions on disk (only on RHEV-M host)
     for fichero in glob.glob("/usr/share/rhev-hypervisor/rhevh-6.*.iso"):
-        file = fichero.split("/")[-1]
-        if file > version:
-            version = file
+        fileversion = fichero.split("/")[-1]
+        if fileversion > version:
+            version = fileversion
 
     #Couldn't get version from disk, get it from the API
     if not version:

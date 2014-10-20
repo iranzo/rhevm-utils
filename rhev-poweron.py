@@ -27,15 +27,13 @@
 
 
 # tags behaviour
-#     elas_manage: manage this host by using the elastic management script (EMS)
+# elas_manage: manage this host by using the elastic management script (EMS)
 #     elas_maint : this host has been put on maintenance by the EMS
 
 import optparse
 import os
-import getpass
 from random import choice
 
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 
@@ -52,6 +50,8 @@ p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM
              default="admin@internal")
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
              default="admin")
+p.add_option("-k", action="store_true", dest="keyring", help="use python keyring for user/password", metavar="keyring",
+             default=False)
 p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
              default="127.0.0.1")
@@ -65,8 +65,7 @@ p.add_option('-c', "--cluster", dest="cluster", help="Select cluster name to pro
 
 (options, args) = p.parse_args()
 
-if options.askpassword:
-    options.password = getpass.getpass("Enter password: ")
+options.username, options.password = getuserpass(options)
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 

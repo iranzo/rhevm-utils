@@ -1,7 +1,8 @@
 #RHEVM-Elastic-Management Scripts
 
 REQUIRES: rhevm-sdk >= rhevm-sdk-3.1.0.10-1.el6ev.noarch.rpm
-
+Required: python-keyring
+ 
 Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 Contributors: 
 - Ian Lochrin 
@@ -10,6 +11,8 @@ Contributors:
 Please, check individual README files for specific behaviour and description:
 
 - rhev_functions.py:         Common set of functions for usage by other scripts
+
+- rhev-keyring.py:           Script to set/query keyring values for username/password
 
 - rhev-elastic.py:           Manage hosts and power them off if unused
 

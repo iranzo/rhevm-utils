@@ -14,14 +14,11 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
-import sys
 import optparse
-import getpass
 import calendar
 import datetime
 
 import psycopg2
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 
@@ -36,6 +33,8 @@ p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
              default="redhat")
 p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
+p.add_option("-k", action="store_true", dest="keyring", help="use python keyring for user/password", metavar="keyring",
+             default=False)
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="server",
              default="127.0.0.1")
 p.add_option("--dbname", dest="dbname", help="RHEV-M database name", metavar="dbname", default="engine")
@@ -54,9 +53,10 @@ p.add_option("-y", "--year", dest="year", help="Year to gather data from", metav
 
 (options, args) = p.parse_args()
 
-if options.askpassword:
-    options.password = getpass.getpass("Enter password: ")
+options.username, options.password = getuserpass(options)
 
+
+# TODO: Create keyring for DBpassword
 if options.dbaskpassword:
     options.dbpass = getpass.getpass("Enter DB password: ")
 
