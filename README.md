@@ -12,6 +12,8 @@ Please, check individual README files for specific behaviour and description:
 
 - rhev_functions.py:         Common set of functions for usage by other scripts
 
+- rhev-keyring.py:           Script to set/query keyring values for username/password
+
 - rhev-elastic.py:           Manage hosts and power them off if unused
 
 - rhev-vm-cluster.py:        Use tags to migrate VM's away from each other (sort of anti-affinity)
