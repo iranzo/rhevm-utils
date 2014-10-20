@@ -1,7 +1,8 @@
 #RHEVM-Elastic-Management Scripts
 
 REQUIRES: rhevm-sdk >= rhevm-sdk-3.1.0.10-1.el6ev.noarch.rpm
-
+Required: python-keyring
+ 
 Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 Contributors: 
 - Ian Lochrin 
