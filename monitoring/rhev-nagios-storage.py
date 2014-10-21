@@ -49,9 +49,9 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 
-#if not options.host:
+# if not options.host:
 
 try:
     sd = api.storagedomains.get(name=options.storage)
@@ -62,7 +62,7 @@ if not sd:
     print("Storage Domain %s not found" % options.storage)
     sys.exit(3)
 
-#NAGIOS PRIOS:
+# NAGIOS PRIOS:
 # 0 -> ok
 # 1 -> warning
 # 2 -> critical

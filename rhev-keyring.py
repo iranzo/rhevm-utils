@@ -49,4 +49,3 @@ if options.username:
     keyring.set_password('rhevm-utils', 'username', options.username)
 if options.password:
     keyring.set_password('rhevm-utils', 'password', options.password)
-

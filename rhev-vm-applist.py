@@ -59,7 +59,7 @@ except:
     sys.exit(1)
 
 
-# ############################### FUNCTIONS        ############################
+# FUNCTIONS
 def gathervmdata(vmname):
     """Obtans VM data from Postgres database and RHEV api
     @param vmname: VM name to get information for
@@ -106,7 +106,7 @@ def htmltable(listoflists):
     table += "</table>"
     return table
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
 
     # Open connection

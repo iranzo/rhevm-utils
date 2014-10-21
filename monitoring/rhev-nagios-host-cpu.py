@@ -48,8 +48,8 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
-################################ MAIN PROGRAM ############################
-#if not options.host:
+# MAIN PROGRAM
+# if not options.host:
 
 try:
     host = api.hosts.get(name=options.host)
@@ -60,7 +60,7 @@ if not host:
     print("Host %s not found" % options.host)
     sys.exit(3)
 
-#NAGIOS PRIOS:
+# NAGIOS PRIOS:
 # 0 -> ok
 # 1 -> warning
 # 2 -> critical

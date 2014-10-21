@@ -66,7 +66,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-#FUNCTIONS
+# FUNCTIONS
 def process_cluster(cluster):
     """Processes cluster
     @param cluster: Cluster ID to process
@@ -89,11 +89,11 @@ def process_cluster(cluster):
         print("\nProcessing cluster %s..." % cluster.name)
         print("##############################################")
 
-    #Create the empty set of vars that we'll populate later
+    # Create the empty set of vars that we'll populate later
     for tag in api.tags.list():
         tags_vm[tag.name] = []
 
-    #Populate the list of tags and VM's
+    # Populate the list of tags and VM's
     query = "cluster = %s and status = up and tag = elas_manage" % api.clusters.get(id=cluster.id).name
     for vm in paginate(api.vms, query):
         if vm.cluster.id == cluster.id:
@@ -113,7 +113,7 @@ def process_cluster(cluster):
                             tags_in_cluster.append(tag.id)
                             tags_vm[tag.name].append(vm.name)
 
-    #Construct a list of tags with more than one vm in state == up to process
+    # Construct a list of tags with more than one vm in state == up to process
     for tag in api.tags.list():
         if len(tags_vm[tag.name]) > 1:
             if tag.name[0:8] == "cluster_":
@@ -135,7 +135,7 @@ def process_cluster(cluster):
         if etiqueta[0:8] == "cluster_":
             tags_to_manage.append(etiqueta)
 
-    #Removing duplicates
+    # Removing duplicates
     tags = sorted(set(tags_in_cluster))
     tags_in_cluster = tags
 
@@ -158,11 +158,11 @@ def process_cluster(cluster):
                 print('Processing vm %s for tag %s at host %s' % (
                     vm, etiqueta, api.hosts.get(id=api.vms.get(name=vm).host.id).name))
 
-            #Set target as actual running host
+            # Set target as actual running host
             target = api.vms.get(name=vm).host.id
 
             if api.vms.get(name=vm).host.id not in tags_vm_used:
-                #Host not yet used, accept it directly
+                # Host not yet used, accept it directly
                 tags_vm_used.add(target)
             else:
                 # Host was in use, searching for new target
@@ -190,7 +190,7 @@ def process_cluster(cluster):
                 maquina.placement_policy.affinity = "migratable"
                 maquina.update()
 
-                #Migrate VM to target HOST to satisfy rules
+                # Migrate VM to target HOST to satisfy rules
                 migra(api, options, api.vms.get(name=vm), params.Action(host=api.hosts.get(id=target)))
                 tags_vm_used.add(target)
             else:
@@ -206,13 +206,13 @@ def process_cluster(cluster):
                 if options.verbosity > 4:
                     print("Problem updating VM parameters for pinning")
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
-    #Check if we have defined needed tags and create them if missing
+    # Check if we have defined needed tags and create them if missing
     check_tags(api, options)
 
     # TAGALL?
-    #Add elas_maint TAG to every single vm to automate the management
+    # Add elas_maint TAG to every single vm to automate the management
     if options.tagall == 1:
         if options.verbosity >= 1:
             print("Tagging all VM's with elas_manage")

@@ -38,7 +38,7 @@ p.add_option("--storage", dest="storage", help="Show messages while running", me
 (options, args) = p.parse_args()
 
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if not options.storage:
     print("Storage not defined, exiting")
     sys.exit(1)
@@ -48,12 +48,12 @@ if not options.table:
     sys.exit(1)
 
 try:
-    f = file(options.table)   #fichero a procesar
+    f = file(options.table)   # fichero a procesar
 except:
     print("Problem opening the file %s" % options.table)
     sys.exit(1)
 
-#NAGIOS PRIOS:
+# NAGIOS PRIOS:
 # 0 -> ok
 # 1 -> warning
 # 2 -> critical
@@ -61,9 +61,9 @@ except:
 
 # By default, return unknown
 
-#TYPE;SD;PCTG
-#SD;Export-1;0;
-#SD;Export-2;40;
+# TYPE;SD;PCTG
+# SD;Export-1;0;
+# SD;Export-2;40;
 
 
 for line in f:
@@ -80,4 +80,3 @@ for line in f:
 
             print(usage)
             sys.exit(retorno)
-

@@ -19,7 +19,7 @@
 
 # Goals:
 # - Do not manage any host without tag elas_manage
-# - Operate on one host per execution, exitting after each change
+# - Operate on one host per execution, exiting after each change
 # - Have at least one host up without vm's to hold new VM's
 # - Shutdown/suspend hosts without vm's until there's only one left
 # - If a host has been put on maintenance and has no tag, it will not be activated by the script
@@ -74,7 +74,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-#FUNCTIONS
+# FUNCTIONS
 def deactivate_host(target):
     """Deactivates hosts putting it on maintenance and associating required tags
     @param target: Host ID to activate
@@ -84,19 +84,19 @@ def deactivate_host(target):
     if options.verbosity > 0:
         print("Shutting down target %s" % target)
 
-    #Add elas_maint TAG to host
+    # Add elas_maint TAG to host
     host.tags.add(params.Tag(name="elas_maint"))
 
-    #Set host on maintenance
+    # Set host on maintenance
     try:
         host.deactivate()
     except:
         print("Error deactivating host %s" % api.hosts.get(id=target).name)
 
-    #Get host IP
+    # Get host IP
     ip = host.address
 
-    #Should wait until host state is 'maintenance'
+    # Should wait until host state is 'maintenance'
 
     i = 0
     while i < 30:
@@ -111,8 +111,8 @@ def deactivate_host(target):
         i += 1
 
     if api.hosts.get(id=target).status.state == "maintenance":
-        #Execute power action
-        ## /etc/pki/rhevm/keys/rhevm_id_rsa
+        # Execute power action
+        # /etc/pki/rhevm/keys/rhevm_id_rsa
         if options.verbosity >= 1:
             print("Sending %s the power action %s" % (host, options.action))
 
@@ -133,7 +133,7 @@ def activate_host(target):
     if options.verbosity > 0:
         print("Activating target %s" % target)
 
-    #Remove elas_maint TAG to host
+    # Remove elas_maint TAG to host
     if not api.hosts.get(id=target).tags.get(name="elas_maint"):
         try:
             api.hosts.get(id=target).tags.get(name="elas_maint").delete()
@@ -143,7 +143,7 @@ def activate_host(target):
     if api.hosts.get(id=target).status.state == "maintenance":
         api.hosts.get(id=target).activate()
 
-    #Get Host MAC
+    # Get Host MAC
     for nic in api.hosts.get(id=target).nics.list():
         mac = nic.mac.get_address()
         # By default, send wol using every single nic at RHEVM host
@@ -165,7 +165,7 @@ def process_cluster(clusid):
         print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
         print("#############################################################################")
 
-    #Emptying maintanable and activable hosts list
+    # Emptying maintanable and activable hosts list
     maintable = []
     enablable = []
     maintable_prio = []
@@ -189,7 +189,7 @@ def process_cluster(clusid):
                 if options.verbosity >= 3:
                     print("Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid))
             else:
-                #Preparing list of valid hosts
+                # Preparing list of valid hosts
                 if vms == 0:
                     if host.status.state == "up":
                         maintable.append(host.id)
@@ -208,7 +208,7 @@ def process_cluster(clusid):
                         host.name, host.id, vms, api.hosts.get(id=host.id).status.state,
                         api.hosts.get(id=host.id).storage_manager.valueOf_, status))
 
-                #Counters
+                # Counters
                 hosts_total += inc
 
                 if host.status.state == "up":
@@ -235,14 +235,13 @@ def process_cluster(clusid):
         else:
             print("\nNo hosts in cluster %s, skipping" % clusid)
 
-    #### CODE TO CHECK HOST COUNT, Host still active, etc
+    # CODE TO CHECK HOST COUNT, Host still active, etc
+    # Useful vars:     hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
+    # Useful arrays: enablable / maintable
 
-    #Useful vars:     hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
-    #Useful arrays: enablable / maintable
+    # ENABLE SECTION
 
-    ################################# ENABLE SECTION #########################################
-
-    #At least one host but no one is up -> enable one host
+    # At least one host but no one is up -> enable one host
     if hosts_total > 0 and hosts_up == 0:
         try:
             target = choice(enablable)
@@ -255,9 +254,9 @@ def process_cluster(clusid):
                 print("\nNo host to enable\n")
             return 1
 
-    #Host active without vm's
+    # Host active without vm's
     if hosts_up > 0:
-        #At least one host up without vm's:
+        # At least one host up without vm's:
         if hosts_without_vms == 0:
             try:
                 target = choice(enablable)
@@ -271,9 +270,9 @@ def process_cluster(clusid):
                     print("\nNo host to enable\n")
                 return 1
 
-    ############################### DISABLE SECTION ########################################
+    # DISABLE SECTION
     if hosts_without_vms > 1:
-        #More than one host without VM's so we can shutdown one
+        # More than one host without VM's so we can shutdown one
         if len(maintable) != 0:
             if len(maintable_prio) != 0:
                 target = choice(maintable_prio)
@@ -287,7 +286,7 @@ def process_cluster(clusid):
             print("\nNo host to put into maintenance\n")
             return 1
 
-    #############################    NOTHING TO DO SECTION ###################################
+    # NOTHING TO DO SECTIOn
 
     if options.verbosity >= 2:
         print("\nNothing to do as enable/disable scripts conditions are not met")
@@ -295,13 +294,13 @@ def process_cluster(clusid):
     return
 
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
-    #Check if we have defined needed tags and create them if missing
+    # Check if we have defined needed tags and create them if missing
     check_tags(api, options)
 
     # TAGALL?
-    #Add elas_maint TAG to every single host to automate the management
+    # Add elas_maint TAG to every single host to automate the management
     if options.tagall == 1:
 
         if options.verbosity >= 1:
@@ -313,8 +312,8 @@ if __name__ == "__main__":
             except:
                 print("Error adding elas_manage tag to host %s" % host.name)
 
-    #Sanity checks
-    ## Check hosts with elas_maint tag and status active
+    # Sanity checks
+    # Check hosts with elas_maint tag and status active
     query = "status = up"
     for host in paginate(api.hosts, query):
         if host.status.state == "up":

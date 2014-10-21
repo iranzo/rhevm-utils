@@ -149,12 +149,12 @@ def snapclone_to_export(api, vm):
     return
 
 
-# ############################### MAIN PROGRAM ############################
+# MAIN PROGRAM
 #
 # Uncomment for debug the exception creation
 #
-#snapclone_to_export(api, vm=api.vms.get(name=options.name))
-#sys.exit(0)
+# snapclone_to_export(api, vm=api.vms.get(name=options.name))
+# sys.exit(0)
 
 if __name__ == "__main__":
     NEW_VM_NAME = options.name

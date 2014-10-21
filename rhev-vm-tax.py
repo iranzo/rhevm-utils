@@ -72,7 +72,7 @@ except:
     sys.exit(1)
 
 
-################################ FUNCTIONS        ############################
+# FUNCTIONS
 def gathervmdata(vmname):
     """Obtans VM data from Postgres database and RHEV api
     @param vmname: VM name to gather data for
@@ -111,7 +111,7 @@ def vmdata(vm):
     """Returns a list of VM data
     @param vm: VM api object for a specified VM
     """
-    # # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE, HOST
+    # VMNAME, VMRAM, VMRAMAVG, VMCPU, VMCPUAVG, VMSTORAGE, VMSIZE, HOST
     vmdata = [vm.name, vm.memory / 1024 / 1024 / 1024]
     vmcpuavg, vmramavg = gathervmdata(vm.name)
     vmdata.append(vmramavg)
@@ -153,7 +153,7 @@ def htmltable(listoflists):
     table += "</table>"
     return table
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
 
     # Obtain current date
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     else:
         month = options.month
 
-    # # Calculate month's end day
+    # Calculate month's end day
     if options.endday:
         endday = options.endday
     else:

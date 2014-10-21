@@ -51,7 +51,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 try:
     f = open(options.table, 'w')
 except:
@@ -60,7 +60,7 @@ except:
 
 f.write("TYPE;HOST;STATE;CPU;MEM;VMS;MEMUSED;\n")
 
-#FUNCTIONS
+# FUNCTIONS
 for host in paginate(api.hosts):
     memory = host.statistics.get(name="memory.used").values.value[0].datum
     memtotal = host.statistics.get(name="memory.total").values.value[0].datum
@@ -102,4 +102,3 @@ for sd in api.storagedomains.list():
 
 f.close()
 sys.exit(0)
-

@@ -38,7 +38,7 @@ p.add_option("-t", "--table", dest="table", help="Input file in CSV format", met
 (options, args) = p.parse_args()
 
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if not options.host:
     print("Host not defined, exiting")
     sys.exit(1)
@@ -48,12 +48,12 @@ if not options.table:
     sys.exit(1)
 
 try:
-    f = file(options.table)   #fichero a procesar
+    f = file(options.table)   # fichero a procesar
 except:
     print("Problem opening the file %s" % options.table)
     sys.exit(1)
 
-#NAGIOS PRIOS:
+# NAGIOS PRIOS:
 # 0 -> ok
 # 1 -> warning
 # 2 -> critical
@@ -61,8 +61,8 @@ except:
 
 # By default, return unknown
 
-#TYPE;HOST;STATE;CPU;MEM
-#host;rhev01.lab.local;up;16;0.0
+# TYPE;HOST;STATE;CPU;MEM
+# host;rhev01.lab.local;up;16;0.0
 
 for line in f:
     if line.split(";")[0] == "host":

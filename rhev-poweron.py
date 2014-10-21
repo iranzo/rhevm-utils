@@ -72,7 +72,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-#FUNCTIONS
+# FUNCTIONS
 def activate_host(target):
     """Activates host from maintenance mode removing required tags
     @param target: Host ID to activate
@@ -81,7 +81,7 @@ def activate_host(target):
     if options.verbosity > 0:
         print("Activating target %s" % target)
 
-    #Remove elas_maint TAG to host
+    # Remove elas_maint TAG to host
     if not api.hosts.get(id=target).tags.get(name="elas_maint"):
         try:
             api.hosts.get(id=target).tags.get(name="elas_maint").delete()
@@ -91,7 +91,7 @@ def activate_host(target):
     if api.hosts.get(id=target).status.state == "maintenance":
         api.hosts.get(id=target).activate()
 
-    #Get Host MAC
+    # Get Host MAC
     for nic in api.hosts.get(id=target).nics.list():
         mac = nic.mac.get_address()
         # By default, send wol using every single nic at RHEVM host
@@ -134,8 +134,8 @@ def process_cluster(clusid):
             if options.verbosity > 4:
                 print("No more hosts to enable")
 
-################################ MAIN PROGRAM ############################
-#Sanity checks
+# MAIN PROGRAM
+# Sanity checks
 if __name__ == "__main__":
     if not options.cluster:
         # Processing each cluster of our RHEVM

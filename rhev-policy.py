@@ -72,10 +72,10 @@ def process_cluster(clusid):
             print("Problem updating policy")
 
             # evenly_distributed
-            #power_saving
+            # power_saving
 
 
-# ############################### MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
 
     if not options.cluster:

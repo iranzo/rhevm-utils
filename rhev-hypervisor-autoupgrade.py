@@ -72,7 +72,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-#FUNCTIONS
+# FUNCTIONS
 def upgrade_host(target):
     """Deactivates hosts putting it on maintenance and associating required tags before upgrading
     @param target: Host ID to upgrade
@@ -82,16 +82,16 @@ def upgrade_host(target):
     if options.verbosity > 0:
         print("Preparing target %s" % target)
 
-    #Add elas_maint TAG to host
+    # Add elas_maint TAG to host
     host.tags.add(params.Tag(name="elas_upgrade"))
 
-    #Set host on maintenance
+    # Set host on maintenance
     try:
         host.deactivate()
     except:
         print("Error deactivating host %s" % api.hosts.get(id=target).name)
 
-    #Should wait until host state is 'maintenance'
+    # Should wait until host state is 'maintenance'
 
     i = 0
     while i < 30:
@@ -106,7 +106,7 @@ def upgrade_host(target):
         i += 1
 
     if api.hosts.get(id=target).status.state == "maintenance":
-        #Execute upgrade for host with latest available version
+        # Execute upgrade for host with latest available version
         image = "%s" % get_max_version()
         try:
             print("Trying to upgrade %s" % host.name)
@@ -148,7 +148,7 @@ def get_max_version():
         if fileversion > version:
             version = fileversion
 
-    #Couldn't get version from disk, get it from the API
+    # Couldn't get version from disk, get it from the API
     if not version:
         maxversion = None
         release = None
@@ -175,7 +175,7 @@ def process_cluster(clusid):
         print("\nProcessing cluster with id %s and name %s" % (clusid, api.clusters.get(id=clusid).name))
         print("#############################################################################")
 
-    #Emptying maintanable and activable hosts list
+    # Emptying maintanable and activable hosts list
     upgradable = []
     upgradable_prio = []
 
@@ -200,7 +200,7 @@ def process_cluster(clusid):
                 if options.verbosity >= 3:
                     print("Host %s doesn't pertain to cluster %s, discarding" % (host.id, clusid))
             else:
-                #Preparing list of valid hosts
+                # Preparing list of valid hosts
                 hostver = "rhevh-%s-%s.iso" % (
                     host.os.version.full_version.split("-")[0].strip(),
                     host.os.version.full_version.split("-")[1].strip())
@@ -231,7 +231,7 @@ def process_cluster(clusid):
                         host.name, host.id, vms, api.hosts.get(id=host.id).status.state,
                         api.hosts.get(id=host.id).storage_manager.valueOf_, status))
 
-                #Counters
+                # Counters
                 hosts_total += inc
 
                 if host.status.state == "up":
@@ -258,12 +258,12 @@ def process_cluster(clusid):
         else:
             print("\nNo hosts in cluster %s, skipping" % clusid)
 
-    #### CODE TO CHECK HOST COUNT, Host still active, etc
+    # CODE TO CHECK HOST COUNT, Host still active, etc
 
-    #Useful vars:     hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
-    #Useful arrays: enablable / upgradable
+    # Useful vars:     hosts_total,hosts_up,hosts_maintenance,hosts_other,hosts_with_vms,hosts_without_vms
+    # Useful arrays: enablable / upgradable
 
-    ############################### UPGRADE SECTION ########################################
+    # UPGRADE SECTION
     if len(upgradable) != 0:
         if len(upgradable_prio) != 0:
             target = choice(upgradable_prio)
@@ -278,13 +278,13 @@ def process_cluster(clusid):
         return 1
 
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
-    #Check if we have defined needed tags and create them if missing
+    # Check if we have defined needed tags and create them if missing
     check_tags(api, options)
 
     # TAGALL?
-    #Add elas_upgrade TAG to every single host to automate the management
+    # Add elas_upgrade TAG to every single host to automate the management
     if options.tagall == 1:
 
         if options.verbosity >= 1:
@@ -296,8 +296,8 @@ if __name__ == "__main__":
             except:
                 print("Error adding elas_manage tag to host %s" % host.name)
 
-    #Sanity checks
-    ## Check hosts with elas_upgrade tag and status active
+    # Sanity checks
+    # Check hosts with elas_upgrade tag and status active
     query = "status = up"
     for host in paginate(api.hosts, query):
         if host.status.state == "up":
@@ -306,7 +306,7 @@ if __name__ == "__main__":
                     print("Host %s is tagged as elas_upgrade and it's active, removing tag..." % host.id)
                 api.hosts.get(id=host.id).tags.get(name="elas_upgrade").delete()
 
-    ## Check hosts with elas_maint tag and status active
+    # Check hosts with elas_maint tag and status active
     query = "status = up"
     for host in paginate(api.hosts, query):
         if host.status.state == "up":

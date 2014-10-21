@@ -26,7 +26,7 @@
 
 # tags behaviour
 # elas_manage: manage this host by using the elastic management script (EMS)
-#	 elas_maint : this host has been put on maintenance by the EMS
+# elas_maint : this host has been put on maintenance by the EMS
 
 import optparse
 
@@ -63,8 +63,8 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
-################################ MAIN PROGRAM ############################
-#Check if we have defined needed tags and create them if missing
+# MAIN PROGRAM
+# Check if we have defined needed tags and create them if missing
 if __name__ == "__main__":
     NEW_VM_NAME = options.name
     CLUSTER_NAME = options.cluster
