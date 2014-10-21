@@ -66,7 +66,7 @@ baseurl = "https://%s:%s" % (options.server, options.port)
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
 
-#FUNCTIONS
+# FUNCTIONS
 def process_cluster(cluster):
     """Processes cluster
     @param cluster: Cluster to process
@@ -85,7 +85,7 @@ def process_cluster(cluster):
         print("\nProcessing cluster %s..." % cluster.name)
         print("##############################################")
 
-    #Populate the list of tags and VM's
+    # Populate the list of tags and VM's
     query = "cluster = %s" % api.clusters.get(id=cluster.id).name
     for vm in paginate(api.vms, query):
         if vm.cluster.id == cluster.id:
@@ -155,13 +155,13 @@ def process_cluster(cluster):
                 if options.verbosity > 3:
                     print("Target machine is not up, not starting vm")
 
-################################ MAIN PROGRAM ############################
+# MAIN PROGRAM
 if __name__ == "__main__":
-    #Check if we have defined needed tags and create them if missing
+    # Check if we have defined needed tags and create them if missing
     check_tags(api, options)
 
     # TAGALL?
-    #Add elas_maint TAG to every single vm to automate the management
+    # Add elas_maint TAG to every single vm to automate the management
     if options.tagall == 1:
         if options.verbosity >= 1:
             print("Tagging all VM's with elas_manage")
