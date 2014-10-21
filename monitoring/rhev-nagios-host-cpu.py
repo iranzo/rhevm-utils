@@ -35,6 +35,9 @@ p.add_option("-u", "--user", dest="username", help="Username to connect to RHEVM
              default="admin@internal")
 p.add_option("-w", "--password", dest="password", help="Password to use with username", metavar="admin",
              default="admin")
+p.add_option("-W", action="store_true", dest="askpassword", help="Ask for password", metavar="admin", default=False)
+p.add_option("-k", action="store_true", dest="keyring", help="use python keyring for user/password", metavar="keyring",
+             default=False)
 p.add_option("-s", "--server", dest="server", help="RHEV-M server address/hostname to contact", metavar="127.0.0.1",
              default="127.0.0.1")
 p.add_option("-p", "--port", dest="port", help="API port to contact", metavar="443", default="443")
@@ -43,6 +46,8 @@ p.add_option('-v', "--verbosity", dest="verbosity", help="Show messages while ru
 p.add_option("--host", dest="host", help="Show messages while running", metavar='host')
 
 (options, args) = p.parse_args()
+
+options.username, options.password = getuserpass(options)
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 
