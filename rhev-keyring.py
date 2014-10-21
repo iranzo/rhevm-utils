@@ -16,6 +16,7 @@
 # GNU General Public License for more details.
 
 import optparse
+import keyring
 
 from rhev_functions import *
 

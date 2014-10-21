@@ -18,11 +18,10 @@
 import sys
 import time
 import getpass
+import keyring
 
 from ovirtsdk.xml import params
 from ovirtsdk.api import API
-import keyring
-
 
 # FUNCTIONS
 def getuserpass(options):
@@ -32,6 +31,7 @@ def getuserpass(options):
     @param options: Options gathered from the script executed by user
     """
     if options.keyring:
+        import keyring
         options.username = keyring.get_password('rhevm-utils', 'username')
         options.password = keyring.get_password('rhevm-utils', 'password'),
     elif options.askpassword:
