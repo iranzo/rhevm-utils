@@ -2,13 +2,17 @@
 
 REQUIRES: rhevm-sdk >= rhevm-sdk-3.1.0.10-1.el6ev.noarch.rpm
 Required: python-keyring
+
+NOTE: If you are willing to use the keyring feature, please, first setup a username/password using `rhev-keyring.py` before using `-k` argument with the remaining scripts.
  
 Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+
 Contributors: 
+
 - Ian Lochrin 
 - Sean P Kane (github.com/spkane)
 
-Please, check individual README files for specific behaviour and description:
+Please, check individual README files for specific behaviour and description under doc/:
 
 - rhev_functions.py:         Common set of functions for usage by other scripts
 
@@ -40,12 +44,8 @@ Please, check individual README files for specific behaviour and description:
 
 PD: Please, if you're using this scripts, send me an email just to know if
 there's anyone outside there. If you find any error, please report it to me
-and I'll try to get it fixed.
+and I'll try to get it fixed, opening a issue request on github helps to track them!
 
-Those scripts are updated when I have the opportunity to deal with the
-environment, so they maybe outdated until I have the chance to update them
-to newer versions.
+Those scripts are updated when I have the opportunity to deal with the environment, so they maybe outdated until I have the chance to update them to newer versions, and may have errors not detected when performing updates on others, please, test with care and report any issue.
 
-Philosophy is Release Early, Release Often, so some scripts can be ugly (no
-error control, etc), but provide the basic functionality, in later updates,
-they will be improved.
+Philosophy is: Release Early, Release Often, so some scripts can be ugly (no error control, etc), but provide the basic functionality, in later updates, they will be improved.
