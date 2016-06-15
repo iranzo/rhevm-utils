@@ -36,7 +36,6 @@ from random import choice
 
 from rhev_functions import *
 
-
 description = """
 RHEV-Poweron is a script for managing via API the hypervisors under RHEV command, both RHEV-H and RHEL hosts.
 

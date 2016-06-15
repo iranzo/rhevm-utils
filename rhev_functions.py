@@ -15,13 +15,13 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
+import getpass
 import sys
 import time
-import getpass
-import keyring
 
-from ovirtsdk.xml import params
 from ovirtsdk.api import API
+from ovirtsdk.xml import params
+
 
 # FUNCTIONS
 def getuserpass(options):

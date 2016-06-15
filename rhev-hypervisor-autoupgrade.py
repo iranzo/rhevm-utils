@@ -26,12 +26,11 @@
 #     elas_upgrade: this host status has been set by automatic upgrade, so it can be installed/activated
 #     elas_maint:   this host status has been set by rhev-elastic, so it can be installed/activated
 
-import optparse
 import glob
+import optparse
 from random import choice
 
 from rhev_functions import *
-
 
 description = """
 RHEV-hypervisor-autoupgrade is a script for automatically upgrade RHEV-H hosts under RHEV

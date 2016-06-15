@@ -17,6 +17,7 @@
 import optparse
 
 import psycopg2
+
 from rhev_functions import *
 
 

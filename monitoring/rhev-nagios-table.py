@@ -18,10 +18,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-import sys
 import optparse
 
-from ovirtsdk.xml import params
 from rhev_functions import *
 
 description = """

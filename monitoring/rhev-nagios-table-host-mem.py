@@ -16,10 +16,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-import sys
 import optparse
-
-from ovirtsdk.xml import params
+import sys
 
 description = """
 RHEV-nagios-table-host-mem output  is a script for querying RHEVM via API to get host status

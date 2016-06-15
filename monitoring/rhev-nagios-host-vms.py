@@ -16,11 +16,9 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-import sys
 import optparse
-from rhev_functions import *
 
-from ovirtsdk.xml import params
+from rhev_functions import *
 
 description = """
 RHEV-nagios-host-vms output  is a script for querying RHEVM via API to get host-vms status

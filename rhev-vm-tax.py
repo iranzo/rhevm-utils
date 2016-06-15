@@ -14,13 +14,13 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    See the
 # GNU General Public License for more details.
 
-import optparse
 import calendar
 import datetime
+import optparse
 
 import psycopg2
-from rhev_functions import *
 
+from rhev_functions import *
 
 description = """
 rhev-vm-tax is a script for gathering statistics about VM usage that can be used to tax usage

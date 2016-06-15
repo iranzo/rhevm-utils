@@ -16,9 +16,9 @@
 # GNU General Public License for more details.
 
 
-import xml.etree.ElementTree as elementtree
-import sys
 import optparse
+import sys
+import xml.etree.ElementTree as elementtree
 
 description = """
 Parse an OVF file on disk to show the information needed to start
