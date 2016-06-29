@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/iranzo/rhevm-utils.svg?branch=master)](https://travis-ci.org/iranzo/rhevm-utils)
+
 #RHEVM-Elastic-Management Scripts
 
 REQUIRES: rhevm-sdk >= rhevm-sdk-3.1.0.10-1.el6ev.noarch.rpm
