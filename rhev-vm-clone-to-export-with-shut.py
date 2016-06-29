@@ -208,7 +208,7 @@ def snapclone_to_export(api, vm):
     # END Denis Immoos at dimmoos@scope.ch
 
     return
-    
+
 # MAIN PROGRAM
 #
 # Uncomment for debug the exception creation
