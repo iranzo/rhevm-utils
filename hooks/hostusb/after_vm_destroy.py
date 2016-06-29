@@ -41,9 +41,11 @@ def get_owner(devpath):
 
     return uid, pid
 
-#!TODO:
+# !TODO:
 # merge chown with before_vm_start.py
 # maybe put it in hooks.py?
+
+
 def chown(vendorid, productid):
     # remove the 0x from the vendor and product id
     devid = vendorid[2:] + ':' + productid[2:]
@@ -70,7 +72,7 @@ def chown(vendorid, productid):
         sys.exit(2)
 
 
-if os.environ.has_key('hostusb'):
+if 'hostusb' in os.environ:
     try:
         regex = re.compile('^0x[\d,A-F,a-f]{4}$')
         for usb in os.environ['hostusb'].split('&'):

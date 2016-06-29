@@ -60,9 +60,11 @@ def log_dev_owner(devpath, user, group):
     f.writelines(entry)
     f.close()
 
-#!TODO:
+# !TODO:
 # merge chown with after_vm_destroy.py
 # maybe put it in hooks.py?
+
+
 def chown(vendorid, productid):
     # remove the 0x from the vendor and product id
     devid = vendorid[2:] + ':' + productid[2:]
@@ -112,7 +114,7 @@ def create_usb_device(domxml, vendorid, productid):
     return hostdev
 
 
-if os.environ.has_key('hostusb'):
+if 'hostusb' in os.environ:
     try:
         regex = re.compile('^0x[\d,A-F,a-f]{4}$')
         domxml = hooking.read_domxml()

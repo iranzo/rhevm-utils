@@ -62,6 +62,7 @@ api = apilogin(url=baseurl, username=options.username, password=options.password
 sleep_time = 10
 date_string = time.strftime('%Y%m%d%H%M', time.localtime())
 
+
 def snapclone_to_export(api, vm):
 
     """Generates a snapshot of a VM, clones it, then exports, and removes the temporary VM
@@ -70,7 +71,7 @@ def snapclone_to_export(api, vm):
     """
 
     # Denis Immoos at dimmoos@scope.ch
-    #description = "Preexport-%s" % time.mktime(time.gtmtime())
+    # description = "Preexport-%s" % time.mktime(time.gtmtime())
     description = "Preexport-%s" % date_string
 
     # GET VM
@@ -81,23 +82,23 @@ def snapclone_to_export(api, vm):
         sys.exit(1)
 
     # Denis Immoos at dimmoos@scope.ch
-    if options.reboot or options.shutdown :
-       if options.verbosity > 0:
-          print("stopping " + vm.name + " ..."  )   
-       if api.vms.get(name=vm.name).status.state != 'down':
-          api.vms.get(name=vm.name).shutdown()
-          while api.vms.get(name=vm.name).status.state != 'down':
-             if options.verbosity > 0:
-                print "waiting for " + vm.name +  " to reach down status ..."
-             time.sleep(sleep_time)
-          if options.verbosity > 0:
-             print vm.name +  " is down ..."
-       else:
-          if options.verbosity > 0:
-             print vm.name +  " is allready down ..."
+    if options.reboot or options.shutdown:
+        if options.verbosity > 0:
+            print("stopping " + vm.name + " ...")
+        if api.vms.get(name=vm.name).status.state != 'down':
+            api.vms.get(name=vm.name).shutdown()
+            while api.vms.get(name=vm.name).status.state != 'down':
+                if options.verbosity > 0:
+                    print "waiting for " + vm.name + " to reach down status ..."
+                time.sleep(sleep_time)
+            if options.verbosity > 0:
+                print vm.name + " is down ..."
+        else:
+            if options.verbosity > 0:
+                print vm.name + " is allready down ..."
 
-       # sleep a bit
-       time.sleep(sleep_time)
+        # sleep a bit
+        # time.sleep(sleep_time)
 
     # END Denis Immoos at dimmoos@scope.ch
 
@@ -110,7 +111,7 @@ def snapclone_to_export(api, vm):
     # Wait for snapshot to finish
     while api.vms.get(name=vm.name).status.state == "image_locked":
         if options.verbosity > 0:
-            print("waiting for snapshot " + description + " to finish ..." )
+            print("waiting for snapshot " + description + " to finish ...")
         time.sleep(sleep_time)
 
     # Get snapshot object
@@ -121,15 +122,14 @@ def snapclone_to_export(api, vm):
 
     while api.vms.get(name=vm.name).snapshots.get(id=snap.id).snapshot_status != "ok":
         if options.verbosity > 0:
-           print("waiting for snapshot " + description + " to finish ...")
+            print("waiting for snapshot " + description + " to finish ...")
         time.sleep(sleep_time)
 
     # Create new VM from SNAPSHOT (NOT WORKING AT THE MOMENT)
-    #newname = "%s-deleteme" % vm.name
+    # newname = "%s-deleteme" % vm.name
     newname = vm.name
     newname += "-"
     newname += date_string
-
 
     if options.verbosity > 0:
         print("creating new vm " + newname + " based on snapshot " + description + " ...")
@@ -160,7 +160,7 @@ def snapclone_to_export(api, vm):
         print("exporting " + newname + " to " + export.name + " ...")
 
     # Export cloned VM to export domain for backup
-    api.vms.get(name=newname).export(params.Action(storage_domain=export,exclusive=True))
+    api.vms.get(name=newname).export(params.Action(storage_domain=export, exclusive=True))
 
     # Wait for create to finish
     while api.vms.get(name=newname).status.state == "image_locked":
@@ -172,40 +172,39 @@ def snapclone_to_export(api, vm):
         print("deleting temporary vm " + newname + " ...")
     api.vms.get(name=newname).delete()
 
-    
     if api.vms.get(name=vm.name).status.state != 'up':
 
-       if options.verbosity > 0:
-           print("deleting temporary snapshot ...")
+        if options.verbosity > 0:
+            print("deleting temporary snapshot ...")
 
-       snapshotlist = api.vms.get(name=vm.name).snapshots.list()
-       for snapshot in snapshotlist:
-          if  "Preexport-" in snapshot.description:
-             snapshot.delete()
-             try:
-                 while api.vms.get(name=vm.name).snapshots.get(id=snapshot.id).snapshot_status == "locked":
+        snapshotlist = api.vms.get(name=vm.name).snapshots.list()
+        for snapshot in snapshotlist:
+            if "Preexport-" in snapshot.description:
+                snapshot.delete()
+                try:
+                    while api.vms.get(name=vm.name).snapshots.get(id=snapshot.id).snapshot_status == "locked":
+                        if options.verbosity > 0:
+                            print "waiting for snapshot %s on %s deletion to finish ..." % (snapshot.description, vm.name)
+                        time.sleep(sleep_time)
+                except Exception as e:
                     if options.verbosity > 0:
-                       print("waiting for snapshot %s on %s deletion to finish ...") % (snapshot.description, vm.name)
-                    time.sleep(sleep_time)
-             except Exception as e:
-                 if options.verbosity > 0:
-                    print ("snapshot %s does not exist anymore ...") % snapshot.description
+                        print "snapshot %s does not exist anymore ..." % snapshot.description
 
-       print ("snapshot deletion for %s done") % vm.name
+        print "snapshot deletion for %s done" % vm.name
 
     # Denis Immoos at dimmoos@scope.ch
-    if options.reboot :
-       print("starting " + vm.name + " ..."  )   
-       if api.vms.get(name=vm.name).status.state != 'up':
-          api.vms.get(name=vm.name).start()
-          while api.vms.get(name=vm.name).status.state != 'up':
-             if options.verbosity > 0:
-                print "waiting for " + vm.name +  " to reach up status ..."
-             time.sleep(sleep_time)
-          print vm.name +  " is up ..."
-       else:
-          if options.verbosity > 0:
-             print vm.name +  " is allready up ..."
+    if options.reboot:
+        print("starting " + vm.name + " ...")
+        if api.vms.get(name=vm.name).status.state != 'up':
+            api.vms.get(name=vm.name).start()
+            while api.vms.get(name=vm.name).status.state != 'up':
+                if options.verbosity > 0:
+                    print "waiting for " + vm.name + " to reach up status ..."
+                time.sleep(sleep_time)
+            print vm.name + " is up ..."
+        else:
+            if options.verbosity > 0:
+                print vm.name + " is allready up ..."
     # END Denis Immoos at dimmoos@scope.ch
 
     return

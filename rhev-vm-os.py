@@ -252,7 +252,7 @@ def process_cluster(cluster):
                                             # keep running to make more room
                                             keeplooping = False
 
-                                        if vms_to_excomulgate == []:
+                                        if not vms_to_excomulgate:
                                             # No more VM's to excomulgate, exit loop
                                             keeplooping = False
                                         if keeplooping:

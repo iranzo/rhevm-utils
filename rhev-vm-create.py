@@ -23,7 +23,7 @@
 
 
 import optparse
-
+from rhev_functions import *
 
 description = """
 vmcreate is a script for creating vm's based on specified values
@@ -64,7 +64,6 @@ p.add_option("--vmserv", dest="vmserv", help="Service Network to use", metavar="
 
 options.username, options.password = getuserpass(options)
 
-from rhev_functions import *
 
 baseurl = "https://%s:%s" % (options.server, options.port)
 

@@ -68,7 +68,7 @@ def createDiskElement(domxml, devpath, drivertype):
     return disk
 
 
-if os.environ.has_key('vmdisk'):
+if 'vmdisk' in os.environ:
     try:
         disks = os.environ['vmdisk']
 
@@ -82,7 +82,7 @@ if os.environ.has_key('vmdisk'):
                 sys.stderr.write('vmdisk: input error, expected diskpath:diskformat ie /path/disk.img:qcow2\n')
                 sys.exit(2)
 
-            if not drivertype in driver_types:
+            if drivertype not in driver_types:
                 sys.stderr.write('vmdisk: input error, driver type: raw or qcow2\n')
                 sys.exit(2)
 
