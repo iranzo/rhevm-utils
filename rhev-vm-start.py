@@ -61,7 +61,7 @@ p.add_option('-r', "--reverse", dest="reverse", help="Reverse behaviour with mac
 
 options.username, options.password = getuserpass(options)
 
-baseurl = "https://%s:%s" % (options.server, options.port)
+baseurl = "https://%s:%s/ovirt-engine/api" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 

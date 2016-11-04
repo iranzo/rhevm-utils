@@ -65,7 +65,7 @@ p.add_option("--vmserv", dest="vmserv", help="Service Network to use", metavar="
 options.username, options.password = getuserpass(options)
 
 
-baseurl = "https://%s:%s" % (options.server, options.port)
+baseurl = "https://%s:%s/ovirt-engine/api" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 

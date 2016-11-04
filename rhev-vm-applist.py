@@ -48,7 +48,7 @@ p.add_option("-n", "--name", dest="name", help="VM name", metavar="name")
 
 options.username, options.password = getuserpass(options)
 
-baseurl = "https://%s:%s" % (options.server, options.port)
+baseurl = "https://%s:%s/ovirt-engine/api" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 con = psycopg2.connect(database='engine', user=options.dbuser, password=options.dbpass)

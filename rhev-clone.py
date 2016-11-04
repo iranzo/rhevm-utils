@@ -59,7 +59,7 @@ p.add_option("-t", "--template", dest="template", help="VM template", metavar="t
 
 options.username, options.password = getuserpass(options)
 
-baseurl = "https://%s:%s" % (options.server, options.port)
+baseurl = "https://%s:%s/ovirt-engine/api" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 

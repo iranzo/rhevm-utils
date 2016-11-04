@@ -60,7 +60,7 @@ options.username, options.password = getuserpass(options)
 if options.dbaskpassword:
     options.dbpass = getpass.getpass("Enter DB password: ")
 
-baseurl = "https://%s:%s" % (options.server, options.port)
+baseurl = "https://%s:%s/ovirt-engine/api" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 con = psycopg2.connect(database=options.dbname, user=options.dbuser, password=options.dbpass)
