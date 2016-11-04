@@ -49,7 +49,7 @@ p.add_option("-t", "--table", dest="table", help="Output file in CSV format", me
 
 options.username, options.password = getuserpass(options)
 
-baseurl = "https://%s:%s" % (options.server, options.port)
+baseurl = "https://%s:%s/ovirt-engine/api" % (options.server, options.port)
 
 api = apilogin(url=baseurl, username=options.username, password=options.password)
 
