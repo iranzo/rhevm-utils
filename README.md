@@ -18,7 +18,8 @@ Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
 Contributors:
 
 - Ian Lochrin
-- Sean P Kane (github.com/spkane)
+- Sean P Kane (https://github.com/spkane)
+- Fran García (https://github.com/frangdlt)
 
 Please, check individual README files for specific behaviour and description under doc/:
 
