@@ -2,7 +2,7 @@ RHEVM-Elastic-Management Scripts
 
 REQUIRES: rhevm-sdk
 
-Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@gmail.com)
 
 rhev-elastic: 
 	Description: Script for elastic management (EMS) of RHEV-H/RHEL hosts for

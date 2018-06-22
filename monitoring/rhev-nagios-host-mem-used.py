@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@gmail.com)
 #
 # Description: Script for monitoring host Memory status and VM's rhevm-sdk
 # api and produce NAGIOS valid output

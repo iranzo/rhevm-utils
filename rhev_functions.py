@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@gmail.com)
 #
 # Description: Basic common set of functions for usage in other scripts
 #

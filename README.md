@@ -13,7 +13,7 @@
 
 NOTE: If you are willing to use the keyring feature, please, first setup a username/password using `rhev-keyring.py` before using `-k` argument with the remaining scripts.
 
-Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@gmail.com)
 
 Contributors:
 

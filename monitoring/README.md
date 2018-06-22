@@ -2,7 +2,7 @@ RHEVM-Elastic-Management Scripts - nagios integration
 
 REQUIRES: rhevm-sdk
 
-Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+Author: Pablo Iranzo Gómez (Pablo.Iranzo@gmail.com)
 
 Please check individual README files for specific behaviour and description
 

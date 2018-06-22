@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@gmail.com)
 #
 # Description: Script for starting VM's using rhevm-sdk
 # api based on single VM dependency

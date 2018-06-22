@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@gmail.com)
 #
 # Description: Script for creating VLAN in datacenter and attach to cluster and it's hosts
 #

@@ -2,7 +2,7 @@
 #
 # Description: Script for deploying scripts on hypervisor
 #
-# Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gómez (Pablo.Iranzo@gmail.com)
 #
 
 export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin

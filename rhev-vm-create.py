@@ -15,7 +15,7 @@
 #
 # Requires rhevm-sdk to work or RHEVM api equivalent
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@gmail.com)
 #
 # Contributors:
 # Vincent Van der Kussen  (vincent@vanderkussen.org)

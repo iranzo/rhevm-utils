@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Author: Pablo Iranzo Gomez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gomez (Pablo.Iranzo@gmail.com)
 #
 # Description: Script for elastic management (EMS) of RHEV-H/RHEL hosts for
 # RHEVM based on Douglas Schilling Landgraf <dougsland@redhat.com> scripts

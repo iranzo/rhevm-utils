@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Description: Parse ovf to start VM
-# Author: Pablo.Iranzo@redhat.com
+# Author: Pablo.Iranzo@gmail.com
 #
 # Based on Karim Boumedhel's code at
 # https://github.com/karmab/ovirt/blob/master/hypervisor.py

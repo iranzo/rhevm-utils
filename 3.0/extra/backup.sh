@@ -1,7 +1,7 @@
 #!/bin/bash 
 #
 # Description: Sample backup script for RHEVM infrastructure
-# Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gómez (Pablo.Iranzo@gmail.com)
 #
 #
 

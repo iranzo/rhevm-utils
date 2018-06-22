@@ -2,7 +2,7 @@
 #
 # Description: Script for deploying scripts on hypervisor
 #
-# Author: Pablo Iranzo Gómez (Pablo.Iranzo@redhat.com)
+# Author: Pablo Iranzo Gómez (Pablo.Iranzo@gmail.com)
 #
 
 HOST=$1
